@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Women of the Bible Quiz — Conference Edition</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HERO SECTION -->
+    <div class="home-hero">
+      <div class="logo-icon">📖</div>
+      <h1>Women of the Bible</h1>
+      <p class="subtitle">Conference Quiz Challenge</p>
+      <p class="verse" id="dailyVerse"></p>
+    </div>
+
+    <!-- MODE SELECTION -->
+    <div class="mode-cards">
+      <a href="practice.html" class="mode-card">
+        <div class="mode-icon">📝</div>
+        <h2>Daily Practice</h2>
+        <p>Study at your own pace. Choose how many questions, track your progress, and master every detail!</p>
+        <span class="badge badge-daily">Practice Anytime</span>
+      </a>
+
+      <a href="team-play.html" class="mode-card">
+        <div class="mode-icon">🏆</div>
+        <h2>Team Battle</h2>
+        <p>Connect from anywhere! Real-time team competition with live scores, timers, and bragging rights!</p>
+        <span class="badge badge-friday">Multiplayer</span>
+      </a>
+    </div>
+
+    <!-- QUICK STATS -->
+    <div class="card" id="quickStatsCard" style="display: none; margin-top: 20px;">
+      <h3 style="text-align: center; margin-bottom: 15px; color: var(--primary);">Your Journey</h3>
+      <div class="stats-grid" id="homeStats"></div>
+    </div>
+
+    <!-- WOMEN OF THE BIBLE -->
+    <div style="margin-top: 30px;">
+      <h2 style="color: white; text-align: center; margin-bottom: 20px; font-size: 1.4rem;">Meet the Women</h2>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <!-- FUN FACT -->
+    <div class="card" style="margin-top: 20px; text-align: center;">
+      <h3 style="color: var(--primary); margin-bottom: 10px;">Did You Know?</h3>
+      <p style="color: var(--text-light); line-height: 1.6;" id="funFact"></p>
+    </div>
+
+    <div style="text-align: center; padding: 30px 0; color: rgba(255,255,255,0.7); font-size: 0.85rem;">
+      Women of the Bible Quiz — Church Conference Edition<br>
+      All questions based on the New King James Version (NKJV)
+    </div>
+  </div>
+
+  <script>
+    // Daily verses rotation
+    const verses = [
+      '"She opens her mouth with wisdom, and on her tongue is the law of kindness." — Proverbs 31:26',
+      '"Charm is deceitful and beauty is passing, but a woman who fears the Lord, she shall be praised." — Proverbs 31:30',
+      '"Who can find a virtuous wife? For her worth is far above rubies." — Proverbs 31:10',
+      '"Strength and honor are her clothing; she shall rejoice in time to come." — Proverbs 31:25',
+      '"She watches over the ways of her household, and does not eat the bread of idleness." — Proverbs 31:27',
+      '"For such a time as this." — Esther 4:14',
+      '"Wherever you go, I will go; wherever you lodge, I will lodge." — Ruth 1:16',
+      '"My soul magnifies the Lord, and my spirit has rejoiced in God my Savior." — Luke 1:46-47',
+      '"My heart rejoices in the Lord; my horn is exalted in the Lord." — 1 Samuel 2:1'
+    ];
+    const dayIndex = Math.floor(Date.now() / 86400000) % verses.length;
+    document.getElementById('dailyVerse').textContent = verses[dayIndex];
+
+    // Fun facts
+    const facts = [
+      'The book of Esther is one of only two books in the Bible named after a woman (Ruth is the other)!',
+      'Ruth was a Moabite — a foreigner — yet she became the great-grandmother of King David and an ancestor of Jesus!',
+      'Hannah\'s prayer in 1 Samuel 2 is so similar to Mary\'s Magnificat in Luke 1 that scholars believe Mary was inspired by Hannah!',
+      'Deborah is the only woman in the Bible who served as both a judge AND a prophetess of Israel!',
+      'Abigail is one of only a few women in the Bible described as both wise AND beautiful!',
+      'Elizabeth and Mary were relatives, and their miraculous pregnancies overlapped by about 3 months!',
+      'The name "Esther" may come from the Persian word for "star," while her Hebrew name Hadassah means "myrtle tree."',
+      'The festival of Purim, celebrated to this day, comes from the story of Esther — "Pur" means "lot" in Persian.',
+      'Jael used a tent peg to defeat Sisera — as a nomadic woman, she was expert at driving tent pegs!',
+      'Obed, Ruth\'s son, means "servant" — and his grandson David became the greatest king of Israel!'
+    ];
+    const factIndex = Math.floor(Date.now() / 86400000) % facts.length;
+    document.getElementById('funFact').textContent = facts[factIndex];
+
+    // Load categories
+    fetch('/api/categories')
+      .then(res => res.json())
+      .then(categories => {
+        const grid = document.getElementById('categoryGrid');
+        categories.forEach(cat => {
+          const card = document.createElement('a');
+          card.href = `practice.html?category=${cat.id}`;
+          card.className = 'category-card';
+          card.style.borderColor = cat.color;
+          card.innerHTML = `
+            <div class="cat-icon">${cat.icon}</div>
+            <h3>${cat.name}</h3>
+            <div class="cat-ref">${cat.reference}</div>
+            <div class="cat-desc">${cat.description}</div>
+          `;
+          grid.appendChild(card);
+        });
+      });
+
+    // Show progress stats if available
+    try {
+      const progress = JSON.parse(localStorage.getItem('bible_quiz_progress') || '{}');
+      if (progress.totalAnswered && progress.totalAnswered > 0) {
+        document.getElementById('quickStatsCard').style.display = 'block';
+        const accuracy = Math.round((progress.totalCorrect / progress.totalAnswered) * 100);
+        const seen = progress.seen ? Object.keys(progress.seen).length : 0;
+        const mastered = progress.seen
+          ? Object.values(progress.seen).filter(s => s.correct >= 2).length
+          : 0;
+
+        document.getElementById('homeStats').innerHTML = `
+          <div class="stat-item">
+            <div class="stat-value">${progress.totalSessions || 0}</div>
+            <div class="stat-label">Sessions</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${accuracy}%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${seen}</div>
+            <div class="stat-label">Questions Seen</div>
+          </div>
+        `;
+      }
+    } catch (e) {}
+  </script>
+</body>
+</html>

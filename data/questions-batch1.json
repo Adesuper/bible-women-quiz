@@ -1,0 +1,902 @@
+[
+  {
+    "id": 116,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "What are the names of the seven eunuchs King Ahasuerus sent to bring Queen Vashti before him?",
+    "options": [
+      "Mehuman, Biztha, Harbona, Bigtha, Abagtha, Zethar, and Carcas",
+      "Mehuman, Biztha, Harbona, Bigtha, Abagtha, Zethar, and Hegai",
+      "Mehuman, Biztha, Harbona, Hatach, Abagtha, Zethar, and Carcas",
+      "Mehuman, Biztha, Harbona, Bigtha, Teresh, Zethar, and Carcas"
+    ],
+    "correct": 0,
+    "reference": "Esther 1:10",
+    "explanation": "That's a lot of names to remember! King Ahasuerus sent seven eunuchs to bring Vashti to his banquet. Try saying all seven names fast -- Mehuman, Biztha, Harbona, Bigtha, Abagtha, Zethar, and Carcas!"
+  },
+  {
+    "id": 117,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "Which prince of Persia and Media advised King Ahasuerus about what to do with Queen Vashti?",
+    "options": [
+      "Admatha",
+      "Memucan",
+      "Carshena",
+      "Marsena"
+    ],
+    "correct": 1,
+    "reference": "Esther 1:16-21",
+    "explanation": "Memucan spoke up and told the king that Vashti's refusal wasn't just a problem for the king -- it was a problem for every husband in the kingdom! He suggested the king make a royal decree about it."
+  },
+  {
+    "id": 118,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "What was the royal decree that Memucan suggested after Vashti's refusal?",
+    "options": [
+      "That Vashti should be put in prison",
+      "That Vashti shall come no more before King Ahasuerus and her royal position be given to another",
+      "That all women must attend the king's feasts",
+      "That Vashti should be banished from the kingdom entirely"
+    ],
+    "correct": 1,
+    "reference": "Esther 1:19",
+    "explanation": "Memucan's advice was that Vashti would never come before the king again and her royal position would go to someone better. This is how God was setting the stage for Esther to become queen!"
+  },
+  {
+    "id": 119,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "According to Memucan, what would the royal decree cause all wives to do?",
+    "options": [
+      "Fear their husbands",
+      "Honor their husbands, both great and small",
+      "Obey every command without question",
+      "Attend all royal banquets"
+    ],
+    "correct": 1,
+    "reference": "Esther 1:20",
+    "explanation": "Memucan said that when the decree went out across the huge empire, all wives would honor their husbands, whether rich or poor, great or small. That's a pretty big rule for one person's refusal!"
+  },
+  {
+    "id": 120,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "During the twelve months of beauty preparation, how many months were specifically with oil of myrrh?",
+    "options": [
+      "Three months",
+      "Six months",
+      "Nine months",
+      "Twelve months"
+    ],
+    "correct": 1,
+    "reference": "Esther 2:12",
+    "explanation": "Six whole months just with oil of myrrh! That's half a year of one beauty treatment. Then they had six more months with perfumes and other preparations. These girls got the ultimate spa experience!"
+  },
+  {
+    "id": 121,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "Who told Esther not to reveal her Jewish nationality or family background?",
+    "options": [
+      "Hegai",
+      "Hatach",
+      "Mordecai",
+      "Elkanah"
+    ],
+    "correct": 2,
+    "reference": "Esther 2:10",
+    "explanation": "Mordecai, Esther's wise cousin who raised her, told her to keep her Jewish identity a secret. This was part of God's amazing plan to protect His people later on!"
+  },
+  {
+    "id": 122,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "When King Ahasuerus gave Haman authority over the Jewish people, what did he give Haman as a sign of that authority?",
+    "options": [
+      "His crown",
+      "His sword",
+      "His signet ring",
+      "His royal robe"
+    ],
+    "correct": 2,
+    "reference": "Esther 3:10",
+    "explanation": "The king took his signet ring off his own hand and gave it to Haman! A signet ring was like a royal stamp -- whatever Haman sealed with it had the power of the king behind it. That's a LOT of power for a bad guy!"
+  },
+  {
+    "id": 123,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "After Haman was hanged, who received the king's signet ring?",
+    "options": [
+      "Esther",
+      "Hatach",
+      "Harbona",
+      "Mordecai"
+    ],
+    "correct": 3,
+    "reference": "Esther 8:2",
+    "explanation": "The king took his signet ring that he had taken back from Haman and gave it to Mordecai! What an amazing reversal -- the ring went from the enemy of the Jews to the hero of the Jews!"
+  },
+  {
+    "id": 124,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "What was the name of the eunuch Esther sent to Mordecai to find out why he was in mourning?",
+    "options": [
+      "Hegai",
+      "Harbona",
+      "Hatach",
+      "Haman"
+    ],
+    "correct": 2,
+    "reference": "Esther 4:5",
+    "explanation": "Hatach was the king's eunuch appointed to attend Esther. He became the messenger between Esther and Mordecai, carrying important messages back and forth through the palace!"
+  },
+  {
+    "id": 125,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "What famous words did Esther say before she decided to go before the king uninvited?",
+    "options": [
+      "\"The Lord is my strength and my shield\"",
+      "\"If I perish, I perish!\"",
+      "\"God will save His people\"",
+      "\"I will trust in the Lord forever\""
+    ],
+    "correct": 1,
+    "reference": "Esther 4:16",
+    "explanation": "\"If I perish, I perish!\" -- what incredible bravery! Esther knew she could die for going to the king without being called, but she was willing to risk her life for her people. That takes real courage!"
+  },
+  {
+    "id": 126,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "When Esther approached King Ahasuerus uninvited and he held out the golden scepter, what did Esther do?",
+    "options": [
+      "She bowed to the ground",
+      "She touched the top of the scepter",
+      "She kissed the king's hand",
+      "She knelt before the throne"
+    ],
+    "correct": 1,
+    "reference": "Esther 5:2",
+    "explanation": "Esther went near and touched the top of the golden scepter! This was the sign that the king accepted her and she would not be put to death. What a relief that must have been!"
+  },
+  {
+    "id": 127,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "What did King Ahasuerus offer Esther when she came before him, up to how much?",
+    "options": [
+      "Up to a third of the kingdom",
+      "Up to half the kingdom",
+      "Up to all the kingdom",
+      "Up to a quarter of the kingdom"
+    ],
+    "correct": 1,
+    "reference": "Esther 5:3",
+    "explanation": "The king said he would give Esther up to half the kingdom! That shows how much the king loved Esther. But Esther didn't ask for riches -- she asked the king and Haman to come to a banquet. Smart move!"
+  },
+  {
+    "id": 128,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "What did Haman's wife Zeresh and his friends originally advise him to build for Mordecai?",
+    "options": [
+      "A prison cell",
+      "A gallows fifty cubits high",
+      "A pit in the ground",
+      "A stake in the public square"
+    ],
+    "correct": 1,
+    "reference": "Esther 5:14",
+    "explanation": "Zeresh and Haman's friends told him to make a gallows fifty cubits high (about 75 feet!) and ask the king to hang Mordecai on it. They thought it was a great plan, but God had other ideas!"
+  },
+  {
+    "id": 129,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "After Haman was forced to honor Mordecai, what did his wife Zeresh and his wise men tell him?",
+    "options": [
+      "\"Fight harder against Mordecai\"",
+      "\"If Mordecai is of Jewish descent, you will not prevail against him but will surely fall before him\"",
+      "\"Flee the kingdom immediately\"",
+      "\"Beg the king for mercy\""
+    ],
+    "correct": 1,
+    "reference": "Esther 6:13",
+    "explanation": "Even Haman's own wife and friends could see the writing on the wall! They warned him that if Mordecai was Jewish, Haman would surely fall. They were absolutely right -- God protects His people!"
+  },
+  {
+    "id": 130,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "Which eunuch suggested to the king that the gallows Haman built for Mordecai could be used for Haman himself?",
+    "options": [
+      "Hatach",
+      "Hegai",
+      "Harbona",
+      "Bigtha"
+    ],
+    "correct": 2,
+    "reference": "Esther 7:9",
+    "explanation": "Harbona, one of the eunuchs serving the king, spoke up and pointed out the fifty-cubit gallows Haman had built for Mordecai. The king immediately said, 'Hang him on it!' Talk about perfect timing!"
+  },
+  {
+    "id": 131,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "In Esther chapter 8, how did Esther approach the king to plead for her people against Haman's decree?",
+    "options": [
+      "She sent a letter through Hatach",
+      "She fell down at his feet and wept, imploring him",
+      "She stood boldly at the throne",
+      "She sent Mordecai to speak for her"
+    ],
+    "correct": 1,
+    "reference": "Esther 8:3",
+    "explanation": "Esther fell down at the king's feet, weeping and begging him to stop Haman's evil plan against her people. She was so passionate about saving the Jews that she humbled herself completely before the king!"
+  },
+  {
+    "id": 132,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "What did the second decree, issued in Mordecai's name, allow the Jews to do?",
+    "options": [
+      "Leave the kingdom peacefully",
+      "Gather together, protect their lives, destroy, kill, and plunder those who would assault them",
+      "Take Haman's property and divide it equally",
+      "Move to a separate province for safety"
+    ],
+    "correct": 1,
+    "reference": "Esther 8:11",
+    "explanation": "The new decree gave the Jews the right to gather together and defend themselves! They could fight back against anyone who tried to attack them. God turned a death sentence into a victory plan!"
+  },
+  {
+    "id": 133,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "On what exact date were the Jews supposed to be destroyed according to Haman's decree, and on what date did they instead defend themselves?",
+    "options": [
+      "The 12th day of the month of Adar",
+      "The 13th day of the month of Adar",
+      "The 14th day of the month of Adar",
+      "The 15th day of the month of Adar"
+    ],
+    "correct": 1,
+    "reference": "Esther 3:13; 8:12; 9:1",
+    "explanation": "The 13th day of Adar was supposed to be doomsday for the Jews, but God flipped it completely! Instead of being destroyed, the Jews defeated their enemies on that very same day. What an amazing turnaround!"
+  },
+  {
+    "id": 134,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "After the Jews' victory, the days of Purim were established as days of what?",
+    "options": [
+      "Mourning and prayer",
+      "Feasting and joy, sending presents to one another and gifts to the poor",
+      "Fasting and repentance",
+      "Building temples and monuments"
+    ],
+    "correct": 1,
+    "reference": "Esther 9:22",
+    "explanation": "Purim became an awesome celebration! The Jews feasted, had joy, sent presents to each other, and gave gifts to the poor. It's like a combination of a party and a charity event -- how cool is that!"
+  },
+  {
+    "id": 135,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "When Mordecai went out from the king's presence in royal apparel, what colors and materials were his garments?",
+    "options": [
+      "Purple and scarlet with a crown of silver",
+      "Blue and white with a great crown of gold and a garment of fine linen and purple",
+      "Red and gold with a crown of jewels",
+      "White and gold with a turban of fine linen"
+    ],
+    "correct": 1,
+    "reference": "Esther 8:15",
+    "explanation": "Mordecai looked amazing! He wore blue and white with a great crown of gold and a garment of fine linen and purple. He went from wearing sackcloth and ashes to royal robes -- what a glow-up!"
+  },
+  {
+    "id": 136,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "How many men did the Jews kill in the citadel of Shushan (the capital) on the 13th of Adar?",
+    "options": [
+      "200 men",
+      "300 men",
+      "500 men",
+      "800 men"
+    ],
+    "correct": 2,
+    "reference": "Esther 9:6",
+    "explanation": "The Jews killed 500 men in the citadel of Shushan alone! And that doesn't even count Haman's ten sons. God gave His people a mighty victory right in the heart of the enemy's territory!"
+  },
+  {
+    "id": 137,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "Before the Jews' battle on the 13th of Adar, what had many people in the provinces done because the fear of the Jews fell on them?",
+    "options": [
+      "They fled the country",
+      "They became Jews themselves",
+      "They built walls around their cities",
+      "They hid in the mountains"
+    ],
+    "correct": 1,
+    "reference": "Esther 8:17",
+    "explanation": "Many people of the land actually became Jews because the fear of the Jews fell upon them! When God is on your side, even your enemies can see His power and want to be part of His people!"
+  },
+  {
+    "id": 138,
+    "category": "esther",
+    "difficulty": "medium",
+    "question": "What was Esther's second petition to the king regarding Haman's ten sons after they were killed?",
+    "options": [
+      "That their property be given to the Jews",
+      "That their bodies be hanged on the gallows",
+      "That their families be banished",
+      "That a monument be built over their graves"
+    ],
+    "correct": 1,
+    "reference": "Esther 9:13",
+    "explanation": "Esther asked that Haman's ten sons, who had already been killed, be hanged on the gallows for everyone to see. This was a public display showing that the enemies of God's people were completely defeated!"
+  },
+  {
+    "id": 139,
+    "category": "esther",
+    "difficulty": "hard",
+    "question": "How many additional men were killed in Shushan on the 14th day of Adar after Esther's second petition?",
+    "options": [
+      "100 men",
+      "200 men",
+      "300 men",
+      "500 men"
+    ],
+    "correct": 2,
+    "reference": "Esther 9:15",
+    "explanation": "The Jews in Shushan killed 300 more men on the 14th of Adar. That's 500 on the first day plus 300 on the second -- 800 total in Shushan alone! The enemies of God's people were completely wiped out!"
+  },
+  {
+    "id": 140,
+    "category": "esther",
+    "difficulty": "easy",
+    "question": "According to Esther 9:22, what were the Jews instructed to send to the poor during Purim?",
+    "options": [
+      "Prayers",
+      "Gifts",
+      "Letters",
+      "Clothing"
+    ],
+    "correct": 1,
+    "reference": "Esther 9:22",
+    "explanation": "Part of celebrating Purim was sending gifts to the poor! God wanted His people to remember that victory isn't just about celebrating -- it's also about taking care of those who need help. How awesome is that!"
+  },
+  {
+    "id": 141,
+    "category": "ruth",
+    "difficulty": "easy",
+    "question": "Why did Elimelech and his family leave Bethlehem and go to the country of Moab?",
+    "options": [
+      "Because of a war",
+      "Because of a famine in the land",
+      "Because the king commanded them to leave",
+      "Because they wanted to trade goods"
+    ],
+    "correct": 1,
+    "reference": "Ruth 1:1",
+    "explanation": "There was a famine in Bethlehem, which means there wasn't enough food. So Elimelech took his family to Moab looking for food. Interesting fact: Bethlehem means 'house of bread' but it had no bread!"
+  },
+  {
+    "id": 142,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "How long did Naomi's family live in the country of Moab?",
+    "options": [
+      "About 5 years",
+      "About 7 years",
+      "About 10 years",
+      "About 15 years"
+    ],
+    "correct": 2,
+    "reference": "Ruth 1:4",
+    "explanation": "Naomi's family lived in Moab for about 10 years! During that time, her sons married Moabite women, Ruth and Orpah. But sadly, Naomi's husband and both sons died during those years."
+  },
+  {
+    "id": 143,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What news did Naomi hear that made her decide to return to Bethlehem from Moab?",
+    "options": [
+      "That a new king had risen in Judah",
+      "That her relatives had built her a home",
+      "That the Lord had visited His people by giving them bread",
+      "That the temple had been rebuilt"
+    ],
+    "correct": 2,
+    "reference": "Ruth 1:6",
+    "explanation": "Naomi heard that the Lord had visited His people by giving them bread! The famine was over and God had blessed the land again. This good news was what started the journey that would change Ruth's life forever!"
+  },
+  {
+    "id": 144,
+    "category": "ruth",
+    "difficulty": "easy",
+    "question": "What nationality was Ruth?",
+    "options": [
+      "An Israelite",
+      "An Egyptian",
+      "A Moabitess",
+      "A Philistine"
+    ],
+    "correct": 2,
+    "reference": "Ruth 1:22; 2:2",
+    "explanation": "Ruth was a Moabitess -- she was from the country of Moab! Even though she wasn't born an Israelite, she chose to follow the God of Israel. God doesn't care where you come from -- He cares about your heart!"
+  },
+  {
+    "id": 145,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What specific greeting did Boaz use when he came from Bethlehem to his reapers in the field?",
+    "options": [
+      "\"Peace be with you!\"",
+      "\"The Lord bless you!\"",
+      "\"The Lord be with you!\"",
+      "\"God's grace upon you!\""
+    ],
+    "correct": 2,
+    "reference": "Ruth 2:4",
+    "explanation": "Boaz said 'The Lord be with you!' to his workers, and they answered 'The Lord bless you!' What a wonderful boss! You can tell a lot about a person by how they greet the people who work for them."
+  },
+  {
+    "id": 146,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "Boaz told Ruth to stay close to whom while gleaning in his fields?",
+    "options": [
+      "His male servants",
+      "His young women",
+      "The other foreigners",
+      "The field overseers"
+    ],
+    "correct": 1,
+    "reference": "Ruth 2:8",
+    "explanation": "Boaz told Ruth to stay close to his young women for safety. He also told his young men not to touch her! Boaz was a true gentleman who made sure Ruth was protected while she worked."
+  },
+  {
+    "id": 147,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What did Boaz tell Ruth to do when she was thirsty?",
+    "options": [
+      "Go to the well in town",
+      "Drink from the vessels which the young men have drawn",
+      "Ask Naomi for water",
+      "Wait until the midday break"
+    ],
+    "correct": 1,
+    "reference": "Ruth 2:9",
+    "explanation": "Boaz said Ruth could drink from the water his young men had drawn! She didn't even have to do the hard work of drawing water herself. Boaz was already going above and beyond to take care of Ruth!"
+  },
+  {
+    "id": 148,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "According to Boaz, what specific things had he been told about Ruth's kindness to Naomi?",
+    "options": [
+      "That she cooked for Naomi every day",
+      "That she left her father, mother, and the land of her birth to come to a people she did not know before",
+      "That she sold all her possessions to support Naomi",
+      "That she promised to never leave Bethlehem"
+    ],
+    "correct": 1,
+    "reference": "Ruth 2:11",
+    "explanation": "Boaz knew all about Ruth's sacrifice! She left her own parents and her homeland to follow Naomi to a strange country. That kind of loyalty really impressed Boaz -- and it shows us what true love looks like!"
+  },
+  {
+    "id": 149,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "At mealtime, what food did Boaz offer Ruth to eat along with bread?",
+    "options": [
+      "Honey and figs",
+      "Vinegar to dip her bread in",
+      "Olives and cheese",
+      "Wine and dates"
+    ],
+    "correct": 1,
+    "reference": "Ruth 2:14",
+    "explanation": "Boaz invited Ruth to come dip her bread in the vinegar! Vinegar (sour wine) was a common refreshing drink for workers in Bible times. He also passed parched grain to her. Boaz made sure Ruth was well fed!"
+  },
+  {
+    "id": 150,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What food did Boaz hand to Ruth at mealtime, of which she ate and was satisfied and had some left over?",
+    "options": [
+      "Bread and honey",
+      "Parched grain",
+      "Figs and dates",
+      "Lentil stew"
+    ],
+    "correct": 1,
+    "reference": "Ruth 2:14",
+    "explanation": "Boaz gave Ruth parched grain -- roasted grain that was a popular snack for field workers! She ate until she was full and still had leftovers. She even brought the leftovers home to Naomi. Sharing is caring!"
+  },
+  {
+    "id": 151,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "How much barley did Boaz give Ruth at the threshing floor before she returned to Naomi?",
+    "options": [
+      "An ephah of barley",
+      "Four measures of barley",
+      "Six ephahs of barley",
+      "Six measures of barley"
+    ],
+    "correct": 3,
+    "reference": "Ruth 3:15",
+    "explanation": "Boaz measured out six measures of barley and put it on Ruth! That was a very generous gift. When Naomi saw it, she knew Boaz meant business and wouldn't rest until the matter was settled!"
+  },
+  {
+    "id": 152,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "In Ruth 4:1, how did Boaz address the closer relative (kinsman-redeemer) who had first right?",
+    "options": [
+      "\"Brother\"",
+      "\"My lord\"",
+      "\"Friend\"",
+      "\"Kinsman\""
+    ],
+    "correct": 2,
+    "reference": "Ruth 4:1",
+    "explanation": "Boaz called him 'Friend' -- or in some NKJV editions a similar term meaning 'such a one.' The Bible never actually tells us this man's real name! He missed out on being in the family line of Jesus because he refused to redeem Ruth."
+  },
+  {
+    "id": 153,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What blessing did the elders and people at the gate speak over Boaz regarding Rachel and Leah?",
+    "options": [
+      "\"May Ruth be as beautiful as Rachel and Leah\"",
+      "\"May the Lord make Ruth like Rachel and Leah, the two who built the house of Israel\"",
+      "\"May your household be as great as Rachel and Leah's\"",
+      "\"May Ruth bear as many children as Rachel and Leah\""
+    ],
+    "correct": 1,
+    "reference": "Ruth 4:11",
+    "explanation": "The people blessed Ruth by comparing her to Rachel and Leah, the two wives of Jacob who built the whole house of Israel! That's an incredible blessing -- and it totally came true because Ruth became the great-grandmother of King David!"
+  },
+  {
+    "id": 154,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "In the blessing at the gate, whose house did the elders say they hoped Boaz's house would be like through the offspring the Lord would give?",
+    "options": [
+      "The house of Abraham",
+      "The house of Jacob",
+      "The house of Perez, whom Tamar bore to Judah",
+      "The house of Moses"
+    ],
+    "correct": 2,
+    "reference": "Ruth 4:12",
+    "explanation": "They mentioned Perez, who was the son of Tamar and Judah! This is cool because Perez is actually in the family line that leads all the way from Judah to Boaz to David to Jesus!"
+  },
+  {
+    "id": 155,
+    "category": "ruth",
+    "difficulty": "easy",
+    "question": "Who became the nurse to baby Obed after he was born?",
+    "options": [
+      "Ruth",
+      "Orpah",
+      "Naomi",
+      "A hired servant"
+    ],
+    "correct": 2,
+    "reference": "Ruth 4:16",
+    "explanation": "Naomi took the baby Obed and became his nurse! After losing her husband and two sons, God gave Naomi a precious grandchild to hold. The neighbor women said 'A son has been born to Naomi!' How beautiful!"
+  },
+  {
+    "id": 156,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "According to the genealogy at the end of Ruth chapter 4, who was the father of Boaz?",
+    "options": [
+      "Nahshon",
+      "Salmon",
+      "Ram",
+      "Amminadab"
+    ],
+    "correct": 1,
+    "reference": "Ruth 4:21",
+    "explanation": "Salmon was the father of Boaz! The genealogy goes: Perez, Hezron, Ram, Amminadab, Nahshon, Salmon, Boaz, Obed, Jesse, David. That's ten generations leading to the greatest king of Israel!"
+  },
+  {
+    "id": 157,
+    "category": "ruth",
+    "difficulty": "easy",
+    "question": "The genealogy at the end of Ruth leads to which famous king of Israel?",
+    "options": [
+      "King Saul",
+      "King Solomon",
+      "King David",
+      "King Josiah"
+    ],
+    "correct": 2,
+    "reference": "Ruth 4:22",
+    "explanation": "The whole book of Ruth leads up to King David! Ruth was David's great-grandmother. And it gets even more amazing -- this family line goes all the way to Jesus! God had an incredible plan all along!"
+  },
+  {
+    "id": 158,
+    "category": "ruth",
+    "difficulty": "hard",
+    "question": "In the genealogy of Ruth 4:18-22, who was the father of Nahshon?",
+    "options": [
+      "Ram",
+      "Hezron",
+      "Amminadab",
+      "Salmon"
+    ],
+    "correct": 2,
+    "reference": "Ruth 4:19-20",
+    "explanation": "Amminadab was the father of Nahshon! Nahshon was actually a very important leader of the tribe of Judah during the time of Moses. God was weaving an amazing family story through all these generations!"
+  },
+  {
+    "id": 159,
+    "category": "ruth",
+    "difficulty": "easy",
+    "question": "At the beginning of the book of Ruth, during whose time did the events take place?",
+    "options": [
+      "In the days when the kings ruled",
+      "In the days when the prophets spoke",
+      "In the days when the judges ruled",
+      "In the days when Moses led Israel"
+    ],
+    "correct": 2,
+    "reference": "Ruth 1:1",
+    "explanation": "The story of Ruth happened during the time of the judges! This was a pretty wild and sometimes dark period in Israel's history, but God was still working behind the scenes through ordinary people like Ruth and Boaz."
+  },
+  {
+    "id": 160,
+    "category": "ruth",
+    "difficulty": "medium",
+    "question": "What did the women of Bethlehem say about Ruth's value to Naomi?",
+    "options": [
+      "That Ruth was worth more than ten daughters",
+      "That Ruth was better to Naomi than seven sons",
+      "That Ruth was the greatest woman in Moab",
+      "That Ruth was equal to five daughters of Israel"
+    ],
+    "correct": 1,
+    "reference": "Ruth 4:15",
+    "explanation": "The women said Ruth was better to Naomi than seven sons! In those days, sons were considered the most valuable family members, so saying Ruth was worth more than seven sons was the highest compliment possible!"
+  },
+  {
+    "id": 161,
+    "category": "hannah",
+    "difficulty": "hard",
+    "question": "According to 1 Samuel 1:1, what was the name of Elkanah's father?",
+    "options": [
+      "Zuph",
+      "Tohu",
+      "Jeroham",
+      "Elihu"
+    ],
+    "correct": 2,
+    "reference": "1 Samuel 1:1",
+    "explanation": "Elkanah's father was Jeroham! The verse gives us his whole family tree: Elkanah son of Jeroham, son of Elihu, son of Tohu, son of Zuph. That's four generations of names to remember!"
+  },
+  {
+    "id": 162,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "From what place was Elkanah, Hannah's husband?",
+    "options": [
+      "Bethlehem of Judah",
+      "Ramathaim Zophim, of the mountains of Ephraim",
+      "Shiloh of Benjamin",
+      "Gibeah of Ephraim"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:1",
+    "explanation": "Elkanah was from Ramathaim Zophim in the mountains of Ephraim! That's quite a mouthful of a hometown name. This is the same area that later became known simply as Ramah."
+  },
+  {
+    "id": 163,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "The Bible says Hannah prayed to the Lord in what emotional state?",
+    "options": [
+      "In great fear",
+      "In bitterness of soul",
+      "In overwhelming joy",
+      "In quiet peace"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:10",
+    "explanation": "Hannah prayed in bitterness of soul and wept in anguish! She was deeply heartbroken about not having children. But here's the beautiful part -- God heard every single tear and every single prayer!"
+  },
+  {
+    "id": 164,
+    "category": "hannah",
+    "difficulty": "easy",
+    "question": "Where was Eli the priest sitting when he watched Hannah praying?",
+    "options": [
+      "At the altar",
+      "By the doorpost of the tabernacle",
+      "On the steps of the temple",
+      "In the inner court"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:9",
+    "explanation": "Eli was sitting on a seat by the doorpost of the tabernacle of the Lord! From that spot he could see Hannah's lips moving but couldn't hear any words, which is why he mistakenly thought she was drunk."
+  },
+  {
+    "id": 165,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "After Hannah explained herself to Eli, what were his exact words of blessing to her?",
+    "options": [
+      "\"May God bless you abundantly\"",
+      "\"Go in peace, and the God of Israel grant your petition which you have asked of Him\"",
+      "\"The Lord hear your prayer and give you a son\"",
+      "\"Be at peace, for the Lord has heard you\""
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:17",
+    "explanation": "Eli said 'Go in peace, and the God of Israel grant your petition which you have asked of Him.' What powerful words! And guess what -- God did exactly that! Sometimes a word of encouragement can change everything."
+  },
+  {
+    "id": 166,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "According to 1 Samuel 1:19, what happened after Elkanah and Hannah returned home from worshipping at Shiloh?",
+    "options": [
+      "Hannah continued to fast and pray",
+      "Elkanah knew Hannah his wife, and the Lord remembered her",
+      "They offered another sacrifice to God",
+      "Hannah made a second vow to the Lord"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:19-20",
+    "explanation": "The Bible says Elkanah knew his wife Hannah, and the Lord remembered her! 'Remembered' doesn't mean God forgot -- it means He acted on her prayer at just the right time. And soon baby Samuel was on the way!"
+  },
+  {
+    "id": 167,
+    "category": "hannah",
+    "difficulty": "hard",
+    "question": "According to 1 Samuel 1:24 (NKJV), what specific offerings did Hannah bring when she took young Samuel to the house of the Lord at Shiloh?",
+    "options": [
+      "Two bulls, an ephah of flour, and a skin of wine",
+      "Three bulls, one ephah of flour, and a skin of wine",
+      "One bull, two ephahs of flour, and two skins of wine",
+      "Three lambs, one ephah of flour, and a skin of wine"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:24",
+    "explanation": "Hannah brought three bulls, one ephah of flour, and a skin of wine! That was a generous offering showing how serious and thankful she was. She didn't hold anything back when giving her son to God's service."
+  },
+  {
+    "id": 168,
+    "category": "hannah",
+    "difficulty": "easy",
+    "question": "In Hannah's prayer in 1 Samuel 2, she says 'my heart rejoices in the Lord.' What else does she say is exalted?",
+    "options": [
+      "My soul",
+      "My spirit",
+      "My horn",
+      "My voice"
+    ],
+    "correct": 2,
+    "reference": "1 Samuel 2:1",
+    "explanation": "Hannah said 'my horn is exalted in the Lord!' In Bible times, a horn was a symbol of strength and power. Hannah was saying that God had made her strong! He turned her sadness into an amazing victory song!"
+  },
+  {
+    "id": 169,
+    "category": "hannah",
+    "difficulty": "hard",
+    "question": "In Hannah's prayer, what does she say will happen to the adversaries of the Lord?",
+    "options": [
+      "They shall be cast into darkness",
+      "They shall be broken in pieces",
+      "They shall flee from His presence",
+      "They shall be consumed by fire"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 2:10",
+    "explanation": "Hannah declared that 'the adversaries of the Lord shall be broken in pieces!' That's powerful! Hannah's prayer went from being about her personal situation to declaring God's power over all His enemies!"
+  },
+  {
+    "id": 170,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "In Hannah's prayer in 1 Samuel 2:9, what does she say God will do for His saints?",
+    "options": [
+      "He will lift them up on high",
+      "He will guard the feet of His saints",
+      "He will shelter them under His wings",
+      "He will lead them beside still waters"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 2:9",
+    "explanation": "Hannah said God will guard the feet of His saints! That means God watches over every step His people take. He protects them on their journey through life. What a comforting promise!"
+  },
+  {
+    "id": 171,
+    "category": "hannah",
+    "difficulty": "hard",
+    "question": "According to Hannah's prayer in 1 Samuel 2:9, by what shall no man prevail?",
+    "options": [
+      "By wisdom",
+      "By riches",
+      "By strength",
+      "By might"
+    ],
+    "correct": 2,
+    "reference": "1 Samuel 2:9",
+    "explanation": "Hannah said 'by strength shall no man prevail!' This means human muscle and power are nothing compared to God's might. Hannah learned this firsthand -- no human effort could give her a baby, but God could!"
+  },
+  {
+    "id": 172,
+    "category": "hannah",
+    "difficulty": "medium",
+    "question": "At the very end of Hannah's prayer, what two things does she say the Lord will do?",
+    "options": [
+      "Save His people and defeat all nations",
+      "Judge the ends of the earth and give strength to His king and exalt the horn of His anointed",
+      "Raise the dead and heal the sick",
+      "Open the heavens and pour out blessings"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 2:10",
+    "explanation": "Hannah's prayer ends with a prophecy! She said God would judge the ends of the earth, give strength to His king, and exalt His anointed. Amazing -- Israel didn't even have a king yet, but Hannah prophesied about one!"
+  },
+  {
+    "id": 173,
+    "category": "hannah",
+    "difficulty": "easy",
+    "question": "In 1 Samuel 1:11, when Hannah made her vow, what did she promise would never come upon her son's head?",
+    "options": [
+      "A crown",
+      "Water",
+      "A razor",
+      "Oil"
+    ],
+    "correct": 2,
+    "reference": "1 Samuel 1:11",
+    "explanation": "Hannah promised that no razor would ever touch Samuel's head! This was part of dedicating him as a Nazirite to the Lord, meaning he would be set apart for God's special service his entire life."
+  },
+  {
+    "id": 174,
+    "category": "hannah",
+    "difficulty": "hard",
+    "question": "What is the name of Elkanah's grandfather according to 1 Samuel 1:1?",
+    "options": [
+      "Zuph",
+      "Jeroham",
+      "Elihu",
+      "Tohu"
+    ],
+    "correct": 2,
+    "reference": "1 Samuel 1:1",
+    "explanation": "Elkanah's grandfather was Elihu! The family line goes: Zuph was the great-grandfather, then Tohu, then Elihu, then Jeroham (the father), and finally Elkanah. That's a lot of family history in just one verse!"
+  },
+  {
+    "id": 175,
+    "category": "hannah",
+    "difficulty": "easy",
+    "question": "According to 1 Samuel 1:13, what was unusual about the way Hannah prayed that confused Eli?",
+    "options": [
+      "She was lying on the ground",
+      "She spoke in her heart; only her lips moved, but her voice was not heard",
+      "She was praying with her eyes open",
+      "She was dancing while she prayed"
+    ],
+    "correct": 1,
+    "reference": "1 Samuel 1:13",
+    "explanation": "Hannah spoke in her heart -- her lips were moving but no sound came out! Eli saw this and thought she was drunk, but she was actually praying so deeply and personally that only God could hear her words. What a powerful prayer!"
+  }
+]

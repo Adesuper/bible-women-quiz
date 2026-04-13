@@ -1,0 +1,1210 @@
+{
+  "categories": [
+    {
+      "id": "esther",
+      "name": "Queen Esther",
+      "icon": "👑",
+      "color": "#9b59b6",
+      "reference": "Esther 1-10 (NKJV)",
+      "description": "The brave queen who saved her people!"
+    },
+    {
+      "id": "ruth",
+      "name": "Ruth",
+      "icon": "🌾",
+      "color": "#e67e22",
+      "reference": "Ruth 1-4 (NKJV)",
+      "description": "The loyal daughter-in-law with an amazing love story!"
+    },
+    {
+      "id": "hannah",
+      "name": "Hannah",
+      "icon": "🙏",
+      "color": "#2ecc71",
+      "reference": "1 Samuel 1; 2:1-10 (NKJV)",
+      "description": "The praying mother who kept her promise to God!"
+    },
+    {
+      "id": "abigail",
+      "name": "Abigail",
+      "icon": "🕊️",
+      "color": "#3498db",
+      "reference": "1 Samuel 25:1-42 (NKJV)",
+      "description": "The wise woman who stopped a disaster!"
+    },
+    {
+      "id": "deborah",
+      "name": "Deborah",
+      "icon": "⚔️",
+      "color": "#e74c3c",
+      "reference": "Judges 4-5 (NKJV)",
+      "description": "The judge and prophetess who led Israel to victory!"
+    },
+    {
+      "id": "mary_elizabeth",
+      "name": "Mary & Elizabeth",
+      "icon": "⭐",
+      "color": "#1abc9c",
+      "reference": "Luke 1:5-66; John 19:25-27 (NKJV)",
+      "description": "The faithful mothers chosen by God for a special purpose!"
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "category": "esther",
+      "difficulty": "easy",
+      "question": "What was the name of the king who held a great feast in Esther chapter 1?",
+      "options": ["King Darius", "King Ahasuerus", "King Nebuchadnezzar", "King Cyrus"],
+      "correct": 1,
+      "reference": "Esther 1:1-3",
+      "explanation": "King Ahasuerus (also known as Xerxes) reigned from India to Ethiopia over 127 provinces. He made a feast for all his officials and servants in the third year of his reign. That's a LOT of provinces to rule!"
+    },
+    {
+      "id": 2,
+      "category": "esther",
+      "difficulty": "easy",
+      "question": "How many days did King Ahasuerus's great feast last?",
+      "options": ["7 days", "30 days", "180 days", "365 days"],
+      "correct": 2,
+      "reference": "Esther 1:4",
+      "explanation": "The king showed the riches of his glorious kingdom for 180 days — that's about 6 months! After that, he made another feast for 7 days. Talk about a long party!"
+    },
+    {
+      "id": 3,
+      "category": "esther",
+      "difficulty": "easy",
+      "question": "Why was Queen Vashti removed from her position?",
+      "options": ["She stole from the treasury", "She refused to come when the king summoned her", "She plotted against the king", "She left the kingdom"],
+      "correct": 1,
+      "reference": "Esther 1:10-12",
+      "explanation": "Queen Vashti refused to come when King Ahasuerus commanded her to appear before his guests wearing the royal crown, to show her beauty. The king was furious, and his advisors said she should be removed so other women wouldn't follow her example."
+    },
+    {
+      "id": 4,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "Who was Esther's cousin who raised her as his own daughter?",
+      "options": ["Haman", "Mordecai", "Hegai", "Memucan"],
+      "correct": 1,
+      "reference": "Esther 2:5-7",
+      "explanation": "Mordecai the son of Jair, of the tribe of Benjamin, had raised his cousin Esther (whose Hebrew name was Hadassah) because her father and mother had died. He brought her up as his own daughter — what an amazing guardian!"
+    },
+    {
+      "id": 5,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What was Esther's Hebrew name?",
+      "options": ["Hadassah", "Hannah", "Huldah", "Hagar"],
+      "correct": 0,
+      "reference": "Esther 2:7",
+      "explanation": "Esther's Hebrew name was Hadassah, which means 'myrtle tree.' The name 'Esther' was likely her Persian name. She was described as lovely and beautiful!"
+    },
+    {
+      "id": 6,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "How long was the beauty preparation period before each young woman went to the king?",
+      "options": ["6 months", "12 months", "3 months", "18 months"],
+      "correct": 1,
+      "reference": "Esther 2:12",
+      "explanation": "Each young woman had twelve months of beauty preparations — six months with oil of myrrh and six months with perfumes and preparations. That's a whole year of getting ready! Imagine spending a year just getting pampered!"
+    },
+    {
+      "id": 7,
+      "category": "esther",
+      "difficulty": "easy",
+      "question": "What was the name of the man who hated Mordecai and plotted to destroy the Jews?",
+      "options": ["Hegai", "Memucan", "Haman", "Bigthana"],
+      "correct": 2,
+      "reference": "Esther 3:5-6",
+      "explanation": "Haman the Agagite was furious because Mordecai would not bow down to him. Instead of just targeting Mordecai, Haman plotted to destroy ALL the Jews throughout the entire kingdom. His pride and hatred led to a terrible plan!"
+    },
+    {
+      "id": 8,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "Haman cast Pur (the lot) to determine the day to destroy the Jews. In which month was the destruction planned?",
+      "options": ["The first month (Nisan)", "The seventh month (Tishri)", "The twelfth month (Adar)", "The sixth month (Elul)"],
+      "correct": 2,
+      "reference": "Esther 3:7,13",
+      "explanation": "The lot fell on the twelfth month, which is the month of Adar. Haman cast the lot in the first month (Nisan), so God actually gave the Jews almost a full year to prepare! The festival of Purim gets its name from 'Pur' meaning 'lot.'"
+    },
+    {
+      "id": 9,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What famous words did Mordecai say to Esther to encourage her to act?",
+      "options": ["'Be strong and of good courage'", "'The Lord is with you'", "'Who knows whether you have come to the kingdom for such a time as this?'", "'Trust in the Lord with all your heart'"],
+      "correct": 2,
+      "reference": "Esther 4:14",
+      "explanation": "Mordecai's powerful words — 'who knows whether you have come to the kingdom for such a time as this?' — reminded Esther that God may have placed her in the palace for this very purpose: to save His people! It's one of the most famous verses in the Bible."
+    },
+    {
+      "id": 10,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "How many days did Esther ask the Jews to fast before she approached the king?",
+      "options": ["1 day", "3 days", "7 days", "40 days"],
+      "correct": 1,
+      "reference": "Esther 4:16",
+      "explanation": "Esther asked all the Jews in Shushan to fast for three days, night and day. She and her maids would do the same. Then she would go to the king, even though it was against the law. Her famous words: 'If I perish, I perish!' What courage!"
+    },
+    {
+      "id": 11,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What happened when Esther approached the king without being summoned?",
+      "options": ["She was thrown in prison", "The king held out his golden scepter to her", "The guards stopped her", "The king was angry"],
+      "correct": 1,
+      "reference": "Esther 5:2",
+      "explanation": "When the king saw Queen Esther standing in the court, she found favor in his sight, and the king held out the golden scepter that was in his hand. Esther drew near and touched the top of the scepter. God softened the king's heart!"
+    },
+    {
+      "id": 12,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What did Esther request at her first banquet with the king and Haman?",
+      "options": ["She asked for Haman to be punished", "She revealed that she was Jewish", "She invited them to another banquet the next day", "She asked the king to save her people"],
+      "correct": 2,
+      "reference": "Esther 5:8",
+      "explanation": "Cleverly, Esther didn't rush! At the first banquet, she simply invited the king and Haman to come to ANOTHER banquet the next day. This built suspense and also set the stage for God to work overnight — because that very night, the king couldn't sleep!"
+    },
+    {
+      "id": 13,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What did Haman build at his house, planning to use it against Mordecai?",
+      "options": ["A prison cell", "A gallows fifty cubits high", "A pit", "A wall"],
+      "correct": 1,
+      "reference": "Esther 5:14",
+      "explanation": "Haman's wife Zeresh and friends suggested he make a gallows fifty cubits high (about 75 feet!) and hang Mordecai on it. But God had other plans — Haman would end up on his own gallows! This is a perfect example of 'he who digs a pit will fall into it.'"
+    },
+    {
+      "id": 14,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What happened to the king on the night between Esther's two banquets?",
+      "options": ["He had a dream about Mordecai", "He could not sleep and had the book of records read to him", "He received a warning from an angel", "He became very ill"],
+      "correct": 1,
+      "reference": "Esther 6:1",
+      "explanation": "That night the king could not sleep! So he commanded that the book of the records be brought, and it was found that Mordecai had saved the king's life by reporting a plot against him. The king realized Mordecai had never been rewarded. God's timing is perfect!"
+    },
+    {
+      "id": 15,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What humiliating thing did Haman have to do for Mordecai?",
+      "options": ["Wash his feet", "Lead him on horseback through the city proclaiming his honor", "Bow down before him", "Give him his house"],
+      "correct": 1,
+      "reference": "Esther 6:10-11",
+      "explanation": "The king told Haman to put a royal robe and crown on Mordecai, place him on the king's horse, and lead him through the city square proclaiming 'Thus shall it be done to the man whom the king delights to honor!' Haman thought the king was talking about HIM — what a twist!"
+    },
+    {
+      "id": 16,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "At the second banquet, what did Esther reveal to the king?",
+      "options": ["That she was from a royal family", "That Mordecai was her father", "That she and her people had been sold to be destroyed", "That Haman had stolen from the treasury"],
+      "correct": 2,
+      "reference": "Esther 7:3-4",
+      "explanation": "Esther bravely told the king: 'we have been sold, my people and I, to be destroyed, to be killed, and to be annihilated.' When the king asked who would dare do such a thing, Esther pointed to Haman: 'The adversary and enemy is this wicked Haman!'"
+    },
+    {
+      "id": 17,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What happened to Haman in the end?",
+      "options": ["He was banished from the kingdom", "He was hanged on the gallows he had prepared for Mordecai", "He was thrown into prison", "He escaped to another country"],
+      "correct": 1,
+      "reference": "Esther 7:10",
+      "explanation": "Haman was hanged on the very gallows (50 cubits high!) that he had prepared for Mordecai. What a powerful example of God turning evil plans upside down! The Bible says: 'So they hanged Haman on the gallows that he had prepared for Mordecai. Then the king's wrath subsided.'"
+    },
+    {
+      "id": 18,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What position did Mordecai receive after Haman's downfall?",
+      "options": ["He became a priest", "He became captain of the guard", "He was set over the house of Haman and became second to the king", "He became governor of Judah"],
+      "correct": 2,
+      "reference": "Esther 8:2, 10:3",
+      "explanation": "The king gave Mordecai the signet ring that he had taken from Haman, and Esther set Mordecai over the house of Haman. He became second only to King Ahasuerus, great among the Jews and well received by the multitude of his brethren. From almost being killed to second-in-command!"
+    },
+    {
+      "id": 19,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What festival was established to remember the Jews' deliverance?",
+      "options": ["Passover", "Hanukkah", "Purim", "Feast of Tabernacles"],
+      "correct": 2,
+      "reference": "Esther 9:26-28",
+      "explanation": "The festival of Purim was established — named after 'Pur' (the lot) that Haman had cast. Jews celebrate Purim to this day, remembering how God turned their sorrow into joy and their mourning into a holiday! They celebrate on the 14th and 15th of Adar."
+    },
+    {
+      "id": 20,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "Over how many provinces did King Ahasuerus reign?",
+      "options": ["50 provinces", "100 provinces", "120 provinces", "127 provinces"],
+      "correct": 3,
+      "reference": "Esther 1:1",
+      "explanation": "King Ahasuerus reigned over 127 provinces, from India to Ethiopia. This was one of the largest empires in the ancient world — and Esther was queen of it all! God placed her in an incredibly strategic position."
+    },
+    {
+      "id": 21,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "Who were the two eunuchs whose plot to kill the king was discovered by Mordecai?",
+      "options": ["Hegai and Shaashgaz", "Bigthan and Teresh", "Abagtha and Zethar", "Carcas and Biztha"],
+      "correct": 1,
+      "reference": "Esther 2:21-23",
+      "explanation": "Bigthan (also called Bigthana) and Teresh, two of the king's eunuchs who guarded the doorway, became furious and sought to kill King Ahasuerus. But Mordecai found out and told Queen Esther, who reported it in Mordecai's name. They were both hanged, and it was written in the book of chronicles."
+    },
+    {
+      "id": 22,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "How many sons of Haman were killed?",
+      "options": ["5 sons", "7 sons", "10 sons", "12 sons"],
+      "correct": 2,
+      "reference": "Esther 9:10,13-14",
+      "explanation": "Haman had ten sons, and all ten were killed by the Jews. Esther even requested that their bodies be hanged on the gallows. Their names are listed in Esther 9:7-10. Haman's entire household was brought down because of his wicked plot against God's people."
+    },
+    {
+      "id": 23,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What did Esther say was the penalty for approaching the king without being called?",
+      "options": ["A fine of gold", "Imprisonment for 30 days", "Death, unless the king holds out the golden scepter", "Banishment from the kingdom"],
+      "correct": 2,
+      "reference": "Esther 4:11",
+      "explanation": "Any man or woman who went into the inner court to the king without being called had one law — to be put to death — UNLESS the king held out the golden scepter so they might live. Esther hadn't been called for thirty days. That's why she needed so much courage!"
+    },
+    {
+      "id": 24,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What was the name of the eunuch who was in charge of the women in the king's house?",
+      "options": ["Harbona", "Hegai", "Hatach", "Shaashgaz"],
+      "correct": 1,
+      "reference": "Esther 2:8",
+      "explanation": "Hegai was the king's eunuch who was custodian of the women. He was pleased with Esther and gave her beauty preparations, her portion of food, and seven choice maidservants. He moved her and her maids to the best place in the house of the women. Even the palace workers could see something special about Esther!"
+    },
+    {
+      "id": 25,
+      "category": "esther",
+      "difficulty": "medium",
+      "question": "What were the Jews allowed to do on the day Haman had planned for their destruction?",
+      "options": ["Leave the kingdom", "Gather together and protect their lives", "Attack the king's enemies", "Celebrate a feast only"],
+      "correct": 1,
+      "reference": "Esther 8:11",
+      "explanation": "The king's new decree permitted the Jews in every city to gather together and protect their lives — to destroy, kill, and annihilate all who would assault them. Since the original decree could not be reversed (Persian law!), a new decree was made giving the Jews the right to defend themselves."
+    },
+
+    {
+      "id": 26,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "Where did Naomi and her family originally come from before moving to Moab?",
+      "options": ["Jerusalem", "Bethlehem of Judah", "Nazareth", "Jericho"],
+      "correct": 1,
+      "reference": "Ruth 1:1-2",
+      "explanation": "Naomi's family was from Bethlehem of Judah (also called Bethlehem Ephrathah). They left because of a famine in the land and went to the country of Moab. Interestingly, Bethlehem means 'House of Bread' — yet there was a famine there!"
+    },
+    {
+      "id": 27,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "What was the name of Naomi's husband?",
+      "options": ["Boaz", "Elimelech", "Mahlon", "Chilion"],
+      "correct": 1,
+      "reference": "Ruth 1:2",
+      "explanation": "Naomi's husband was Elimelech, whose name means 'My God is King.' Sadly, he died in the land of Moab, leaving Naomi with her two sons, Mahlon and Chilion."
+    },
+    {
+      "id": 28,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "What were the names of Naomi's two sons?",
+      "options": ["Jacob and Esau", "Mahlon and Chilion", "Moses and Aaron", "David and Solomon"],
+      "correct": 1,
+      "reference": "Ruth 1:2",
+      "explanation": "Naomi's sons were Mahlon and Chilion, who were Ephrathites from Bethlehem. Both of them married Moabite women — Mahlon married Ruth and Chilion married Orpah. Sadly, both sons also died in Moab."
+    },
+    {
+      "id": 29,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "What was the name of Naomi's other daughter-in-law (not Ruth)?",
+      "options": ["Rachel", "Orpah", "Leah", "Miriam"],
+      "correct": 1,
+      "reference": "Ruth 1:4",
+      "explanation": "Orpah was Naomi's other daughter-in-law. While both Orpah and Ruth initially wanted to go with Naomi back to Bethlehem, Orpah eventually kissed her mother-in-law goodbye and returned to her people and her gods. Ruth, however, clung to Naomi!"
+    },
+    {
+      "id": 30,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "Complete Ruth's famous declaration: 'Wherever you go, I will go; wherever you lodge, ___'",
+      "options": ["'I will be nearby'", "'I will lodge'", "'I will find my own place'", "'I will wait for you'"],
+      "correct": 1,
+      "reference": "Ruth 1:16",
+      "explanation": "Ruth's beautiful words of loyalty: 'Entreat me not to leave you, or to turn back from following after you; for wherever you go, I will go; and wherever you lodge, I will lodge; your people shall be my people, and your God, my God.' This is one of the most beautiful expressions of love and loyalty in the entire Bible!"
+    },
+    {
+      "id": 31,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "What name did Naomi say people should call her when she returned to Bethlehem?",
+      "options": ["Mara", "Sarah", "Hagar", "Deborah"],
+      "correct": 0,
+      "reference": "Ruth 1:20",
+      "explanation": "Naomi said 'Do not call me Naomi; call me Mara, for the Almighty has dealt very bitterly with me.' Naomi means 'Pleasant' but Mara means 'Bitter.' She felt God had dealt harshly with her because she left full but came back empty."
+    },
+    {
+      "id": 32,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "What was Ruth doing in Boaz's field?",
+      "options": ["Planting seeds", "Gleaning leftover grain", "Selling bread", "Watching sheep"],
+      "correct": 1,
+      "reference": "Ruth 2:2-3",
+      "explanation": "Ruth went to glean heads of grain — picking up the leftover grain that the harvesters left behind. God's law allowed the poor and foreigners to glean in the fields (Leviticus 19:9-10). Ruth 'happened' to come to Boaz's field — but we know God was guiding her steps!"
+    },
+    {
+      "id": 33,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "How did Boaz greet his reapers when he arrived at the field?",
+      "options": ["'Work harder!'", "'The Lord be with you!'", "'How is the harvest?'", "'Peace be unto you!'"],
+      "correct": 1,
+      "reference": "Ruth 2:4",
+      "explanation": "Boaz greeted his workers saying 'The Lord be with you!' and they answered 'The Lord bless you!' This tells us a lot about Boaz's character — he was a godly man who cared about his workers and acknowledged God in his daily life."
+    },
+    {
+      "id": 34,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "What special instructions did Boaz give his workers about Ruth?",
+      "options": ["Send her away", "Let her glean even among the sheaves and let grain fall on purpose for her", "Give her a job as a worker", "Tell her to come back tomorrow"],
+      "correct": 1,
+      "reference": "Ruth 2:15-16",
+      "explanation": "Boaz told his young men: 'Let her glean even among the sheaves, and do not reproach her. Also let grain from the bundles fall purposely for her.' He went above and beyond to provide for Ruth! He also told his workers not to touch her or rebuke her."
+    },
+    {
+      "id": 35,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "What did Naomi instruct Ruth to do at the threshing floor?",
+      "options": ["Bring Boaz a gift of food", "Wash, anoint herself, put on her best garment, and lie at his feet", "Dance and celebrate the harvest", "Ask Boaz for a job"],
+      "correct": 1,
+      "reference": "Ruth 3:3-4",
+      "explanation": "Naomi told Ruth to wash herself, anoint herself, put on her best garment, and go down to the threshing floor. After Boaz finished eating and drinking and lay down, she was to uncover his feet and lie down. This was a culturally appropriate way to ask Boaz to be her kinsman-redeemer!"
+    },
+    {
+      "id": 36,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "What did Ruth ask Boaz to do at the threshing floor?",
+      "options": ["Give her more grain", "'Take your maidservant under your wing, for you are a close relative'", "Marry Naomi", "Hire her permanently"],
+      "correct": 1,
+      "reference": "Ruth 3:9",
+      "explanation": "Ruth said 'Take your maidservant under your wing, for you are a close relative.' She was asking Boaz to be her kinsman-redeemer — to marry her and carry on her deceased husband's family line. The phrase 'spread your wing' (or 'cover with your garment') symbolized marriage and protection."
+    },
+    {
+      "id": 37,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "Why couldn't Boaz immediately redeem Ruth? What had to happen first?",
+      "options": ["He needed the king's permission", "There was a closer relative who had the first right of redemption", "He needed to finish the harvest", "He had to pay off a debt first"],
+      "correct": 1,
+      "reference": "Ruth 3:12-13",
+      "explanation": "Boaz told Ruth that there was a kinsman-redeemer closer in relation than he was. That person had the first right to redeem. Boaz promised that if the closer relative would not redeem her, then he himself would. He had to follow God's law properly!"
+    },
+    {
+      "id": 38,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "How did the closer relative indicate that he was giving up his right of redemption?",
+      "options": ["He signed a document", "He took off his sandal and gave it to Boaz", "He shook hands with Boaz", "He made a public announcement"],
+      "correct": 1,
+      "reference": "Ruth 4:7-8",
+      "explanation": "In Israel, to confirm a transaction, one man took off his sandal and gave it to the other. So the close relative said to Boaz 'Buy it for yourself' and took off his sandal. This was the custom of confirmation in Israel — like signing a contract today!"
+    },
+    {
+      "id": 39,
+      "category": "ruth",
+      "difficulty": "easy",
+      "question": "What was the name of Ruth and Boaz's son?",
+      "options": ["Jesse", "David", "Obed", "Solomon"],
+      "correct": 2,
+      "reference": "Ruth 4:17",
+      "explanation": "Ruth and Boaz's son was named Obed, which means 'servant' or 'worshiper.' The neighbor women named him! Here's the amazing family line: Obed was the father of Jesse, and Jesse was the father of King David — and eventually, Jesus Christ came from this very line! A Moabite woman became part of Jesus' family tree!"
+    },
+    {
+      "id": 40,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "What did the women of Bethlehem say about Ruth to Naomi?",
+      "options": ["'She is a hard worker'", "'She is better to you than seven sons'", "'She is the most beautiful woman'", "'She is very wealthy'"],
+      "correct": 1,
+      "reference": "Ruth 4:15",
+      "explanation": "The women said Ruth 'is better to you than seven sons'! In that culture, sons were highly valued, so saying Ruth was better than SEVEN sons was an incredible compliment. It showed how much Ruth's love and loyalty meant — she truly was a remarkable woman."
+    },
+    {
+      "id": 41,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "At which gate and with how many elders did Boaz settle the matter of redeeming Ruth?",
+      "options": ["The temple gate with 7 elders", "The city gate with 10 elders", "The king's gate with 12 elders", "The market gate with 5 elders"],
+      "correct": 1,
+      "reference": "Ruth 4:1-2",
+      "explanation": "Boaz went up to the city gate and took ten men of the elders of the city to sit down as witnesses. The city gate was where legal matters were settled in ancient Israel — it was like a courthouse. Everything was done properly and publicly!"
+    },
+    {
+      "id": 42,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "During which harvest season did Ruth arrive in Bethlehem with Naomi?",
+      "options": ["Wheat harvest", "Grape harvest", "Barley harvest", "Olive harvest"],
+      "correct": 2,
+      "reference": "Ruth 1:22",
+      "explanation": "Ruth and Naomi arrived in Bethlehem at the beginning of barley harvest. This was God's perfect timing — Ruth could immediately begin gleaning in the fields to provide food for herself and Naomi. Barley harvest was in the spring, around April."
+    },
+    {
+      "id": 43,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "How much barley did Ruth glean on her first day in Boaz's field?",
+      "options": ["About half an ephah", "About an ephah", "About two ephahs", "About a bushel"],
+      "correct": 1,
+      "reference": "Ruth 2:17",
+      "explanation": "Ruth gleaned about an ephah of barley — that's roughly 30-50 pounds of grain! For a single day's gleaning by one woman, this was an extraordinary amount. Naomi was amazed and asked where she had worked. Boaz's generosity, with grain being purposely dropped for her, made all the difference!"
+    },
+    {
+      "id": 44,
+      "category": "ruth",
+      "difficulty": "medium",
+      "question": "Why did the closer relative refuse to redeem Ruth?",
+      "options": ["He didn't have enough money", "He said it would ruin his own inheritance", "He didn't like Ruth", "His wife wouldn't allow it"],
+      "correct": 1,
+      "reference": "Ruth 4:6",
+      "explanation": "The closer relative said 'I cannot redeem it for myself, lest I ruin my own inheritance. You redeem my right of redemption for yourself, for I cannot redeem it.' He was worried that buying Elimelech's land and marrying Ruth would complicate his own family's inheritance. His loss was Boaz's (and Ruth's!) gain!"
+    },
+
+    {
+      "id": 45,
+      "category": "hannah",
+      "difficulty": "easy",
+      "question": "What was the name of Hannah's husband?",
+      "options": ["Eli", "Elkanah", "Samuel", "Hophni"],
+      "correct": 1,
+      "reference": "1 Samuel 1:1-2",
+      "explanation": "Hannah's husband was Elkanah, from Ramathaim Zophim, of the mountains of Ephraim. He loved Hannah very much, but she was unable to have children, which caused her great sorrow."
+    },
+    {
+      "id": 46,
+      "category": "hannah",
+      "difficulty": "easy",
+      "question": "What was the name of Elkanah's other wife who provoked Hannah?",
+      "options": ["Peninnah", "Orpah", "Michal", "Abigail"],
+      "correct": 0,
+      "reference": "1 Samuel 1:2",
+      "explanation": "Peninnah was Elkanah's other wife who had children. She would provoke Hannah severely year after year, making her miserable because the Lord had closed her womb. Despite this, Hannah kept turning to God in prayer rather than fighting back!"
+    },
+    {
+      "id": 47,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "Where did Elkanah's family go to worship and sacrifice each year?",
+      "options": ["Jerusalem", "Bethlehem", "Shiloh", "Bethel"],
+      "correct": 2,
+      "reference": "1 Samuel 1:3",
+      "explanation": "The family went up to Shiloh year by year to worship and sacrifice to the Lord of hosts. Shiloh was where the tabernacle (God's dwelling place) was located at that time, before the temple was built in Jerusalem."
+    },
+    {
+      "id": 48,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "What did Elkanah give Hannah at the yearly sacrifice, and why?",
+      "options": ["A double portion, because he loved her", "Extra money for clothing", "A special robe", "A gold ring"],
+      "correct": 0,
+      "reference": "1 Samuel 1:5",
+      "explanation": "Elkanah would give Hannah a double portion (some translations say 'a worthy portion') because he loved her, even though the Lord had closed her womb. He tried to comfort her, even saying 'Am I not better to you than ten sons?' He truly cared for her!"
+    },
+    {
+      "id": 49,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "What did Eli the priest think when he saw Hannah praying at the tabernacle?",
+      "options": ["He thought she was singing", "He thought she was drunk", "He thought she was sleeping", "He thought she was talking to someone"],
+      "correct": 1,
+      "reference": "1 Samuel 1:13-14",
+      "explanation": "Hannah was praying silently — her lips moved but her voice was not heard. Eli watched her and thought she was drunk! He said 'How long will you be drunk? Put your wine away from you!' But Hannah explained she was pouring out her soul before the Lord in deep anguish. She wasn't drunk — she was desperate for God!"
+    },
+    {
+      "id": 50,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "What vow did Hannah make to God if He gave her a son?",
+      "options": ["She would name him after Eli", "She would give him to the Lord all the days of his life, and no razor would come upon his head", "She would build a new tabernacle", "She would bring extra offerings every year"],
+      "correct": 1,
+      "reference": "1 Samuel 1:11",
+      "explanation": "Hannah vowed that if God gave her a male child, she would give him to the Lord all the days of his life, and no razor would come upon his head. This was similar to a Nazirite vow (like Samson's). She was willing to give back the very thing she wanted most — what incredible faith and sacrifice!"
+    },
+    {
+      "id": 51,
+      "category": "hannah",
+      "difficulty": "easy",
+      "question": "What did Hannah name her son?",
+      "options": ["Eli", "Elkanah Jr.", "Samuel", "Ichabod"],
+      "correct": 2,
+      "reference": "1 Samuel 1:20",
+      "explanation": "Hannah named her son Samuel, saying 'Because I have asked for him from the Lord.' The name Samuel sounds like the Hebrew for 'heard by God.' God heard Hannah's desperate prayer and answered her! Samuel would grow up to become one of the greatest prophets in Israel's history."
+    },
+    {
+      "id": 52,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "When did Hannah bring Samuel to the tabernacle to fulfill her vow?",
+      "options": ["When he was born", "When he was weaned", "When he turned 12", "When he turned 5"],
+      "correct": 1,
+      "reference": "1 Samuel 1:24",
+      "explanation": "Hannah waited until Samuel was weaned (probably around age 3 in that culture) before bringing him to the house of the Lord in Shiloh. She brought him along with offerings — three bulls, one ephah of flour, and a skin of wine. She kept her promise to God even though it meant giving up her beloved son!"
+    },
+    {
+      "id": 53,
+      "category": "hannah",
+      "difficulty": "hard",
+      "question": "In Hannah's prayer of praise (1 Samuel 2), what does she say about the Lord?",
+      "options": ["'The Lord makes poor and makes rich; He brings low and lifts up'", "'The Lord helps those who help themselves'", "'The Lord only blesses the wealthy'", "'The Lord forgets the humble'"],
+      "correct": 0,
+      "reference": "1 Samuel 2:7",
+      "explanation": "Hannah's beautiful prayer declares 'The Lord makes poor and makes rich; He brings low and lifts up.' Her prayer is full of praise about God's power, sovereignty, and care for the humble. Hannah understood that God reverses situations — He lifts up the lowly and brings down the proud!"
+    },
+    {
+      "id": 54,
+      "category": "hannah",
+      "difficulty": "hard",
+      "question": "In Hannah's song, she says 'The barren has borne ___' — how many?",
+      "options": ["Five", "Seven", "Three", "Ten"],
+      "correct": 1,
+      "reference": "1 Samuel 2:5",
+      "explanation": "Hannah declared 'The barren has borne seven, and she who has many children has become feeble.' Seven represents completeness and perfection in the Bible. God completely reversed Hannah's situation — and indeed, after Samuel, Hannah had three more sons and two daughters (1 Samuel 2:21)!"
+    },
+    {
+      "id": 55,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "What did Hannah bring to Samuel every year when she visited him at the tabernacle?",
+      "options": ["A new pair of sandals", "A little robe", "A basket of bread", "A new blanket"],
+      "correct": 1,
+      "reference": "1 Samuel 2:19",
+      "explanation": "Each year, Hannah made a little robe and brought it to Samuel when she came up with her husband to offer the yearly sacrifice. Can you imagine her lovingly sewing that robe, making it a little bigger each year as her boy grew? A mother's love never stops!"
+    },
+    {
+      "id": 56,
+      "category": "hannah",
+      "difficulty": "hard",
+      "question": "How many more children did Hannah have after Samuel?",
+      "options": ["Two sons and one daughter", "Three sons and two daughters", "One son and one daughter", "Four sons"],
+      "correct": 1,
+      "reference": "1 Samuel 2:21",
+      "explanation": "God blessed Hannah with three more sons and two daughters! She gave up one child to God's service, and He blessed her with five more. God always honors those who honor Him with their sacrifices. Meanwhile, Samuel grew before the Lord and became a mighty prophet."
+    },
+    {
+      "id": 57,
+      "category": "hannah",
+      "difficulty": "hard",
+      "question": "Hannah's prayer in 1 Samuel 2:1 begins with which words?",
+      "options": ["'My soul magnifies the Lord'", "'My heart rejoices in the Lord'", "'Praise the Lord, O my soul'", "'I will bless the Lord at all times'"],
+      "correct": 1,
+      "reference": "1 Samuel 2:1",
+      "explanation": "Hannah's prayer begins: 'My heart rejoices in the Lord; my horn is exalted in the Lord.' The 'horn' symbolizes strength and power. Hannah went from weeping and not eating to singing praises with a full heart! Her prayer is considered one of the greatest prayers in the Old Testament and even echoes in Mary's Magnificat centuries later."
+    },
+    {
+      "id": 58,
+      "category": "hannah",
+      "difficulty": "medium",
+      "question": "What blessing did Eli give to Elkanah and Hannah after she dedicated Samuel?",
+      "options": ["He gave them gold", "He prayed that God would give them more children", "He gave them land", "He invited them to live in Shiloh"],
+      "correct": 1,
+      "reference": "1 Samuel 2:20",
+      "explanation": "Eli blessed Elkanah and his wife, saying 'The Lord give you descendants from this woman for the loan that was lent to the Lord.' Hannah had 'lent' Samuel to God, and God honored that sacrifice through Eli's blessing. And indeed, God answered — Hannah had five more children!"
+    },
+
+    {
+      "id": 59,
+      "category": "abigail",
+      "difficulty": "easy",
+      "question": "What was the name of Abigail's first husband?",
+      "options": ["David", "Nabal", "Saul", "Jesse"],
+      "correct": 1,
+      "reference": "1 Samuel 25:3",
+      "explanation": "Abigail's first husband was Nabal, a very rich man from Maon who had property in Carmel. He had 3,000 sheep and 1,000 goats. The Bible describes him as harsh and evil in his doings — quite the opposite of his wise and beautiful wife!"
+    },
+    {
+      "id": 60,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "What does the name 'Nabal' mean?",
+      "options": ["Wealthy", "Fool", "Strong", "Noble"],
+      "correct": 1,
+      "reference": "1 Samuel 25:25",
+      "explanation": "Abigail herself said: 'For as his name is, so is he: Nabal is his name, and folly is with him!' The name Nabal literally means 'Fool.' He certainly lived up to his name by insulting David and refusing to show kindness!"
+    },
+    {
+      "id": 61,
+      "category": "abigail",
+      "difficulty": "easy",
+      "question": "How is Abigail described in the Bible?",
+      "options": ["Tall and strong", "A woman of good understanding and beautiful appearance", "Quiet and shy", "Wealthy and powerful"],
+      "correct": 1,
+      "reference": "1 Samuel 25:3",
+      "explanation": "The Bible says Abigail was 'a woman of good understanding and beautiful appearance.' She had both inner wisdom and outer beauty — brains AND beauty! This combination of understanding and grace is exactly what saved the day when Nabal's foolishness put everyone in danger."
+    },
+    {
+      "id": 62,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "Why did David send messengers to Nabal?",
+      "options": ["To declare war", "To ask for food and provisions because David's men had protected Nabal's shepherds", "To buy his sheep", "To invite him to a feast"],
+      "correct": 1,
+      "reference": "1 Samuel 25:7-8",
+      "explanation": "David's men had been like a protective wall around Nabal's shepherds in the wilderness — they didn't take anything and kept them safe from harm. During sheep-shearing time (a time of feasting and generosity), David politely asked Nabal for whatever provisions he could spare. It was a reasonable request!"
+    },
+    {
+      "id": 63,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "How did Nabal respond to David's messengers?",
+      "options": ["He gave them food generously", "He insulted David and refused to give anything", "He invited them to stay", "He was too afraid to respond"],
+      "correct": 1,
+      "reference": "1 Samuel 25:10-11",
+      "explanation": "Nabal insulted David, saying 'Who is David, and who is the son of Jesse? There are many servants nowadays who break away each one from his master.' He refused to give any bread, water, or meat to David's men. He basically called David a runaway slave! Not smart when David had 600 armed men!"
+    },
+    {
+      "id": 64,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "What did David plan to do after Nabal's insult?",
+      "options": ["Write an angry letter", "Report Nabal to King Saul", "Take 400 men and destroy Nabal and all his males", "Steal Nabal's sheep"],
+      "correct": 2,
+      "reference": "1 Samuel 25:13,22",
+      "explanation": "David was furious! He told his men 'Every man gird on his sword' and took 400 armed men to attack Nabal. He swore an oath: 'May God do so, and more also, to the enemies of David, if I leave one male of all who belong to him by morning light.' David was about to commit mass slaughter because of one fool's insult!"
+    },
+    {
+      "id": 65,
+      "category": "abigail",
+      "difficulty": "hard",
+      "question": "Who told Abigail about Nabal's foolish response to David?",
+      "options": ["Nabal himself", "One of the young men (servants)", "David's messengers", "A neighbor"],
+      "correct": 1,
+      "reference": "1 Samuel 25:14",
+      "explanation": "One of the young men (servants) told Abigail everything — how David's men had been good to them, how Nabal had railed against David's messengers, and how evil was determined against their master. The servant knew Nabal so well that he said 'he is such a scoundrel that one cannot speak to him.' Even the servants knew Nabal was foolish!"
+    },
+    {
+      "id": 66,
+      "category": "abigail",
+      "difficulty": "hard",
+      "question": "What provisions did Abigail quickly gather to bring to David?",
+      "options": ["200 loaves of bread, 2 skins of wine, 5 sheep, 5 seahs of roasted grain, 100 clusters of raisins, and 200 cakes of figs", "100 loaves and 50 sheep", "10 donkeys loaded with gold", "500 loaves and 10 skins of wine"],
+      "correct": 0,
+      "reference": "1 Samuel 25:18",
+      "explanation": "Abigail acted FAST! She gathered 200 loaves of bread, 2 skins of wine, 5 sheep already dressed, 5 seahs of roasted grain, 100 clusters of raisins, and 200 cakes of figs. She loaded them on donkeys and rode out to meet David. She was smart, quick, and generous — the opposite of her husband!"
+    },
+    {
+      "id": 67,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "What did Abigail do when she saw David?",
+      "options": ["She ran away in fear", "She fell on her face before David and bowed to the ground", "She demanded he leave", "She offered him money"],
+      "correct": 1,
+      "reference": "1 Samuel 25:23",
+      "explanation": "When Abigail saw David, she quickly dismounted from her donkey, fell on her face before David, and bowed down to the ground. She showed great humility and respect. Then she gave one of the wisest speeches in the Bible, taking the blame upon herself and urging David not to shed blood."
+    },
+    {
+      "id": 68,
+      "category": "abigail",
+      "difficulty": "hard",
+      "question": "What key argument did Abigail use to convince David not to attack?",
+      "options": ["She threatened to report him to King Saul", "She said shedding blood would be a burden on his conscience when God made him ruler over Israel", "She said Nabal would apologize", "She offered David all of Nabal's property"],
+      "correct": 1,
+      "reference": "1 Samuel 25:30-31",
+      "explanation": "Abigail wisely said that when the Lord made David ruler over Israel, he would not want this act of bloodshed on his conscience — 'that you have shed blood without cause or that my lord has avenged himself.' She saw David's future as king even before he did! Her wisdom saved David from a terrible sin."
+    },
+    {
+      "id": 69,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "How did David respond to Abigail's wise words?",
+      "options": ["He ignored her", "He blessed God for sending her and said she had kept him from bloodshed", "He was angry at her", "He told her to go home"],
+      "correct": 1,
+      "reference": "1 Samuel 25:32-34",
+      "explanation": "David said 'Blessed is the Lord God of Israel, who sent you this day to meet me! And blessed is your advice and blessed are you, because you have kept me this day from coming to bloodshed and from avenging myself with my own hand.' David recognized that God had sent Abigail to stop him from sinning!"
+    },
+    {
+      "id": 70,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "What was Nabal doing when Abigail returned home from meeting David?",
+      "options": ["Working in the fields", "Sleeping", "Holding a feast like a king's feast, and was very drunk", "Praying at the temple"],
+      "correct": 2,
+      "reference": "1 Samuel 25:36",
+      "explanation": "While his wife had just saved his entire household from destruction, Nabal was holding a feast in his house 'like the feast of a king,' and 'his heart was merry within him, for he was very drunk.' He had no idea how close he had come to death! Abigail wisely waited until morning to tell him."
+    },
+    {
+      "id": 71,
+      "category": "abigail",
+      "difficulty": "medium",
+      "question": "What happened to Nabal when Abigail told him everything the next morning?",
+      "options": ["He apologized to David", "His heart died within him and he became like a stone", "He fled the country", "He praised Abigail for her wisdom"],
+      "correct": 1,
+      "reference": "1 Samuel 25:37-38",
+      "explanation": "When Nabal sobered up and Abigail told him everything, 'his heart died within him, and he became like a stone.' About ten days later, the Lord struck Nabal and he died. It appears he may have had a stroke or heart attack from the shock. God judged Nabal for his wickedness."
+    },
+    {
+      "id": 72,
+      "category": "abigail",
+      "difficulty": "easy",
+      "question": "Who did Abigail marry after Nabal died?",
+      "options": ["King Saul", "Boaz", "David", "Jonathan"],
+      "correct": 2,
+      "reference": "1 Samuel 25:39-42",
+      "explanation": "When David heard that Nabal had died, he sent a proposal to Abigail, and she became his wife. She humbly said she would be a servant to wash the feet of David's servants. Her wisdom, beauty, and godly character won David's heart. From being married to a fool, God promoted her to become the wife of the future king!"
+    },
+    {
+      "id": 73,
+      "category": "abigail",
+      "difficulty": "hard",
+      "question": "How many servants went with Abigail when she went to become David's wife?",
+      "options": ["Three", "Five", "Ten", "Twelve"],
+      "correct": 1,
+      "reference": "1 Samuel 25:42",
+      "explanation": "Abigail rose in haste and rode on a donkey, with five of her maidens attending her, and she followed the messengers of David and became his wife. She didn't hesitate — she acted quickly and decisively, just as she had when she prevented David from attacking Nabal."
+    },
+    {
+      "id": 74,
+      "category": "abigail",
+      "difficulty": "hard",
+      "question": "What did Abigail call herself when speaking to David?",
+      "options": ["A queen", "Your maidservant", "A prophetess", "A noble woman"],
+      "correct": 1,
+      "reference": "1 Samuel 25:24-25",
+      "explanation": "Abigail repeatedly referred to herself as David's 'maidservant' — showing deep humility. Despite being wealthy and wise, she humbled herself completely. She said 'On me, my lord, on me let this iniquity be!' She took the blame for Nabal's foolishness upon herself. What a picture of humility and wisdom!"
+    },
+
+    {
+      "id": 75,
+      "category": "deborah",
+      "difficulty": "easy",
+      "question": "Deborah held two important roles in Israel. What were they?",
+      "options": ["Queen and priestess", "Prophetess and judge", "Teacher and healer", "Warrior and singer"],
+      "correct": 1,
+      "reference": "Judges 4:4",
+      "explanation": "Deborah was both a prophetess and a judge of Israel — she was the only woman to serve as a judge! The children of Israel came up to her for judgment. She sat under the palm tree of Deborah between Ramah and Bethel in the mountains of Ephraim. She was a true leader appointed by God!"
+    },
+    {
+      "id": 76,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "Who was the king of Canaan who oppressed Israel for 20 years during Deborah's time?",
+      "options": ["Sisera", "Jabin", "Barak", "Heber"],
+      "correct": 1,
+      "reference": "Judges 4:2-3",
+      "explanation": "Jabin, king of Canaan, who reigned in Hazor, oppressed the children of Israel harshly for twenty years. His military commander was Sisera, who had 900 chariots of iron — a terrifying military force! But God was about to turn things around through Deborah."
+    },
+    {
+      "id": 77,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "How many iron chariots did Sisera, the commander of Jabin's army, have?",
+      "options": ["100", "300", "500", "900"],
+      "correct": 3,
+      "reference": "Judges 4:3",
+      "explanation": "Sisera had NINE HUNDRED chariots of iron! In ancient warfare, iron chariots were like tanks — they were the most advanced military technology of the time. Israel had none. But God doesn't need military equipment to win battles — He uses willing hearts!"
+    },
+    {
+      "id": 78,
+      "category": "deborah",
+      "difficulty": "easy",
+      "question": "Who did Deborah summon to lead Israel's army into battle?",
+      "options": ["Joshua", "Gideon", "Barak", "Samson"],
+      "correct": 2,
+      "reference": "Judges 4:6",
+      "explanation": "Deborah summoned Barak the son of Abinoam from Kedesh in Naphtali. She told him that God commanded him to take 10,000 men from Naphtali and Zebulun and go to Mount Tabor. God would deliver Sisera into his hand!"
+    },
+    {
+      "id": 79,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "What condition did Barak set before agreeing to go into battle?",
+      "options": ["He wanted more soldiers", "He wanted better weapons", "He said he would only go if Deborah went with him", "He wanted a sign from God"],
+      "correct": 2,
+      "reference": "Judges 4:8",
+      "explanation": "Barak said to Deborah: 'If you will go with me, then I will go; but if you will not go with me, I will not go!' He wanted Deborah — God's prophetess — with him on the battlefield. Deborah agreed to go but warned him that the glory of the victory would go to a woman, not to him."
+    },
+    {
+      "id": 80,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "How many men did Barak gather from Naphtali and Zebulun?",
+      "options": ["1,000", "5,000", "10,000", "30,000"],
+      "correct": 2,
+      "reference": "Judges 4:10",
+      "explanation": "Barak called Zebulun and Naphtali to Kedesh and gathered 10,000 men. With Deborah at his side, they went up to Mount Tabor. 10,000 foot soldiers against 900 iron chariots — humanly speaking, it was impossible. But with God, all things are possible!"
+    },
+    {
+      "id": 81,
+      "category": "deborah",
+      "difficulty": "easy",
+      "question": "Who killed Sisera, the enemy commander?",
+      "options": ["Barak", "Deborah", "Jael", "An Israelite soldier"],
+      "correct": 2,
+      "reference": "Judges 4:21",
+      "explanation": "Jael, the wife of Heber the Kenite, killed Sisera. When Sisera fled the battle on foot and came to Jael's tent, she invited him in, covered him, gave him milk to drink, and when he fell asleep, she drove a tent peg through his temple. She was the woman Deborah prophesied would receive the glory!"
+    },
+    {
+      "id": 82,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "What did Jael use to kill Sisera?",
+      "options": ["A sword", "A tent peg and a hammer", "A spear", "An arrow"],
+      "correct": 1,
+      "reference": "Judges 4:21",
+      "explanation": "Jael took a tent peg and a hammer, and went softly to Sisera while he was fast asleep and exhausted. She drove the tent peg through his temple and into the ground. As a nomadic woman, she would have been very skilled at driving tent pegs — she used the tools she had available to accomplish God's purpose!"
+    },
+    {
+      "id": 83,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "What did Jael give Sisera to drink when he asked for water?",
+      "options": ["Water", "Wine", "Milk", "Juice"],
+      "correct": 2,
+      "reference": "Judges 4:19",
+      "explanation": "When Sisera asked for water, Jael opened a jug of milk and gave him a drink, then covered him. Warm milk would have made the already exhausted Sisera even sleepier — some think she gave him curdled milk (yogurt), which would have been even more sleep-inducing!"
+    },
+    {
+      "id": 84,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "In Deborah's song (Judges 5), what does she say fought against Sisera from heaven?",
+      "options": ["Angels", "The stars", "Thunder and lightning", "Fire"],
+      "correct": 1,
+      "reference": "Judges 5:20",
+      "explanation": "'They fought from the heavens; the stars from their courses fought against Sisera.' This poetic language in Deborah's victory song describes how all of creation — even the stars — fought on Israel's side. God used everything at His disposal to defeat the enemy!"
+    },
+    {
+      "id": 85,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "According to Deborah's song, what river swept away the enemy?",
+      "options": ["The Jordan River", "The Kishon River", "The Nile River", "The Euphrates River"],
+      "correct": 1,
+      "reference": "Judges 5:21",
+      "explanation": "'The torrent of Kishon swept them away, that ancient torrent, the torrent of Kishon.' God sent a rainstorm that caused the Kishon River to flood, turning the battlefield into mud. The 900 iron chariots that were Sisera's greatest advantage became useless in the mud — they actually became a trap! God turned the enemy's strength into their weakness."
+    },
+    {
+      "id": 86,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "What title does Deborah give herself in her song of victory?",
+      "options": ["A warrior in Israel", "A queen in Israel", "A mother in Israel", "A priestess in Israel"],
+      "correct": 2,
+      "reference": "Judges 5:7",
+      "explanation": "Deborah calls herself 'a mother in Israel.' She said village life had ceased until she arose as a mother in Israel. This beautiful title shows that Deborah saw her leadership role as nurturing and protecting God's people — like a mother cares for her children. True leadership is about serving others!"
+    },
+    {
+      "id": 87,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "How long did the land have rest after Deborah and Barak's victory?",
+      "options": ["20 years", "40 years", "60 years", "80 years"],
+      "correct": 1,
+      "reference": "Judges 5:31",
+      "explanation": "After this great victory, the land had rest for forty years! That's an entire generation of peace because Deborah was obedient to God's calling and Barak was willing to fight. One act of faith and courage brought decades of peace to the entire nation."
+    },
+    {
+      "id": 88,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "Where did Deborah sit when she judged Israel?",
+      "options": ["In the tabernacle at Shiloh", "Under the palm tree of Deborah between Ramah and Bethel", "At the city gate of Jerusalem", "By the Jordan River"],
+      "correct": 1,
+      "reference": "Judges 4:5",
+      "explanation": "Deborah sat under the palm tree of Deborah between Ramah and Bethel in the mountains of Ephraim, and the children of Israel came up to her for judgment. The palm tree became her 'courtroom' — a place where people could find wisdom, justice, and godly counsel. The tree was even named after her!"
+    },
+    {
+      "id": 89,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "Who was Deborah's husband?",
+      "options": ["Barak", "Lappidoth", "Heber", "Jabin"],
+      "correct": 1,
+      "reference": "Judges 4:4",
+      "explanation": "Deborah was the wife of Lappidoth. His name means 'torches' or 'flames.' While the Bible doesn't tell us much about Lappidoth, he was married to one of the most remarkable women in the entire Bible — a prophetess, judge, poet, and military strategist!"
+    },
+    {
+      "id": 90,
+      "category": "deborah",
+      "difficulty": "hard",
+      "question": "In Deborah's song, what is the last line of the song?",
+      "options": ["'Let all the earth praise the Lord'", "'Let all Your enemies perish, O Lord! But let those who love Him be like the sun when it comes out in full strength'", "'Blessed be the Lord forever'", "'The Lord reigns forever and ever'"],
+      "correct": 1,
+      "reference": "Judges 5:31",
+      "explanation": "The song ends with: 'Thus let all Your enemies perish, O Lord! But let those who love Him be like the sun when it comes out in full strength.' What a powerful image — those who love God shine like the sun at its brightest! This was followed by forty years of peace."
+    },
+
+    {
+      "id": 91,
+      "category": "mary_elizabeth",
+      "difficulty": "easy",
+      "question": "What was the name of Elizabeth's husband?",
+      "options": ["Joseph", "Zacharias", "Simeon", "Herod"],
+      "correct": 1,
+      "reference": "Luke 1:5",
+      "explanation": "Elizabeth's husband was Zacharias (also spelled Zechariah), a priest of the division of Abijah. Both Zacharias and Elizabeth were righteous before God, walking in all the commandments and ordinances of the Lord blamelessly. They were a godly couple!"
+    },
+    {
+      "id": 92,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "From which priestly family was Elizabeth descended?",
+      "options": ["The daughters of Aaron", "The daughters of Moses", "The daughters of Levi", "The daughters of David"],
+      "correct": 0,
+      "reference": "Luke 1:5",
+      "explanation": "Elizabeth was from the daughters of Aaron — meaning she was from a priestly family on both sides! Her husband Zacharias was a priest, and she herself was descended from Aaron, the first high priest of Israel. Their son John the Baptist had priestly blood but became a prophet."
+    },
+    {
+      "id": 93,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What was Zacharias doing when the angel appeared to him?",
+      "options": ["Praying at home", "Burning incense in the temple", "Reading the scrolls", "Teaching the people"],
+      "correct": 1,
+      "reference": "Luke 1:8-11",
+      "explanation": "Zacharias was serving as priest before God, and it was his turn to burn incense in the temple of the Lord. The whole multitude of people was praying outside. An angel of the Lord appeared, standing on the right side of the altar of incense. Burning incense was a once-in-a-lifetime honor for most priests!"
+    },
+    {
+      "id": 94,
+      "category": "mary_elizabeth",
+      "difficulty": "easy",
+      "question": "What was the name of the angel who appeared to both Zacharias and Mary?",
+      "options": ["Michael", "Gabriel", "Raphael", "Uriel"],
+      "correct": 1,
+      "reference": "Luke 1:19,26",
+      "explanation": "The angel Gabriel appeared to both Zacharias in the temple and to Mary in Nazareth. Gabriel told Zacharias: 'I am Gabriel, who stands in the presence of God, and was sent to speak to you and bring you these glad tidings.' Gabriel is one of only two angels named in the Bible (the other is Michael)."
+    },
+    {
+      "id": 95,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "Why was Zacharias struck mute (unable to speak)?",
+      "options": ["He was sick", "He did not believe the angel's message about having a son", "He spoke disrespectfully to the angel", "It was a sign of blessing"],
+      "correct": 1,
+      "reference": "Luke 1:18-20",
+      "explanation": "Zacharias doubted the angel's message, saying 'How shall I know this? For I am an old man, and my wife is well advanced in years.' Because he did not believe Gabriel's words, he was struck mute and could not speak until the day the prophecy was fulfilled. Sometimes doubt has consequences!"
+    },
+    {
+      "id": 96,
+      "category": "mary_elizabeth",
+      "difficulty": "easy",
+      "question": "What did the angel tell Mary she would name her son?",
+      "options": ["John", "Emmanuel", "Jesus", "David"],
+      "correct": 2,
+      "reference": "Luke 1:31",
+      "explanation": "The angel said: 'And behold, you will conceive in your womb and bring forth a Son, and shall call His name JESUS.' The name Jesus (Yeshua in Hebrew) means 'the Lord saves' or 'Savior.' He would be called the Son of the Highest and would reign on the throne of David forever!"
+    },
+    {
+      "id": 97,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What did Elizabeth's baby do when Mary greeted Elizabeth?",
+      "options": ["The baby was still", "The baby leaped in Elizabeth's womb", "The baby kicked gently", "Nothing happened"],
+      "correct": 1,
+      "reference": "Luke 1:41",
+      "explanation": "When Elizabeth heard Mary's greeting, the baby (John) leaped in her womb, and Elizabeth was filled with the Holy Spirit! Even before birth, baby John recognized the presence of Jesus (still in Mary's womb). Elizabeth exclaimed with a loud voice: 'Blessed are you among women, and blessed is the fruit of your womb!'"
+    },
+    {
+      "id": 98,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What did Elizabeth call Mary when she greeted her?",
+      "options": ["My sister", "My friend", "The mother of my Lord", "The chosen one"],
+      "correct": 2,
+      "reference": "Luke 1:43",
+      "explanation": "Elizabeth, filled with the Holy Spirit, said: 'But why is this granted to me, that the mother of my Lord should come to me?' Elizabeth recognized — by the Holy Spirit — that Mary was carrying the Messiah, the Lord! She was humble enough to honor her younger relative."
+    },
+    {
+      "id": 99,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "Mary's song of praise is known as the Magnificat. What are its opening words?",
+      "options": ["'Praise the Lord, O my soul'", "'My soul magnifies the Lord'", "'Blessed be the God of Israel'", "'The Lord is my shepherd'"],
+      "correct": 1,
+      "reference": "Luke 1:46-47",
+      "explanation": "Mary's beautiful song begins: 'My soul magnifies the Lord, and my spirit has rejoiced in God my Savior.' The word 'Magnificat' comes from the Latin translation of 'magnifies.' Mary's song echoes Hannah's prayer from 1 Samuel 2 — both women praised God for His mercy to the humble and His power over the proud!"
+    },
+    {
+      "id": 100,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "How long did Mary stay with Elizabeth?",
+      "options": ["One week", "One month", "About three months", "Six months"],
+      "correct": 2,
+      "reference": "Luke 1:56",
+      "explanation": "Mary stayed with Elizabeth about three months and then returned to her house. Since Elizabeth was six months pregnant when Mary arrived, Mary likely stayed until around the time of John's birth. What a special time of fellowship and encouragement between these two women chosen by God!"
+    },
+    {
+      "id": 101,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What did the neighbors and relatives want to name Elizabeth's baby?",
+      "options": ["Zacharias, after his father", "Aaron, after Elizabeth's ancestor", "Gabriel, after the angel", "Eli, after the priest"],
+      "correct": 0,
+      "reference": "Luke 1:59",
+      "explanation": "On the eighth day, when they came to circumcise the child, the neighbors and relatives wanted to name him Zacharias after his father. This was a common custom. But Elizabeth firmly said 'No; he shall be called John!' They were all surprised because nobody in the family had that name."
+    },
+    {
+      "id": 102,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "How did Zacharias confirm the baby's name?",
+      "options": ["He shouted it out loud", "He asked for a writing tablet and wrote 'His name is John'", "He nodded his head", "He pointed to Elizabeth"],
+      "correct": 1,
+      "reference": "Luke 1:63",
+      "explanation": "Since Zacharias was still mute, he asked for a writing tablet and wrote 'His name is John.' And immediately his mouth was opened and his tongue loosed, and he spoke, praising God! The moment he obeyed God's instruction about the name, his speech was restored. Everyone who heard about it was amazed!"
+    },
+    {
+      "id": 103,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "In Mary's Magnificat, she says God has 'put down the mighty from their ___'",
+      "options": ["Kingdoms", "Thrones", "Horses", "Towers"],
+      "correct": 1,
+      "reference": "Luke 1:52",
+      "explanation": "Mary sang: 'He has put down the mighty from their thrones, and exalted the lowly.' Mary's song is revolutionary — God reverses the world's values! The proud are scattered, the mighty are brought down, the rich are sent away empty, but the humble and hungry are lifted up and filled. This is the heart of God's kingdom!"
+    },
+    {
+      "id": 104,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "According to Luke 1, how many months pregnant was Elizabeth when Gabriel visited Mary?",
+      "options": ["Three months", "Five months", "Six months", "Eight months"],
+      "correct": 2,
+      "reference": "Luke 1:26,36",
+      "explanation": "Gabriel told Mary: 'Now indeed, Elizabeth your relative has also conceived a son in her old age; and this is now the sixth month for her who was called barren.' Elizabeth was six months pregnant when Mary received her own amazing news. Gabriel used Elizabeth's miracle pregnancy as encouragement for Mary to believe!"
+    },
+    {
+      "id": 105,
+      "category": "mary_elizabeth",
+      "difficulty": "easy",
+      "question": "In John 19:25-27, who was standing by the cross of Jesus?",
+      "options": ["Only the disciples", "His mother Mary, His mother's sister, Mary the wife of Clopas, and Mary Magdalene", "Only Mary Magdalene", "Peter and John only"],
+      "correct": 1,
+      "reference": "John 19:25",
+      "explanation": "Standing by the cross were His mother Mary, His mother's sister, Mary the wife of Clopas, and Mary Magdalene. Even in His darkest hour, faithful women stood by Jesus. Mary, who had been told a sword would pierce her soul (Luke 2:35), watched her son suffer on the cross."
+    },
+    {
+      "id": 106,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "At the cross, who did Jesus entrust His mother Mary to?",
+      "options": ["Peter", "James", "The disciple whom He loved (John)", "His brother Jude"],
+      "correct": 2,
+      "reference": "John 19:26-27",
+      "explanation": "Jesus saw His mother and the disciple whom He loved (believed to be John) standing by, and said to Mary 'Woman, behold your son!' and to the disciple 'Behold your mother!' From that hour, that disciple took her to his own home. Even while dying on the cross, Jesus cared for His mother. What love!"
+    },
+    {
+      "id": 107,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "What was Mary's response when the angel told her she would conceive a son?",
+      "options": ["She was afraid and ran away", "'How can this be, since I do not know a man?'", "She immediately said yes", "She asked for a sign"],
+      "correct": 1,
+      "reference": "Luke 1:34",
+      "explanation": "Mary asked 'How can this be, since I do not know a man?' Unlike Zacharias who doubted, Mary asked HOW — she believed it was possible, she just wanted to understand the mechanism. The angel explained that the Holy Spirit would come upon her and the power of the Highest would overshadow her. Then Mary humbly said 'Let it be to me according to your word.'"
+    },
+    {
+      "id": 108,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "Elizabeth hid herself for how many months after she conceived?",
+      "options": ["One month", "Three months", "Five months", "Seven months"],
+      "correct": 2,
+      "reference": "Luke 1:24",
+      "explanation": "After Elizabeth conceived, she hid herself five months, saying 'Thus the Lord has dealt with me, in the days when He looked on me, to take away my reproach among people.' In that culture, being barren was considered a reproach. Elizabeth spent those months in gratitude and wonder at God's amazing grace!"
+    },
+    {
+      "id": 109,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What did Elizabeth say was 'blessed' about Mary?",
+      "options": ["Her beauty", "Her wealth", "She who believed, for there will be a fulfillment", "Her family lineage"],
+      "correct": 2,
+      "reference": "Luke 1:45",
+      "explanation": "Elizabeth said: 'Blessed is she who believed, for there will be a fulfillment of those things which were told her from the Lord.' Elizabeth commended Mary's FAITH — her willingness to believe God's incredible promise. Faith is what made Mary blessed, not just the honor she received!"
+    },
+    {
+      "id": 110,
+      "category": "mary_elizabeth",
+      "difficulty": "hard",
+      "question": "In Mary's Magnificat, she says 'He has filled the hungry with good things, and the rich He has sent away ___'",
+      "options": ["Weeping", "Empty", "Ashamed", "Punished"],
+      "correct": 1,
+      "reference": "Luke 1:53",
+      "explanation": "Mary proclaimed: 'He has filled the hungry with good things, and the rich He has sent away empty.' This powerful verse shows God's heart for those in need. Those who recognize their need for God are filled; those who think they have everything are left with nothing. It's about spiritual hunger, not just physical!"
+    },
+
+    {
+      "id": 111,
+      "category": "esther",
+      "difficulty": "hard",
+      "question": "What was the name of the seven-day feast the king gave after the 180-day display?",
+      "options": ["A feast for the people in Shushan the citadel", "The Feast of Purim", "The King's Anniversary", "The Royal Banquet"],
+      "correct": 0,
+      "reference": "Esther 1:5",
+      "explanation": "After the 180-day display, the king gave a feast lasting seven days for all the people in Shushan the citadel, from great to small, in the court of the garden of the king's palace. Meanwhile, Queen Vashti also made a feast for the women in the royal palace."
+    },
+    {
+      "id": 112,
+      "category": "ruth",
+      "difficulty": "hard",
+      "question": "What family line connects Ruth to Jesus Christ?",
+      "options": ["Ruth - Obed - Jesse - David", "Ruth - Jesse - David - Solomon", "Ruth - Boaz - David - Solomon", "Ruth - Obed - Saul - David"],
+      "correct": 0,
+      "reference": "Ruth 4:17,22; Matthew 1:5-6",
+      "explanation": "The genealogy goes: Ruth and Boaz had Obed, Obed had Jesse, and Jesse had David the king! And from David's line came Jesus Christ. A Moabite woman, who chose to follow the God of Israel, became the great-grandmother of King David and an ancestor of Jesus. God truly uses anyone who is willing!"
+    },
+    {
+      "id": 113,
+      "category": "hannah",
+      "difficulty": "hard",
+      "question": "In Hannah's prayer, she mentions what about the pillars of the earth?",
+      "options": ["God shakes them", "The pillars of the earth are the Lord's, and He has set the world upon them", "They will crumble", "They reach to heaven"],
+      "correct": 1,
+      "reference": "1 Samuel 2:8",
+      "explanation": "Hannah declared: 'For the pillars of the earth are the Lord's, and He has set the world upon them.' She praised God as the Creator and Sustainer of everything. He raises the poor from the dust and lifts the beggar from the ash heap to set them among princes. Hannah understood that GOD controls everything!"
+    },
+    {
+      "id": 114,
+      "category": "deborah",
+      "difficulty": "medium",
+      "question": "Who was Heber the Kenite, and why is he mentioned in the story of Deborah?",
+      "options": ["He was an Israelite spy", "He was a Kenite who had separated from his people; his wife Jael killed Sisera", "He was Deborah's advisor", "He was Barak's armor bearer"],
+      "correct": 1,
+      "reference": "Judges 4:11,17",
+      "explanation": "Heber the Kenite had separated from the other Kenites (descendants of Moses' father-in-law) and pitched his tent near Kedesh. There was peace between Heber's family and King Jabin, which is why Sisera fled to Jael's tent thinking he was safe. But Jael chose God's side over political alliances!"
+    },
+    {
+      "id": 115,
+      "category": "mary_elizabeth",
+      "difficulty": "medium",
+      "question": "What did Mary say about herself in her song of praise?",
+      "options": ["She was the greatest woman alive", "'He has regarded the lowly state of His maidservant'", "She deserved this honor", "She was the most righteous woman"],
+      "correct": 1,
+      "reference": "Luke 1:48",
+      "explanation": "Mary humbly said: 'For He has regarded the lowly state of His maidservant; for behold, henceforth all generations will call me blessed.' Despite being chosen for the greatest honor any woman could receive, Mary remained humble and gave all glory to God. She saw herself as God's servant, not as someone special in herself."
+    }
+  ]
+}
