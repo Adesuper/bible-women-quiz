@@ -4,12 +4,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Team Battle — Women of the Bible Quiz</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="/socket.io/socket.io.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // Detect environment: if on GitHub Pages, redirect to Render for team play
+    const RENDER_URL = 'https://bible-women-quiz.onrender.com';
+    const isGitHubPages = window.location.hostname.includes('github.io');
+  </script>
 </head>
 <body>
   <div class="container">
-    <a href="/" class="back-link">&larr; Back to Home</a>
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <!-- GITHUB PAGES NOTICE -->
+    <div id="ghPagesNotice" class="hidden">
+      <div class="page-header">
+        <h1>Team Battle</h1>
+        <p>Real-time multiplayer needs the game server!</p>
+      </div>
+      <div class="card text-center" style="padding: 40px;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">🏆</div>
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Ready for Team Battle?</h2>
+        <p style="color: var(--text-light); margin-bottom: 25px; line-height: 1.6;">
+          Team Battle connects players in real-time from different locations.<br>
+          Click below to open the game server where everyone can join!
+        </p>
+        <a id="renderLink" href="#" class="btn btn-primary btn-lg" target="_blank">
+          Open Team Battle Server
+        </a>
+        <p style="color: var(--text-light); margin-top: 15px; font-size: 0.85rem;">
+          Share that link with all players. The first visit may take ~30 seconds to wake up the server — after that it's fast!
+        </p>
+        <div style="margin-top: 25px;">
+          <a href="practice.html" class="btn btn-secondary">Practice Solo Instead</a>
+        </div>
+      </div>
+    </div>
 
     <!-- TOAST CONTAINER -->
     <div class="toast-container" id="toastContainer"></div>
@@ -179,12 +208,29 @@
 
         <div class="result-actions">
           <button class="btn btn-primary btn-lg" onclick="playAgain()">Play Again</button>
-          <a href="/" class="btn btn-gold btn-lg">Home</a>
+          <a href="index.html" class="btn btn-gold btn-lg">Home</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="/js/team-play.js"></script>
+  <script>
+    // If on GitHub Pages, show the redirect notice instead of the game UI
+    if (isGitHubPages) {
+      document.getElementById('ghPagesNotice').classList.remove('hidden');
+      document.getElementById('setupSection').classList.add('hidden');
+      document.getElementById('renderLink').href = RENDER_URL + '/team-play.html';
+    } else {
+      // Load Socket.io and team-play.js dynamically when on the actual server
+      const sioScript = document.createElement('script');
+      sioScript.src = '/socket.io/socket.io.js';
+      sioScript.onload = function() {
+        const tpScript = document.createElement('script');
+        tpScript.src = 'js/team-play.js';
+        document.body.appendChild(tpScript);
+      };
+      document.body.appendChild(sioScript);
+    }
+  </script>
 </body>
 </html>

@@ -139,8 +139,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function loadCategories() {
-  const res = await fetch('/api/categories');
-  categories = await res.json();
+  // Use embedded data (works on GitHub Pages — no server needed)
+  categories = QUIZ_CATEGORIES.map(cat => {
+    const count = QUIZ_QUESTIONS.filter(q => q.category === cat.id).length;
+    return { ...cat, questionCount: count };
+  });
   renderCategories();
 }
 
@@ -261,11 +264,14 @@ function startMixedQuiz() {
 }
 
 async function fetchAvailableCount() {
-  const url = currentCategory === 'mix'
-    ? '/api/questions/mix/random?count=9999'
-    : `/api/questions/${currentCategory}?difficulty=${currentDifficulty}`;
-  const res = await fetch(url);
-  const data = await res.json();
+  // Use embedded data directly
+  let data = [...QUIZ_QUESTIONS];
+  if (currentCategory !== 'mix') {
+    data = data.filter(q => q.category === currentCategory);
+  }
+  if (currentDifficulty !== 'all') {
+    data = data.filter(q => q.difficulty === currentDifficulty);
+  }
   const total = data.length;
   const seen = getSeenIds();
   const fresh = data.filter(q => !seen.includes(q.id)).length;
@@ -296,8 +302,7 @@ async function startDailyChallenge() {
   currentDifficulty = 'all';
   timerEnabled = true;
 
-  const res = await fetch('/api/questions/mix/random?count=9999');
-  let allQ = await res.json();
+  let allQ = [...QUIZ_QUESTIONS];
 
   // Use today's date as a seed for consistent daily questions
   const today = new Date().toISOString().slice(0, 10);
@@ -329,15 +334,15 @@ async function startQuiz() {
   timerEnabled = document.getElementById('timerToggle').checked;
   const freshOnly = document.getElementById('freshOnlyToggle').checked;
 
-  let url;
-  if (currentCategory === 'mix') {
-    url = '/api/questions/mix/random?count=9999';
-  } else {
-    url = `/api/questions/${currentCategory}?difficulty=${currentDifficulty}`;
+  // Use embedded data directly — no server needed
+  let allQ = [...QUIZ_QUESTIONS];
+  if (currentCategory !== 'mix') {
+    allQ = allQ.filter(q => q.category === currentCategory);
   }
-
-  const res = await fetch(url);
-  let allQ = await res.json();
+  if (currentDifficulty !== 'all') {
+    allQ = allQ.filter(q => q.difficulty === currentDifficulty);
+  }
+  shuffleArray(allQ);
 
   if (allQ.length === 0) {
     alert('No questions found for this selection. Try a different difficulty!');

@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Women of the Bible Quiz — Conference Edition</title>
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/questions-data.js"></script>
 </head>
 <body>
   <div class="container">
@@ -89,25 +90,25 @@
     const factIndex = Math.floor(Date.now() / 86400000) % facts.length;
     document.getElementById('funFact').textContent = facts[factIndex];
 
-    // Load categories
-    fetch('/api/categories')
-      .then(res => res.json())
-      .then(categories => {
-        const grid = document.getElementById('categoryGrid');
-        categories.forEach(cat => {
-          const card = document.createElement('a');
-          card.href = `practice.html?category=${cat.id}`;
-          card.className = 'category-card';
-          card.style.borderColor = cat.color;
-          card.innerHTML = `
-            <div class="cat-icon">${cat.icon}</div>
-            <h3>${cat.name}</h3>
-            <div class="cat-ref">${cat.reference}</div>
-            <div class="cat-desc">${cat.description}</div>
-          `;
-          grid.appendChild(card);
-        });
-      });
+    // Load categories from embedded data (works on GitHub Pages — no server needed)
+    const categories = QUIZ_CATEGORIES.map(cat => {
+      const count = QUIZ_QUESTIONS.filter(q => q.category === cat.id).length;
+      return { ...cat, questionCount: count };
+    });
+    const grid = document.getElementById('categoryGrid');
+    categories.forEach(cat => {
+      const card = document.createElement('a');
+      card.href = `practice.html?category=${cat.id}`;
+      card.className = 'category-card';
+      card.style.borderColor = cat.color;
+      card.innerHTML = `
+        <div class="cat-icon">${cat.icon}</div>
+        <h3>${cat.name} <span style="font-size:0.75rem;color:var(--text-light);">(${cat.questionCount})</span></h3>
+        <div class="cat-ref">${cat.reference}</div>
+        <div class="cat-desc">${cat.description}</div>
+      `;
+      grid.appendChild(card);
+    });
 
     // Show progress stats if available
     try {
