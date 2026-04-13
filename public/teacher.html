@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard — Women of the Bible Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <!-- LOGIN -->
+    <div id="loginSection">
+      <div class="page-header">
+        <h1>Teacher Dashboard</h1>
+        <p>Manage daily assignments and track student progress</p>
+      </div>
+      <div class="card name-input-card" style="max-width: 400px; margin: 0 auto;">
+        <h3 style="text-align: center; margin-bottom: 20px;">Enter Teacher PIN</h3>
+        <div class="form-group">
+          <input type="password" id="pinInput" placeholder="Enter PIN..." maxlength="10"
+            style="text-align: center; font-size: 1.5rem; letter-spacing: 8px;">
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="teacherLogin()">Login</button>
+        <p id="loginError" style="color: var(--danger); text-align: center; margin-top: 10px; display: none;"></p>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardSection" class="hidden">
+      <div class="page-header">
+        <h1>Teacher Dashboard</h1>
+        <p id="dashboardDate"></p>
+      </div>
+
+      <!-- Today's Summary -->
+      <div class="card daily-banner">
+        <h3 style="margin-bottom: 15px;">Today's Summary</h3>
+        <div class="stats-grid" id="todaySummary"></div>
+      </div>
+
+      <!-- Actions -->
+      <div style="display: flex; gap: 12px; flex-wrap: wrap; margin: 20px 0;">
+        <button class="btn btn-primary" onclick="createAssignment()">Create Today's Assignment</button>
+        <button class="btn btn-secondary" onclick="refreshDashboard()">Refresh Scores</button>
+      </div>
+
+      <!-- Assignment Status -->
+      <div id="assignmentStatus" class="card assignment-card" style="display: none;">
+        <p id="assignmentMessage" style="font-weight: 700;"></p>
+      </div>
+
+      <!-- Today's Scores -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Today's Scores</h3>
+        <div id="todayScoresContainer">
+          <p style="color: var(--text-light);">No scores yet for today.</p>
+        </div>
+      </div>
+
+      <!-- Overall Leaderboard -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Overall Leaderboard</h3>
+        <div id="leaderboardContainer">
+          <p style="color: var(--text-light);">No students have completed assignments yet.</p>
+        </div>
+      </div>
+
+      <!-- All Assignments History -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px;">Assignment History</h3>
+        <div id="assignmentHistory"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let teacherPin = '';
+
+    document.getElementById('pinInput').addEventListener('keydown', e => {
+      if (e.key === 'Enter') teacherLogin();
+    });
+
+    async function teacherLogin() {
+      const pin = document.getElementById('pinInput').value.trim();
+      if (!pin) return;
+
+      try {
+        const res = await fetch('/api/teacher/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin })
+        });
+        const data = await res.json();
+        if (data.success) {
+          teacherPin = pin;
+          document.getElementById('loginSection').classList.add('hidden');
+          document.getElementById('dashboardSection').classList.remove('hidden');
+          refreshDashboard();
+        } else {
+          document.getElementById('loginError').textContent = 'Incorrect PIN. Try again.';
+          document.getElementById('loginError').style.display = 'block';
+        }
+      } catch (e) {
+        document.getElementById('loginError').textContent = 'Connection error. Try again.';
+        document.getElementById('loginError').style.display = 'block';
+      }
+    }
+
+    async function refreshDashboard() {
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('dashboardDate').textContent = `Date: ${new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+      try {
+        const res = await fetch(`/api/teacher/dashboard?pin=${teacherPin}`);
+        const data = await res.json();
+
+        // Today's summary
+        document.getElementById('todaySummary').innerHTML = `
+          <div class="stat-item">
+            <div class="stat-value">${data.totalStudents}</div>
+            <div class="stat-label">Total Students</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${data.hasAssignment ? 'Yes' : 'No'}</div>
+            <div class="stat-label">Assignment Created</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${data.completedToday}/${data.totalStudents}</div>
+            <div class="stat-label">Completed Today</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${data.totalAssignments}</div>
+            <div class="stat-label">Total Assignments</div>
+          </div>
+        `;
+
+        // Today's individual scores
+        if (data.todayScores && data.todayScores.length > 0) {
+          const rows = data.todayScores.map((s, i) => {
+            const statusIcon = s.completed ? '&#10004;' : '&#10060;';
+            const statusClass = s.completed ? 'color: var(--success)' : 'color: var(--danger)';
+            const pct = s.completed ? `${s.correct}/${s.total} (${s.percentage}%)` : 'Not done';
+            return `
+              <div class="score-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-light); border-radius: 10px; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="${statusClass}; font-size: 1.2rem;">${statusIcon}</span>
+                  <strong>${s.name}</strong>
+                </div>
+                <div style="display: flex; gap: 20px; align-items: center;">
+                  <span style="color: var(--text-light);">${pct}</span>
+                  <span style="font-weight: 800; color: var(--primary);">${s.completed ? s.score + ' pts' : '—'}</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+          document.getElementById('todayScoresContainer').innerHTML = rows;
+        } else {
+          document.getElementById('todayScoresContainer').innerHTML = '<p style="color: var(--text-light);">No students registered yet. Scores will appear once kids start the daily assignment.</p>';
+        }
+
+        // Overall leaderboard
+        if (data.leaderboard && data.leaderboard.length > 0) {
+          const rankEmojis = ['&#x1F947;', '&#x1F948;', '&#x1F949;'];
+          const lbRows = data.leaderboard.map((s, i) => {
+            const rank = i < 3 ? rankEmojis[i] : `#${i + 1}`;
+            return `
+              <div class="score-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: ${i < 3 ? '#fff9e6' : 'var(--bg-light)'}; border-radius: 10px; margin-bottom: 8px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="font-size: 1.3rem;">${rank}</span>
+                  <strong>${s.name}</strong>
+                </div>
+                <div style="display: flex; gap: 15px; align-items: center; font-size: 0.9rem;">
+                  <span>${s.daysCompleted} days</span>
+                  <span>${s.accuracy}% accuracy</span>
+                  <span style="font-weight: 800; color: var(--primary); font-size: 1.1rem;">${s.totalScore} pts</span>
+                </div>
+              </div>
+            `;
+          }).join('');
+          document.getElementById('leaderboardContainer').innerHTML = lbRows;
+        }
+
+        // Assignment history
+        const assignRes = await fetch(`/api/teacher/assignments?pin=${teacherPin}`);
+        const assignments = await assignRes.json();
+        const dates = Object.keys(assignments).sort().reverse();
+        if (dates.length > 0) {
+          const historyHTML = dates.map(date => {
+            const a = assignments[date];
+            return `<div class="assignment-card" style="padding: 10px 16px; background: var(--bg-light); border-radius: 10px; margin-bottom: 8px; display: flex; justify-content: space-between;">
+              <span><strong>${date}</strong></span>
+              <span>${a.questionCount} questions</span>
+            </div>`;
+          }).join('');
+          document.getElementById('assignmentHistory').innerHTML = historyHTML;
+        } else {
+          document.getElementById('assignmentHistory').innerHTML = '<p style="color: var(--text-light);">No assignments created yet.</p>';
+        }
+
+      } catch (e) {
+        console.error('Dashboard error:', e);
+      }
+    }
+
+    async function createAssignment() {
+      try {
+        const res = await fetch('/api/teacher/assign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ pin: teacherPin, questionCount: 10, categories: 'all' })
+        });
+        const data = await res.json();
+        const status = document.getElementById('assignmentStatus');
+        const msg = document.getElementById('assignmentMessage');
+        status.style.display = 'block';
+
+        if (data.success) {
+          msg.textContent = `Assignment created! ${data.questionCount} questions for ${data.date}. Share the daily link with students!`;
+          msg.style.color = 'var(--success)';
+        } else {
+          msg.textContent = data.message || 'Error creating assignment';
+          msg.style.color = 'var(--danger)';
+        }
+
+        refreshDashboard();
+      } catch (e) {
+        alert('Error creating assignment. Check your connection.');
+      }
+    }
+
+    // Auto-refresh every 30 seconds
+    setInterval(() => {
+      if (!document.getElementById('dashboardSection').classList.contains('hidden')) {
+        refreshDashboard();
+      }
+    }, 30000);
+  </script>
+</body>
+</html>

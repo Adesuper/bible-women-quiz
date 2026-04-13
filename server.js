@@ -8,69 +8,95 @@ const fs = require('fs');
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-  cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  },
-  // Allow larger payloads for question data
+  cors: { origin: '*', methods: ['GET', 'POST'] },
   maxHttpBufferSize: 1e6
 });
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// ============ LOAD ALL QUESTIONS ============
+// ============ LOAD QUESTIONS ============
 function loadAllQuestions() {
   const mainFile = path.join(__dirname, 'data', 'questions.json');
   const mainData = JSON.parse(fs.readFileSync(mainFile, 'utf8'));
-
-  // Load any additional batch files
   const dataDir = path.join(__dirname, 'data');
   const batchFiles = fs.readdirSync(dataDir).filter(f => f.startsWith('questions-batch') && f.endsWith('.json'));
-
   batchFiles.forEach(file => {
     try {
-      const batchData = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf8'));
-      // Batch files are arrays of question objects
-      if (Array.isArray(batchData)) {
-        mainData.questions.push(...batchData);
-      }
-    } catch (e) {
-      console.log(`Warning: Could not load ${file}:`, e.message);
-    }
+      const batch = JSON.parse(fs.readFileSync(path.join(dataDir, file), 'utf8'));
+      if (Array.isArray(batch)) mainData.questions.push(...batch);
+    } catch (e) { console.log(`Warning: ${file}: ${e.message}`); }
   });
-
-  // Deduplicate by ID
   const seen = new Set();
   mainData.questions = mainData.questions.filter(q => {
     if (seen.has(q.id)) return false;
     seen.add(q.id);
     return true;
   });
-
-  console.log(`Loaded ${mainData.questions.length} total questions from ${1 + batchFiles.length} file(s)`);
+  console.log(`Loaded ${mainData.questions.length} questions`);
   return mainData;
 }
-
 const questionsData = loadAllQuestions();
 
-// ============ API ROUTES ============
+// ============ PERSISTENT DATA STORE ============
+const TRACKER_FILE = path.join(__dirname, 'data', 'tracker.json');
+let tracker = {
+  teachers: { pin: '2024' },  // Simple PIN for teacher access
+  students: {},     // { studentName: { name, scores: [{date, score, correct, total, time}] } }
+  assignments: {},  // { '2026-04-13': { questions: [...ids], createdBy, createdAt } }
+  leaderboard: []   // Computed from students
+};
 
-// Get all categories with question counts
+function loadTracker() {
+  try {
+    if (fs.existsSync(TRACKER_FILE)) {
+      tracker = { ...tracker, ...JSON.parse(fs.readFileSync(TRACKER_FILE, 'utf8')) };
+      console.log(`Tracker loaded: ${Object.keys(tracker.students).length} students, ${Object.keys(tracker.assignments).length} assignments`);
+    }
+  } catch (e) { console.log('No existing tracker, starting fresh'); }
+}
+
+function saveTracker() {
+  try {
+    fs.writeFileSync(TRACKER_FILE, JSON.stringify(tracker, null, 2));
+  } catch (e) { console.log('Save tracker error:', e.message); }
+}
+
+loadTracker();
+
+// ============ HELPER ============
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function generateRoomCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  let code = '';
+  for (let i = 0; i < 5; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+  if (rooms.has(code)) return generateRoomCode();
+  return code;
+}
+
+// ============ API: CATEGORIES & QUESTIONS ============
 app.get('/api/categories', (req, res) => {
-  const cats = questionsData.categories.map(cat => {
-    const count = questionsData.questions.filter(q => q.category === cat.id).length;
-    return { ...cat, questionCount: count };
-  });
-  res.json(cats);
+  res.json(questionsData.categories.map(cat => ({
+    ...cat,
+    questionCount: questionsData.questions.filter(q => q.category === cat.id).length
+  })));
 });
 
-// Get total stats
 app.get('/api/stats', (req, res) => {
   const total = questionsData.questions.length;
-  const byCat = {};
-  const byDiff = { easy: 0, medium: 0, hard: 0 };
+  const byCat = {}, byDiff = { easy: 0, medium: 0, hard: 0 };
   questionsData.questions.forEach(q => {
     byCat[q.category] = (byCat[q.category] || 0) + 1;
     byDiff[q.difficulty] = (byDiff[q.difficulty] || 0) + 1;
@@ -78,495 +104,416 @@ app.get('/api/stats', (req, res) => {
   res.json({ total, byCategory: byCat, byDifficulty: byDiff });
 });
 
-// Get questions by category (for practice mode)
 app.get('/api/questions/:category', (req, res) => {
-  const { category } = req.params;
-  const difficulty = req.query.difficulty || 'all';
-  let questions = questionsData.questions.filter(q => q.category === category);
-  if (difficulty !== 'all') {
-    questions = questions.filter(q => q.difficulty === difficulty);
-  }
-  // Shuffle questions
-  questions = shuffleArray([...questions]);
-  res.json(questions);
+  let qs = questionsData.questions.filter(q => q.category === req.params.category);
+  if (req.query.difficulty && req.query.difficulty !== 'all')
+    qs = qs.filter(q => q.difficulty === req.query.difficulty);
+  res.json(shuffleArray(qs));
 });
 
-// Get random mixed questions
 app.get('/api/questions/mix/random', (req, res) => {
   const count = parseInt(req.query.count) || 15;
-  const difficulty = req.query.difficulty || 'all';
-  let questions = [...questionsData.questions];
-  if (difficulty !== 'all') {
-    questions = questions.filter(q => q.difficulty === difficulty);
+  let qs = [...questionsData.questions];
+  if (req.query.difficulty && req.query.difficulty !== 'all')
+    qs = qs.filter(q => q.difficulty === req.query.difficulty);
+  const shuffled = shuffleArray(qs);
+  res.json(shuffled.slice(0, Math.min(count, shuffled.length)));
+});
+
+// ============ API: TEACHER ============
+app.post('/api/teacher/login', (req, res) => {
+  const { pin } = req.body;
+  if (pin === tracker.teachers.pin) {
+    res.json({ success: true });
+  } else {
+    res.status(401).json({ success: false, message: 'Incorrect PIN' });
   }
-  const shuffled = shuffleArray(questions);
-  // If count is very large (9999), return all
-  const limit = count >= questions.length ? questions.length : count;
-  res.json(shuffled.slice(0, limit));
 });
 
-// Health check for Render.com
+app.post('/api/teacher/assign', (req, res) => {
+  const { pin, date, questionCount, categories } = req.body;
+  if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
+
+  const targetDate = date || todayStr();
+  const count = questionCount || 10;
+
+  // Pick questions — balanced across categories
+  let pool = [...questionsData.questions];
+  if (categories && categories !== 'all') {
+    const cats = categories.split(',');
+    pool = pool.filter(q => cats.includes(q.category));
+  }
+
+  // Balanced selection
+  const grouped = {};
+  pool.forEach(q => { if (!grouped[q.category]) grouped[q.category] = []; grouped[q.category].push(q); });
+  Object.values(grouped).forEach(arr => shuffleArray(arr));
+
+  const selected = [];
+  const catKeys = Object.keys(grouped);
+  let idx = 0;
+  while (selected.length < count && catKeys.length > 0) {
+    const key = catKeys[idx % catKeys.length];
+    if (grouped[key].length > 0) {
+      selected.push(grouped[key].pop());
+    } else {
+      catKeys.splice(catKeys.indexOf(key), 1);
+      if (catKeys.length === 0) break;
+    }
+    idx++;
+  }
+
+  tracker.assignments[targetDate] = {
+    questionIds: selected.map(q => q.id),
+    createdAt: new Date().toISOString(),
+    questionCount: selected.length
+  };
+  saveTracker();
+
+  res.json({
+    success: true,
+    date: targetDate,
+    questionCount: selected.length,
+    message: `Assignment created for ${targetDate} with ${selected.length} questions`
+  });
+});
+
+app.get('/api/teacher/assignments', (req, res) => {
+  const { pin } = req.query;
+  if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
+  res.json(tracker.assignments);
+});
+
+app.get('/api/teacher/scores', (req, res) => {
+  const { pin, date } = req.query;
+  if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
+
+  const students = Object.values(tracker.students);
+
+  if (date) {
+    // Scores for a specific date
+    const dayScores = students.map(s => {
+      const dayScore = s.scores.find(sc => sc.date === date);
+      return {
+        name: s.name,
+        completed: !!dayScore,
+        score: dayScore ? dayScore.score : 0,
+        correct: dayScore ? dayScore.correct : 0,
+        total: dayScore ? dayScore.total : 0,
+        percentage: dayScore ? Math.round((dayScore.correct / dayScore.total) * 100) : 0,
+        completedAt: dayScore ? dayScore.completedAt : null
+      };
+    }).sort((a, b) => b.score - a.score);
+    return res.json(dayScores);
+  }
+
+  // Overall scores
+  const overall = students.map(s => {
+    const totalCorrect = s.scores.reduce((sum, sc) => sum + sc.correct, 0);
+    const totalAnswered = s.scores.reduce((sum, sc) => sum + sc.total, 0);
+    const totalScore = s.scores.reduce((sum, sc) => sum + sc.score, 0);
+    return {
+      name: s.name,
+      daysCompleted: s.scores.length,
+      totalScore,
+      totalCorrect,
+      totalAnswered,
+      accuracy: totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0,
+      lastActive: s.scores.length > 0 ? s.scores[s.scores.length - 1].date : 'Never'
+    };
+  }).sort((a, b) => b.totalScore - a.totalScore);
+
+  res.json(overall);
+});
+
+app.get('/api/teacher/dashboard', (req, res) => {
+  const { pin } = req.query;
+  if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
+
+  const today = todayStr();
+  const students = Object.values(tracker.students);
+  const todayAssignment = tracker.assignments[today];
+
+  const todayScores = students.map(s => {
+    const dayScore = s.scores.find(sc => sc.date === today);
+    return { name: s.name, completed: !!dayScore, score: dayScore?.score || 0, correct: dayScore?.correct || 0, total: dayScore?.total || 0 };
+  });
+
+  const completedToday = todayScores.filter(s => s.completed).length;
+
+  // Overall leaderboard
+  const leaderboard = students.map(s => {
+    const totalScore = s.scores.reduce((sum, sc) => sum + sc.score, 0);
+    const totalCorrect = s.scores.reduce((sum, sc) => sum + sc.correct, 0);
+    const totalAnswered = s.scores.reduce((sum, sc) => sum + sc.total, 0);
+    return {
+      name: s.name,
+      totalScore,
+      daysCompleted: s.scores.length,
+      accuracy: totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
+    };
+  }).sort((a, b) => b.totalScore - a.totalScore);
+
+  res.json({
+    today,
+    hasAssignment: !!todayAssignment,
+    assignmentQuestionCount: todayAssignment?.questionCount || 0,
+    totalStudents: students.length,
+    completedToday,
+    todayScores: todayScores.sort((a, b) => b.score - a.score),
+    leaderboard,
+    totalAssignments: Object.keys(tracker.assignments).length
+  });
+});
+
+// ============ API: STUDENT DAILY ============
+app.get('/api/daily/today', (req, res) => {
+  const today = todayStr();
+  const assignment = tracker.assignments[today];
+  if (!assignment) {
+    return res.json({ hasAssignment: false, message: 'No assignment for today yet. Check back later!' });
+  }
+
+  const questions = assignment.questionIds
+    .map(id => questionsData.questions.find(q => q.id === id))
+    .filter(Boolean)
+    .map(q => ({
+      id: q.id, category: q.category, difficulty: q.difficulty,
+      question: q.question, options: q.options, reference: q.reference
+      // Note: correct answer NOT sent — prevents cheating
+    }));
+
+  res.json({ hasAssignment: true, date: today, questions, questionCount: questions.length });
+});
+
+app.post('/api/daily/submit', (req, res) => {
+  const { studentName, date, answers } = req.body;
+  if (!studentName || !answers) return res.status(400).json({ message: 'Name and answers required' });
+
+  const targetDate = date || todayStr();
+  const assignment = tracker.assignments[targetDate];
+  if (!assignment) return res.status(404).json({ message: 'No assignment for this date' });
+
+  const name = studentName.trim();
+  const nameKey = name.toLowerCase();
+
+  // Check if already submitted today
+  if (tracker.students[nameKey]) {
+    const existing = tracker.students[nameKey].scores.find(s => s.date === targetDate);
+    if (existing) {
+      return res.status(400).json({ message: 'You already completed today\'s assignment!' });
+    }
+  }
+
+  // Grade the answers
+  let correct = 0;
+  let score = 0;
+  const results = [];
+
+  answers.forEach(({ questionId, answerIndex }) => {
+    const q = questionsData.questions.find(qu => qu.id === questionId);
+    if (!q) return;
+    const isCorrect = answerIndex === q.correct;
+    if (isCorrect) {
+      correct++;
+      score += 100;
+    }
+    results.push({
+      questionId,
+      isCorrect,
+      correctAnswer: q.correct,
+      explanation: q.explanation,
+      reference: q.reference
+    });
+  });
+
+  const total = assignment.questionIds.length;
+
+  // Save student record
+  if (!tracker.students[nameKey]) {
+    tracker.students[nameKey] = { name, scores: [] };
+  }
+  tracker.students[nameKey].name = name; // Update display name
+  tracker.students[nameKey].scores.push({
+    date: targetDate,
+    score,
+    correct,
+    total,
+    completedAt: new Date().toISOString()
+  });
+
+  saveTracker();
+
+  res.json({
+    success: true,
+    score,
+    correct,
+    total,
+    percentage: Math.round((correct / total) * 100),
+    results
+  });
+});
+
+app.get('/api/daily/leaderboard', (req, res) => {
+  const students = Object.values(tracker.students);
+  const leaderboard = students.map(s => {
+    const totalScore = s.scores.reduce((sum, sc) => sum + sc.score, 0);
+    const totalCorrect = s.scores.reduce((sum, sc) => sum + sc.correct, 0);
+    const totalAnswered = s.scores.reduce((sum, sc) => sum + sc.total, 0);
+    return {
+      name: s.name,
+      totalScore,
+      daysCompleted: s.scores.length,
+      accuracy: totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
+    };
+  }).sort((a, b) => b.totalScore - a.totalScore);
+  res.json(leaderboard);
+});
+
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', questions: questionsData.questions.length });
+  res.json({ status: 'ok', questions: questionsData.questions.length, students: Object.keys(tracker.students).length });
 });
 
-// ============ TEAM PLAY (Socket.io) ============
-
+// ============ TEAM PLAY (Socket.io) — unchanged from before ============
 const rooms = new Map();
 
 io.on('connection', (socket) => {
-  console.log(`Player connected: ${socket.id}`);
-
   socket.on('create-room', ({ playerName, teamName, questionCount, timePerQuestion, categories }) => {
     const roomCode = generateRoomCode();
     const room = {
-      code: roomCode,
-      host: socket.id,
-      teams: [
-        {
-          id: uuidv4(),
-          name: teamName,
-          players: [{ id: socket.id, name: playerName, isHost: true }],
-          score: 0,
-          answers: []
-        }
-      ],
-      settings: {
-        questionCount: questionCount || 15,
-        timePerQuestion: timePerQuestion || 20,
-        categories: categories || 'all'
-      },
-      state: 'waiting',
-      currentQuestion: -1,
-      questions: [],
-      startTime: null,
-      questionTimer: null,
-      questionDeadline: null
+      code: roomCode, host: socket.id,
+      teams: [{ id: uuidv4(), name: teamName, players: [{ id: socket.id, name: playerName, isHost: true }], score: 0, answers: [] }],
+      settings: { questionCount: questionCount || 15, timePerQuestion: timePerQuestion || 20, categories: categories || 'all' },
+      state: 'waiting', currentQuestion: -1, questions: [], startTime: null, questionTimer: null, questionDeadline: null
     };
-
     rooms.set(roomCode, room);
     socket.join(roomCode);
     socket.roomCode = roomCode;
     socket.teamId = room.teams[0].id;
-
-    socket.emit('room-created', {
-      roomCode,
-      room: sanitizeRoom(room)
-    });
-
-    console.log(`Room ${roomCode} created by ${playerName}`);
+    socket.emit('room-created', { roomCode, room: sanitizeRoom(room) });
   });
 
   socket.on('join-room', ({ roomCode, playerName, teamName }) => {
     const code = roomCode.toUpperCase();
     const room = rooms.get(code);
-
-    if (!room) {
-      socket.emit('error-msg', { message: 'Room not found! Check the code and try again.' });
-      return;
-    }
-
-    if (room.state !== 'waiting') {
-      socket.emit('error-msg', { message: 'Game already in progress! Wait for the next round.' });
-      return;
-    }
-
+    if (!room) return socket.emit('error-msg', { message: 'Room not found!' });
+    if (room.state !== 'waiting') return socket.emit('error-msg', { message: 'Game in progress!' });
     let team = room.teams.find(t => t.name.toLowerCase() === teamName.toLowerCase());
-
     if (team) {
-      if (team.players.length >= 5) {
-        socket.emit('error-msg', { message: 'That team is full! (Max 5 players). Try another team name.' });
-        return;
-      }
+      if (team.players.length >= 5) return socket.emit('error-msg', { message: 'Team full!' });
       team.players.push({ id: socket.id, name: playerName, isHost: false });
     } else {
-      if (room.teams.length >= 10) {
-        socket.emit('error-msg', { message: 'Maximum 10 teams allowed!' });
-        return;
-      }
-      team = {
-        id: uuidv4(),
-        name: teamName,
-        players: [{ id: socket.id, name: playerName, isHost: false }],
-        score: 0,
-        answers: []
-      };
+      if (room.teams.length >= 10) return socket.emit('error-msg', { message: 'Max teams reached!' });
+      team = { id: uuidv4(), name: teamName, players: [{ id: socket.id, name: playerName, isHost: false }], score: 0, answers: [] };
       room.teams.push(team);
     }
-
-    socket.join(code);
-    socket.roomCode = code;
-    socket.teamId = team.id;
-
-    socket.emit('room-joined', {
-      roomCode: code,
-      room: sanitizeRoom(room),
-      teamId: team.id
-    });
-
+    socket.join(code); socket.roomCode = code; socket.teamId = team.id;
+    socket.emit('room-joined', { roomCode: code, room: sanitizeRoom(room), teamId: team.id });
     io.to(code).emit('room-updated', sanitizeRoom(room));
-    io.to(code).emit('player-joined', {
-      playerName,
-      teamName: team.name,
-      totalPlayers: room.teams.reduce((sum, t) => sum + t.players.length, 0)
-    });
-
-    console.log(`${playerName} joined room ${code} on team "${team.name}"`);
+    io.to(code).emit('player-joined', { playerName, teamName: team.name, totalPlayers: room.teams.reduce((s, t) => s + t.players.length, 0) });
   });
 
   socket.on('start-game', () => {
     const room = rooms.get(socket.roomCode);
     if (!room || room.host !== socket.id) return;
-
-    let questions = [...questionsData.questions];
+    let qs = [...questionsData.questions];
     if (room.settings.categories !== 'all') {
       const cats = room.settings.categories.split(',');
-      questions = questions.filter(q => cats.includes(q.category));
+      qs = qs.filter(q => cats.includes(q.category));
     }
-
-    // Ensure balanced category representation
     const grouped = {};
-    questions.forEach(q => {
-      if (!grouped[q.category]) grouped[q.category] = [];
-      grouped[q.category].push(q);
-    });
-
-    // Shuffle each category
-    Object.values(grouped).forEach(arr => shuffleArray(arr));
-
-    // Round-robin pick from categories for balance
+    qs.forEach(q => { if (!grouped[q.category]) grouped[q.category] = []; grouped[q.category].push(q); });
+    Object.values(grouped).forEach(arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } });
     const balanced = [];
     const catKeys = Object.keys(grouped);
-    let catIndex = 0;
+    let ci = 0;
     while (balanced.length < room.settings.questionCount && catKeys.length > 0) {
-      const key = catKeys[catIndex % catKeys.length];
-      if (grouped[key].length > 0) {
-        balanced.push(grouped[key].pop());
-      } else {
-        catKeys.splice(catIndex % catKeys.length, 1);
-        if (catKeys.length === 0) break;
-      }
-      catIndex++;
+      const key = catKeys[ci % catKeys.length];
+      if (grouped[key].length > 0) balanced.push(grouped[key].pop());
+      else { catKeys.splice(catKeys.indexOf(key), 1); if (!catKeys.length) break; }
+      ci++;
     }
-
-    // Final shuffle so categories aren't in order
     shuffleArray(balanced);
-
-    room.questions = balanced;
-    room.state = 'playing';
-    room.currentQuestion = 0;
-    room.startTime = Date.now();
-
-    room.teams.forEach(team => {
-      team.score = 0;
-      team.answers = [];
-    });
-
-    io.to(room.code).emit('game-started', {
-      totalQuestions: balanced.length,
-      timePerQuestion: room.settings.timePerQuestion
-    });
-
+    room.questions = balanced; room.state = 'playing'; room.currentQuestion = 0; room.startTime = Date.now();
+    room.teams.forEach(t => { t.score = 0; t.answers = []; });
+    io.to(room.code).emit('game-started', { totalQuestions: balanced.length, timePerQuestion: room.settings.timePerQuestion });
     sendQuestion(room);
   });
 
   socket.on('submit-answer', ({ questionId, answerIndex }) => {
     const room = rooms.get(socket.roomCode);
     if (!room || room.state !== 'playing') return;
-
     const team = room.teams.find(t => t.id === socket.teamId);
     if (!team) return;
-
     const currentQ = room.questions[room.currentQuestion];
     if (!currentQ || currentQ.id !== questionId) return;
-
     if (team.answers.find(a => a.questionId === questionId)) return;
-
     const isCorrect = answerIndex === currentQ.correct;
     const timeBonus = Math.max(0, room.questionDeadline - Date.now());
     const diffBonus = currentQ.difficulty === 'hard' ? 50 : currentQ.difficulty === 'medium' ? 25 : 0;
     const points = isCorrect ? (100 + Math.floor(timeBonus / 100) + diffBonus) : 0;
-
-    team.answers.push({
-      questionId,
-      answerIndex,
-      isCorrect,
-      points,
-      answeredBy: socket.id
-    });
-
-    if (isCorrect) {
-      team.score += points;
-    }
-
-    io.to(room.code).emit('answer-received', {
-      teamId: team.id,
-      teamName: team.name,
-      isCorrect,
-      points,
-      answerIndex
-    });
-
-    const allAnswered = room.teams.every(t =>
-      t.answers.find(a => a.questionId === questionId)
-    );
-
-    if (allAnswered) {
-      clearTimeout(room.questionTimer);
-      revealAnswer(room);
-    }
+    team.answers.push({ questionId, answerIndex, isCorrect, points, answeredBy: socket.id });
+    if (isCorrect) team.score += points;
+    io.to(room.code).emit('answer-received', { teamId: team.id, teamName: team.name, isCorrect, points, answerIndex });
+    if (room.teams.every(t => t.answers.find(a => a.questionId === questionId))) { clearTimeout(room.questionTimer); revealAnswer(room); }
   });
 
   socket.on('disconnect', () => {
-    const roomCode = socket.roomCode;
-    if (!roomCode) return;
-
-    const room = rooms.get(roomCode);
-    if (!room) return;
-
-    room.teams.forEach(team => {
-      team.players = team.players.filter(p => p.id !== socket.id);
-    });
-
+    const rc = socket.roomCode; if (!rc) return;
+    const room = rooms.get(rc); if (!room) return;
+    room.teams.forEach(t => { t.players = t.players.filter(p => p.id !== socket.id); });
     room.teams = room.teams.filter(t => t.players.length > 0);
-
-    if (room.teams.length === 0) {
-      if (room.questionTimer) clearTimeout(room.questionTimer);
-      rooms.delete(roomCode);
-      console.log(`Room ${roomCode} deleted (empty)`);
-      return;
-    }
-
+    if (room.teams.length === 0) { if (room.questionTimer) clearTimeout(room.questionTimer); rooms.delete(rc); return; }
     if (room.host === socket.id && room.teams.length > 0) {
-      room.host = room.teams[0].players[0].id;
-      room.teams[0].players[0].isHost = true;
-      io.to(roomCode).emit('new-host', {
-        hostId: room.host,
-        hostName: room.teams[0].players[0].name
-      });
+      room.host = room.teams[0].players[0].id; room.teams[0].players[0].isHost = true;
+      io.to(rc).emit('new-host', { hostId: room.host, hostName: room.teams[0].players[0].name });
     }
-
-    io.to(roomCode).emit('room-updated', sanitizeRoom(room));
-    console.log(`Player ${socket.id} disconnected from room ${roomCode}`);
+    io.to(rc).emit('room-updated', sanitizeRoom(room));
   });
 });
 
-// ============ GAME LOGIC ============
-
 function sendQuestion(room) {
-  const question = room.questions[room.currentQuestion];
-  if (!question) {
-    endGame(room);
-    return;
-  }
-
+  const q = room.questions[room.currentQuestion];
+  if (!q) { endGame(room); return; }
   const timeMs = room.settings.timePerQuestion * 1000;
   room.questionDeadline = Date.now() + timeMs;
-
   io.to(room.code).emit('new-question', {
-    questionNumber: room.currentQuestion + 1,
-    totalQuestions: room.questions.length,
-    question: {
-      id: question.id,
-      category: question.category,
-      difficulty: question.difficulty,
-      question: question.question,
-      options: question.options,
-      reference: question.reference
-    },
+    questionNumber: room.currentQuestion + 1, totalQuestions: room.questions.length,
+    question: { id: q.id, category: q.category, difficulty: q.difficulty, question: q.question, options: q.options, reference: q.reference },
     timeLimit: room.settings.timePerQuestion
   });
-
-  room.questionTimer = setTimeout(() => {
-    revealAnswer(room);
-  }, timeMs + 1000);
+  room.questionTimer = setTimeout(() => revealAnswer(room), timeMs + 1000);
 }
 
 function revealAnswer(room) {
-  const question = room.questions[room.currentQuestion];
-  if (!question) return;
-
-  room.teams.forEach(team => {
-    if (!team.answers.find(a => a.questionId === question.id)) {
-      team.answers.push({
-        questionId: question.id,
-        answerIndex: -1,
-        isCorrect: false,
-        points: 0,
-        answeredBy: null
-      });
-    }
-  });
-
-  const scoreboard = room.teams
-    .map(t => ({
-      teamId: t.id,
-      teamName: t.name,
-      score: t.score,
-      lastAnswer: t.answers.find(a => a.questionId === question.id),
-      playerCount: t.players.length
-    }))
-    .sort((a, b) => b.score - a.score);
-
-  io.to(room.code).emit('answer-revealed', {
-    correctAnswer: question.correct,
-    explanation: question.explanation,
-    reference: question.reference,
-    scoreboard
-  });
-
-  setTimeout(() => {
-    room.currentQuestion++;
-    if (room.currentQuestion < room.questions.length) {
-      sendQuestion(room);
-    } else {
-      endGame(room);
-    }
-  }, 6000);
+  const q = room.questions[room.currentQuestion]; if (!q) return;
+  room.teams.forEach(t => { if (!t.answers.find(a => a.questionId === q.id)) t.answers.push({ questionId: q.id, answerIndex: -1, isCorrect: false, points: 0, answeredBy: null }); });
+  const scoreboard = room.teams.map(t => ({ teamId: t.id, teamName: t.name, score: t.score, lastAnswer: t.answers.find(a => a.questionId === q.id), playerCount: t.players.length })).sort((a, b) => b.score - a.score);
+  io.to(room.code).emit('answer-revealed', { correctAnswer: q.correct, explanation: q.explanation, reference: q.reference, scoreboard });
+  setTimeout(() => { room.currentQuestion++; if (room.currentQuestion < room.questions.length) sendQuestion(room); else endGame(room); }, 6000);
 }
 
 function endGame(room) {
   room.state = 'results';
-
-  const finalScoreboard = room.teams
-    .map(t => ({
-      teamId: t.id,
-      teamName: t.name,
-      score: t.score,
-      correctAnswers: t.answers.filter(a => a.isCorrect).length,
-      totalQuestions: room.questions.length,
-      playerCount: t.players.length,
-      players: t.players.map(p => p.name)
-    }))
-    .sort((a, b) => b.score - a.score);
-
-  const tips = generateTips(room, finalScoreboard);
-
-  io.to(room.code).emit('game-over', {
-    scoreboard: finalScoreboard,
-    tips,
-    totalQuestions: room.questions.length
-  });
-
-  room.state = 'waiting';
-  room.currentQuestion = -1;
-  room.questions = [];
-}
-
-function generateTips(room, scoreboard) {
-  const tips = [];
-
-  const categoryStats = {};
-  room.teams.forEach(team => {
-    team.answers.forEach(answer => {
-      const q = room.questions.find(qu => qu.id === answer.questionId);
-      if (!q) return;
-      if (!categoryStats[q.category]) categoryStats[q.category] = { correct: 0, total: 0 };
-      categoryStats[q.category].total++;
-      if (answer.isCorrect) categoryStats[q.category].correct++;
-    });
-  });
-
-  let weakestCat = null;
-  let weakestRate = 1;
-  const catNames = {
-    esther: 'Queen Esther (Esther 1-10)',
-    ruth: 'Ruth (Ruth 1-4)',
-    hannah: 'Hannah (1 Samuel 1-2)',
-    abigail: 'Abigail (1 Samuel 25)',
-    deborah: 'Deborah (Judges 4-5)',
-    mary_elizabeth: 'Mary & Elizabeth (Luke 1, John 19)'
-  };
-
-  Object.entries(categoryStats).forEach(([cat, stats]) => {
-    const rate = stats.total > 0 ? stats.correct / stats.total : 0;
-    if (rate < weakestRate) {
-      weakestRate = rate;
-      weakestCat = cat;
-    }
-  });
-
-  if (weakestCat && weakestRate < 0.6) {
-    tips.push(`Focus on ${catNames[weakestCat] || weakestCat} — this was the toughest category today!`);
-  }
-
-  const hardQuestions = room.questions.filter(q => q.difficulty === 'hard');
-  const hardCorrect = room.teams.reduce((sum, team) => {
-    return sum + team.answers.filter(a => {
-      const q = hardQuestions.find(hq => hq.id === a.questionId);
-      return q && a.isCorrect;
-    }).length;
-  }, 0);
-  const hardTotal = hardQuestions.length * room.teams.length;
-  if (hardTotal > 0 && hardCorrect / hardTotal < 0.4) {
-    tips.push('Hard questions were challenging! Pay attention to exact numbers, names of minor characters, and specific NKJV wording.');
-  }
-
-  tips.push('Read a chapter together as a team each day and quiz each other on details!');
-  tips.push('Speed matters! The faster you answer correctly, the more bonus points you earn.');
-  tips.push('Pay attention to the explanations — they contain extra details for future quizzes!');
-
-  return tips;
-}
-
-// ============ HELPERS ============
-
-function shuffleArray(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-
-function generateRoomCode() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  let code = '';
-  for (let i = 0; i < 5; i++) {
-    code += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  if (rooms.has(code)) return generateRoomCode();
-  return code;
+  const scoreboard = room.teams.map(t => ({
+    teamId: t.id, teamName: t.name, score: t.score, correctAnswers: t.answers.filter(a => a.isCorrect).length,
+    totalQuestions: room.questions.length, playerCount: t.players.length, players: t.players.map(p => p.name)
+  })).sort((a, b) => b.score - a.score);
+  const tips = ['Read a chapter together daily!', 'Speed matters — faster correct answers earn more points!', 'Review explanations for extra details!'];
+  io.to(room.code).emit('game-over', { scoreboard, tips, totalQuestions: room.questions.length });
+  room.state = 'waiting'; room.currentQuestion = -1; room.questions = [];
 }
 
 function sanitizeRoom(room) {
-  return {
-    code: room.code,
-    teams: room.teams.map(t => ({
-      id: t.id,
-      name: t.name,
-      players: t.players.map(p => ({ id: p.id, name: p.name, isHost: p.isHost })),
-      score: t.score
-    })),
-    settings: room.settings,
-    state: room.state,
-    host: room.host
-  };
+  return { code: room.code, teams: room.teams.map(t => ({ id: t.id, name: t.name, players: t.players.map(p => ({ id: p.id, name: p.name, isHost: p.isHost })), score: t.score })), settings: room.settings, state: room.state, host: room.host };
 }
 
-// ============ CLEANUP stale rooms every 30 minutes ============
-setInterval(() => {
-  const now = Date.now();
-  for (const [code, room] of rooms) {
-    // Delete rooms older than 2 hours or empty rooms
-    if (room.teams.length === 0 || (room.startTime && now - room.startTime > 7200000)) {
-      rooms.delete(code);
-      console.log(`Cleaned up stale room ${code}`);
-    }
-  }
-}, 1800000);
+// Cleanup stale rooms
+setInterval(() => { for (const [code, room] of rooms) { if (room.teams.length === 0 || (room.startTime && Date.now() - room.startTime > 7200000)) rooms.delete(code); } }, 1800000);
 
-// ============ START SERVER ============
-
+// ============ START ============
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, '0.0.0.0', () => {
-  console.log('');
-  console.log('  ===================================================');
-  console.log('  |     WOMEN OF THE BIBLE QUIZ — CONFERENCE EDITION |');
-  console.log('  |     Server is running!                           |');
-  console.log(`  |     Local:  http://localhost:${PORT}                 |`);
-  console.log('  |     Share the URL with your team!                |');
-  console.log(`  |     Questions loaded: ${questionsData.questions.length}                      |`);
-  console.log('  ===================================================');
-  console.log('');
+  console.log(`\n  Bible Quiz Server running on port ${PORT}`);
+  console.log(`  Questions: ${questionsData.questions.length} | Students: ${Object.keys(tracker.students).length}\n`);
 });
