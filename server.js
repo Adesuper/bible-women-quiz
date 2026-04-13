@@ -135,7 +135,7 @@ app.post('/api/teacher/assign', (req, res) => {
   if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
 
   const targetDate = date || todayStr();
-  const count = questionCount || 10;
+  const count = questionCount || 15;
 
   // Pick questions — balanced across categories
   let pool = [...questionsData.questions];

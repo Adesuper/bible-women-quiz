@@ -209,7 +209,7 @@
         const res = await fetch('/api/teacher/assign', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin: teacherPin, questionCount: 10, categories: 'all' })
+          body: JSON.stringify({ pin: teacherPin, questionCount: 15, categories: 'all' })
         });
         const data = await res.json();
         const status = document.getElementById('assignmentStatus');
