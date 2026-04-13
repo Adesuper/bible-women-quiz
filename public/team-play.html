@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team Battle — Women of the Bible Quiz</title>
+  <title>Live Quiz — Women of the Bible Quiz</title>
   <link rel="stylesheet" href="css/style.css">
   <script>
-    // Detect environment: if on GitHub Pages, redirect to Render for team play
     const RENDER_URL = 'https://bible-women-quiz.onrender.com';
     const isGitHubPages = window.location.hostname.includes('github.io');
   </script>
@@ -14,222 +13,540 @@
 <body>
   <div class="container">
     <a href="index.html" class="back-link">&larr; Back to Home</a>
+    <div class="toast-container" id="toastContainer"></div>
 
-    <!-- GITHUB PAGES NOTICE -->
+    <!-- GITHUB PAGES REDIRECT -->
     <div id="ghPagesNotice" class="hidden">
       <div class="page-header">
-        <h1>Team Battle</h1>
+        <h1>Live Quiz</h1>
         <p>Real-time multiplayer needs the game server!</p>
       </div>
       <div class="card text-center" style="padding: 40px;">
         <div style="font-size: 3rem; margin-bottom: 15px;">🏆</div>
-        <h2 style="color: var(--primary); margin-bottom: 15px;">Ready for Team Battle?</h2>
-        <p style="color: var(--text-light); margin-bottom: 25px; line-height: 1.6;">
-          Team Battle connects players in real-time from different locations.<br>
-          Click below to open the game server where everyone can join!
-        </p>
-        <a id="renderLink" href="#" class="btn btn-primary btn-lg" target="_blank">
-          Open Team Battle Server
-        </a>
-        <p style="color: var(--text-light); margin-top: 15px; font-size: 0.85rem;">
-          Share that link with all players. The first visit may take ~30 seconds to wake up the server — after that it's fast!
-        </p>
-        <div style="margin-top: 25px;">
-          <a href="practice.html" class="btn btn-secondary">Practice Solo Instead</a>
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Ready for Live Quiz?</h2>
+        <p style="color: var(--text-light); margin-bottom: 25px;">Click below to open the game server where everyone can join!</p>
+        <a id="renderLink" href="#" class="btn btn-primary btn-lg" target="_blank">Open Live Quiz</a>
+        <p style="color: var(--text-light); margin-top: 15px; font-size: 0.85rem;">First visit may take ~30 seconds to wake up the server.</p>
+      </div>
+    </div>
+
+    <!-- ROLE SELECTION -->
+    <div id="roleSection">
+      <div class="page-header">
+        <h1>Live Quiz</h1>
+        <p>Compete in real-time! Who knows the Bible best?</p>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; margin: 0 auto;">
+        <div class="mode-card" onclick="showHostSetup()" style="cursor: pointer;">
+          <div class="mode-icon">👩‍🏫</div>
+          <h2>I'm the Teacher</h2>
+          <p>Host and control the quiz game</p>
+        </div>
+        <div class="mode-card" onclick="showPlayerSetup()" style="cursor: pointer;">
+          <div class="mode-icon">🙋</div>
+          <h2>I'm a Player</h2>
+          <p>Join and answer questions</p>
         </div>
       </div>
     </div>
 
-    <!-- TOAST CONTAINER -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- SETUP SCREEN -->
-    <div id="setupSection">
+    <!-- HOST SETUP -->
+    <div id="hostSetup" class="hidden">
       <div class="page-header">
-        <h1>Team Battle</h1>
-        <p>Create or join a game room and compete with your friends!</p>
+        <h1>Host a Game</h1>
+        <p>Set up the quiz and wait for players to join</p>
       </div>
-
-      <div class="card team-setup">
-        <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary);">Create a New Game</h3>
-
-        <div class="form-group">
-          <label>Your Name</label>
-          <input type="text" id="createPlayerName" placeholder="Enter your name..." maxlength="20">
-        </div>
-        <div class="form-group">
-          <label>Your Team Name</label>
-          <input type="text" id="createTeamName" placeholder="e.g., Bible Stars, Faith Warriors..." maxlength="25">
-        </div>
+      <div class="card" style="max-width: 450px; margin: 0 auto;">
         <div class="form-group">
           <label>Number of Questions</label>
-          <select id="questionCountSelect">
-            <option value="10">10 Questions (Quick)</option>
-            <option value="15" selected>15 Questions (Standard)</option>
-            <option value="20">20 Questions (Long)</option>
-            <option value="30">30 Questions (Marathon)</option>
+          <select id="hostQuestionCount" style="width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px; font-size:1rem;">
+            <option value="10" selected>10 Questions</option>
+            <option value="15">15 Questions</option>
+            <option value="20">20 Questions</option>
+            <option value="30">30 Questions</option>
           </select>
         </div>
         <div class="form-group">
-          <label>Time Per Question (seconds)</label>
-          <select id="timeSelect">
+          <label>Time Per Question</label>
+          <select id="hostTimeLimit" style="width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px; font-size:1rem;">
             <option value="15">15 seconds (Fast!)</option>
             <option value="20" selected>20 seconds (Standard)</option>
             <option value="30">30 seconds (Relaxed)</option>
           </select>
         </div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="createGame()">Create Game</button>
+        <button class="btn btn-sm" style="margin-top:10px; background:#dfe6e9; color:var(--text-light); display:block; width:100%;" onclick="showSection('roleSection')">Back</button>
+      </div>
+    </div>
 
-        <button class="btn btn-primary btn-block btn-lg" onclick="createRoom()">Create Game Room</button>
-
-        <div class="or-divider"><span>OR</span></div>
-
-        <h3 style="text-align: center; margin-bottom: 20px; color: var(--secondary);">Join a Game</h3>
-
+    <!-- PLAYER SETUP -->
+    <div id="playerSetup" class="hidden">
+      <div class="page-header">
+        <h1>Join a Game</h1>
+        <p>Select your name and enter the room code</p>
+      </div>
+      <div class="card" style="max-width: 450px; margin: 0 auto; text-align: center;">
         <div class="form-group">
           <label>Your Name</label>
-          <input type="text" id="joinPlayerName" placeholder="Enter your name..." maxlength="20">
+          <select id="playerNameSelect" style="width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px; font-size:1.1rem; text-align:center;" onchange="handlePlayerNameSelect()">
+            <option value="">-- Choose your name --</option>
+            <option value="Caleb">Caleb</option>
+            <option value="Karson">Karson</option>
+            <option value="Glenda">Glenda</option>
+            <option value="Erlyssa">Erlyssa</option>
+            <option value="Israel">Israel</option>
+            <option value="other">Someone else</option>
+          </select>
         </div>
-        <div class="form-group">
-          <label>Your Team Name</label>
-          <input type="text" id="joinTeamName" placeholder="Enter or create a team name..." maxlength="25">
+        <div class="form-group" id="playerOtherName" style="display:none;">
+          <input type="text" id="playerOtherInput" placeholder="Type your name..." maxlength="20"
+            style="text-align:center; font-size:1.1rem; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
         </div>
         <div class="form-group">
           <label>Room Code</label>
-          <input type="text" id="joinRoomCode" placeholder="Enter 5-letter code..." maxlength="5" style="text-transform: uppercase; letter-spacing: 5px; font-size: 1.3rem; text-align: center; font-weight: 700;">
+          <input type="text" id="roomCodeInput" placeholder="Enter code..." maxlength="5"
+            style="text-transform:uppercase; letter-spacing:8px; font-size:1.5rem; text-align:center; font-weight:800; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
         </div>
-
-        <button class="btn btn-secondary btn-block btn-lg" onclick="joinRoom()">Join Game</button>
+        <button class="btn btn-secondary btn-block btn-lg" onclick="joinGame()">Join Game</button>
+        <button class="btn btn-sm" style="margin-top:10px; background:#dfe6e9; color:var(--text-light); display:block; width:100%;" onclick="showSection('roleSection')">Back</button>
       </div>
     </div>
 
-    <!-- WAITING ROOM -->
-    <div id="waitingSection" class="hidden">
+    <!-- LOBBY (host and players see this) -->
+    <div id="lobbySection" class="hidden">
       <div class="page-header">
         <h1>Game Lobby</h1>
-        <p>Share the room code with your friends!</p>
+        <p id="lobbySubtitle">Waiting for players...</p>
       </div>
+      <div class="card text-center">
+        <p style="color:var(--text-light); margin-bottom:8px;">Room Code:</p>
+        <div style="font-size:3rem; font-weight:900; letter-spacing:8px; color:var(--primary); background:var(--bg-light); padding:20px 40px; border-radius:16px; display:inline-block;" id="lobbyRoomCode">-----</div>
+        <p style="font-size:0.85rem; color:var(--text-light); margin-top:8px;">Share this code with the players!</p>
 
-      <div class="card waiting-room">
-        <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 10px;">Room Code:</p>
-        <div class="room-code-display" id="roomCodeDisplay">-----</div>
-        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 8px;">Tell your friends to enter this code to join!</p>
-
-        <div style="margin: 25px 0;">
-          <h3 style="margin-bottom: 15px;">Teams & Players</h3>
-          <div class="teams-list" id="teamsList"></div>
+        <div style="margin:25px 0;">
+          <h3 style="margin-bottom:15px;">Players</h3>
+          <div id="lobbyPlayers" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;"></div>
         </div>
 
-        <div id="hostControls" class="hidden">
-          <p style="color: var(--text-light); margin-bottom: 15px;">You are the host. Start when everyone is ready!</p>
+        <div id="hostStartBtn" class="hidden">
           <button class="btn btn-success btn-lg" onclick="startGame()">Start Game!</button>
         </div>
-
-        <div id="guestMessage" class="hidden">
-          <p style="color: var(--text-light);">Waiting for the host to start the game...</p>
+        <div id="playerWaiting" class="hidden">
+          <p style="color:var(--text-light);">Waiting for the teacher to start...</p>
         </div>
       </div>
     </div>
 
-    <!-- TEAM QUIZ AREA -->
-    <div id="teamQuizSection" class="hidden">
-      <!-- Live Scores -->
-      <div class="live-scores" id="liveScores"></div>
+    <!-- LIVE QUIZ -->
+    <div id="quizSection" class="hidden">
+      <!-- Live scores strip -->
+      <div id="liveScores" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:15px;"></div>
 
       <div class="quiz-header">
         <div class="quiz-progress">
-          <span id="tQuestionCount">1/15</span>
+          <span id="qCount">1/10</span>
           <div class="progress-bar-container">
-            <div class="progress-bar" id="tProgressBar" style="width: 0%"></div>
+            <div class="progress-bar" id="qProgress" style="width:0%"></div>
           </div>
         </div>
-        <div class="quiz-timer" id="tTimerDisplay">20</div>
+        <div id="answeredCount" style="font-size:0.9rem; color:white; font-weight:600;"></div>
+        <div class="quiz-timer" id="qTimer">20</div>
       </div>
 
       <div class="question-card">
-        <div class="question-meta" id="tQuestionMeta"></div>
-        <div class="question-text" id="tQuestionText"></div>
-        <div class="options-grid" id="tOptionsGrid"></div>
-        <div class="explanation-box" id="tExplanationBox">
+        <div class="question-meta" id="qMeta"></div>
+        <div class="question-text" id="qText"></div>
+        <div class="options-grid" id="qOptions"></div>
+        <div class="explanation-box" id="qExplanation">
           <h4>Did you know?</h4>
-          <p id="tExplanationText"></p>
-          <div class="ref" id="tExplanationRef"></div>
+          <p id="qExplanationText"></p>
+          <div class="ref" id="qExplanationRef"></div>
         </div>
       </div>
 
-      <div id="teamAnswerStatus" class="text-center" style="margin-top: 15px;">
-        <p id="answerStatusText" style="color: white; font-weight: 600;"></p>
-      </div>
-
-      <!-- Mini Scoreboard after each question -->
-      <div id="miniScoreboard" class="card hidden" style="margin-top: 15px;">
-        <h4 style="text-align: center; margin-bottom: 10px;">Scoreboard</h4>
-        <table class="scoreboard" id="miniScoreTable">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Team</th>
-              <th>Score</th>
-              <th>Last Answer</th>
-            </tr>
-          </thead>
-          <tbody id="miniScoreBody"></tbody>
-        </table>
+      <!-- Mini scoreboard after answer reveal -->
+      <div id="miniScoreboard" class="card hidden" style="margin-top:15px;">
+        <h4 style="text-align:center; margin-bottom:10px;">Scoreboard</h4>
+        <div id="miniScoreRows"></div>
       </div>
     </div>
 
     <!-- FINAL RESULTS -->
-    <div id="finalResultsSection" class="hidden">
+    <div id="resultsSection" class="hidden">
       <div class="page-header">
         <h1>Game Over!</h1>
-        <p>Here are the final results...</p>
       </div>
-
       <div class="card results-card">
         <div class="trophy">🏆</div>
-        <h2 id="winnerAnnouncement">And the winner is...</h2>
+        <h2 id="winnerText">And the winner is...</h2>
 
-        <table class="scoreboard" id="finalScoreTable" style="margin-top: 20px;">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Team</th>
-              <th>Players</th>
-              <th>Correct</th>
-              <th>Score</th>
-            </tr>
-          </thead>
-          <tbody id="finalScoreBody"></tbody>
-        </table>
+        <div id="finalScoreRows" style="margin-top:20px;"></div>
 
-        <div id="finalTipsBox" class="explanation-box show" style="text-align: left; margin-top: 25px;">
-          <h4>Tips to Improve Next Time</h4>
-          <ul id="finalTipsList" style="padding-left: 18px; line-height: 1.8;"></ul>
+        <div class="result-actions" style="margin-top:25px;">
+          <button class="btn btn-primary btn-lg" id="playAgainBtn" style="display:none;" onclick="playAgain()">Play Again</button>
+          <a href="index.html" class="btn btn-gold">Home</a>
         </div>
+      </div>
+    </div>
 
-        <div class="result-actions">
-          <button class="btn btn-primary btn-lg" onclick="playAgain()">Play Again</button>
-          <a href="index.html" class="btn btn-gold btn-lg">Home</a>
-        </div>
+    <!-- HOST LEFT -->
+    <div id="hostLeftSection" class="hidden">
+      <div class="card text-center" style="padding:40px;">
+        <div style="font-size:3rem; margin-bottom:15px;">👋</div>
+        <h2>Teacher has left the game</h2>
+        <p style="color:var(--text-light); margin:15px 0;">The game session has ended.</p>
+        <a href="team-play.html" class="btn btn-primary btn-lg">Back to Start</a>
       </div>
     </div>
   </div>
 
   <script>
-    // If on GitHub Pages, show the redirect notice instead of the game UI
+    // ============ DETECT ENVIRONMENT ============
     if (isGitHubPages) {
       document.getElementById('ghPagesNotice').classList.remove('hidden');
-      document.getElementById('setupSection').classList.add('hidden');
+      document.getElementById('roleSection').classList.add('hidden');
       document.getElementById('renderLink').href = RENDER_URL + '/team-play.html';
-    } else {
-      // Load Socket.io and team-play.js dynamically when on the actual server
-      const sioScript = document.createElement('script');
-      sioScript.src = '/socket.io/socket.io.js';
-      sioScript.onload = function() {
-        const tpScript = document.createElement('script');
-        tpScript.src = 'js/team-play.js';
-        document.body.appendChild(tpScript);
+    }
+
+    // ============ STATE ============
+    let socket = null;
+    let isHost = false;
+    let myName = '';
+    let roomCode = '';
+    let currentQuestionData = null;
+    let timerInterval = null;
+    let answered = false;
+
+    const catNames = {
+      esther: '👑 Esther', ruth: '🌾 Ruth', hannah: '🙏 Hannah',
+      abigail: '🕊️ Abigail', deborah: '⚔️ Deborah', mary_elizabeth: '⭐ Mary & Elizabeth'
+    };
+
+    function connectSocket() {
+      if (socket) return;
+      const script = document.createElement('script');
+      script.src = '/socket.io/socket.io.js';
+      script.onload = () => {
+        socket = io();
+        setupSocketEvents();
       };
-      document.body.appendChild(sioScript);
+      document.head.appendChild(script);
+    }
+
+    function setupSocketEvents() {
+      socket.on('room-created', ({ roomCode: code }) => {
+        roomCode = code;
+        isHost = true;
+        showLobby();
+      });
+
+      socket.on('joined-game', ({ roomCode: code, playerName, players }) => {
+        roomCode = code;
+        myName = playerName;
+        showLobby();
+        showToast(`You joined the game as ${playerName}!`, 'success');
+      });
+
+      socket.on('players-updated', ({ players }) => {
+        renderLobbyPlayers(players);
+      });
+
+      socket.on('error-msg', ({ message }) => {
+        showToast(message, 'error');
+      });
+
+      socket.on('game-started', ({ totalQuestions, timePerQuestion, players }) => {
+        showSection('quizSection');
+        showToast('Game started! Good luck!', 'success');
+      });
+
+      socket.on('new-question', ({ questionNumber, totalQuestions, question, timeLimit }) => {
+        currentQuestionData = question;
+        answered = false;
+        renderQuestion(question, questionNumber, totalQuestions, timeLimit);
+      });
+
+      socket.on('player-answered', ({ playerName, answeredCount, totalPlayers }) => {
+        document.getElementById('answeredCount').textContent = `${answeredCount}/${totalPlayers} answered`;
+      });
+
+      socket.on('answer-revealed', ({ correctAnswer, explanation, reference, scoreboard }) => {
+        clearInterval(timerInterval);
+        revealAnswer(correctAnswer, explanation, reference, scoreboard);
+      });
+
+      socket.on('game-over', ({ scoreboard, totalQuestions }) => {
+        showResults(scoreboard, totalQuestions);
+      });
+
+      socket.on('back-to-lobby', ({ players }) => {
+        showSection('lobbySection');
+        renderLobbyPlayers(players);
+        showToast('Ready for another round!', 'info');
+      });
+
+      socket.on('host-left', ({ message }) => {
+        showSection('hostLeftSection');
+      });
+    }
+
+    // ============ UI ACTIONS ============
+    function showHostSetup() {
+      connectSocket();
+      showSection('hostSetup');
+    }
+
+    function showPlayerSetup() {
+      connectSocket();
+      showSection('playerSetup');
+    }
+
+    function handlePlayerNameSelect() {
+      const val = document.getElementById('playerNameSelect').value;
+      document.getElementById('playerOtherName').style.display = val === 'other' ? 'block' : 'none';
+    }
+
+    function createGame() {
+      const questionCount = parseInt(document.getElementById('hostQuestionCount').value);
+      const timePerQuestion = parseInt(document.getElementById('hostTimeLimit').value);
+      socket.emit('host-game', { questionCount, timePerQuestion });
+    }
+
+    function joinGame() {
+      const selected = document.getElementById('playerNameSelect').value;
+      let name = '';
+      if (!selected) { showToast('Please select your name!', 'error'); return; }
+      if (selected === 'other') {
+        name = document.getElementById('playerOtherInput').value.trim();
+        if (!name) { showToast('Please type your name!', 'error'); return; }
+      } else {
+        name = selected;
+      }
+
+      const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+      if (!code || code.length < 4) { showToast('Enter the room code from your teacher!', 'error'); return; }
+
+      myName = name;
+      socket.emit('join-game', { roomCode: code, playerName: name });
+    }
+
+    function showLobby() {
+      showSection('lobbySection');
+      document.getElementById('lobbyRoomCode').textContent = roomCode;
+      if (isHost) {
+        document.getElementById('hostStartBtn').classList.remove('hidden');
+        document.getElementById('playerWaiting').classList.add('hidden');
+        document.getElementById('lobbySubtitle').textContent = 'Share the room code. Start when everyone is in!';
+      } else {
+        document.getElementById('hostStartBtn').classList.add('hidden');
+        document.getElementById('playerWaiting').classList.remove('hidden');
+        document.getElementById('lobbySubtitle').textContent = 'Waiting for the teacher to start...';
+      }
+    }
+
+    function renderLobbyPlayers(players) {
+      const container = document.getElementById('lobbyPlayers');
+      if (players.length === 0) {
+        container.innerHTML = '<p style="color:var(--text-light);">No players yet...</p>';
+        return;
+      }
+      container.innerHTML = players.map(p => `
+        <div style="padding:12px 20px; background:var(--bg-light); border-radius:50px; font-weight:700; font-size:1rem; display:flex; align-items:center; gap:8px;">
+          <span style="color:var(--success); font-size:1.2rem;">&#x2713;</span>
+          ${p.name}
+        </div>
+      `).join('');
+    }
+
+    function startGame() {
+      socket.emit('start-game');
+    }
+
+    // ============ QUIZ ============
+    function renderQuestion(question, questionNumber, totalQuestions, timeLimit) {
+      document.getElementById('miniScoreboard').classList.add('hidden');
+      document.getElementById('answeredCount').textContent = `0/? answered`;
+      document.getElementById('qExplanation').classList.remove('show');
+
+      document.getElementById('qCount').textContent = `${questionNumber}/${totalQuestions}`;
+      document.getElementById('qProgress').style.width = `${((questionNumber - 1) / totalQuestions) * 100}%`;
+
+      document.getElementById('qMeta').innerHTML = `
+        <span class="badge badge-category">${catNames[question.category] || question.category}</span>
+        <span class="badge badge-${question.difficulty}">${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}</span>
+      `;
+      document.getElementById('qText').textContent = question.question;
+
+      const grid = document.getElementById('qOptions');
+      grid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      question.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+        btn.onclick = () => submitAnswer(i);
+        grid.appendChild(btn);
+      });
+
+      startTimer(timeLimit);
+    }
+
+    function submitAnswer(idx) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      document.querySelectorAll('#qOptions .option-btn').forEach((btn, i) => {
+        btn.classList.add('disabled');
+        if (i === idx) btn.classList.add('selected');
+      });
+
+      socket.emit('submit-answer', { questionId: currentQuestionData.id, answerIndex: idx });
+    }
+
+    function revealAnswer(correctAnswer, explanation, reference, scoreboard) {
+      const buttons = document.querySelectorAll('#qOptions .option-btn');
+      buttons.forEach((btn, i) => {
+        btn.classList.add('disabled');
+        if (i === correctAnswer) btn.classList.add('correct');
+        if (btn.classList.contains('selected') && i !== correctAnswer) btn.classList.add('wrong');
+      });
+
+      document.getElementById('qExplanationText').textContent = explanation;
+      document.getElementById('qExplanationRef').textContent = `Reference: ${reference}`;
+      document.getElementById('qExplanation').classList.add('show');
+
+      renderMiniScoreboard(scoreboard);
+      renderLiveScores(scoreboard);
+    }
+
+    function renderMiniScoreboard(scoreboard) {
+      const container = document.getElementById('miniScoreRows');
+      const rankEmojis = ['🥇', '🥈', '🥉'];
+      container.innerHTML = scoreboard.map((p, i) => {
+        const rank = i < 3 ? rankEmojis[i] : `#${i + 1}`;
+        const last = p.lastAnswer;
+        let statusText = '—';
+        let statusColor = 'var(--text-light)';
+        if (last) {
+          if (last.answerIndex === -1) { statusText = 'No answer'; }
+          else if (last.isCorrect) { statusText = `+${last.points}`; statusColor = 'var(--success)'; }
+          else { statusText = 'Wrong'; statusColor = 'var(--danger)'; }
+        }
+        const isMe = p.name === myName;
+        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 14px; background:${i === 0 ? '#fff9e6' : 'var(--bg-light)'}; border-radius:10px; margin-bottom:6px; ${isMe ? 'font-weight:800; border-left:4px solid var(--primary);' : ''}">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:1.2rem;">${rank}</span>
+            <span>${p.name}${isMe ? ' (you)' : ''}</span>
+          </div>
+          <div style="display:flex; gap:15px; align-items:center;">
+            <span style="color:${statusColor}; font-size:0.85rem;">${statusText}</span>
+            <span style="font-weight:800; color:var(--primary);">${p.score} pts</span>
+          </div>
+        </div>`;
+      }).join('');
+      document.getElementById('miniScoreboard').classList.remove('hidden');
+    }
+
+    function renderLiveScores(scoreboard) {
+      const container = document.getElementById('liveScores');
+      const maxScore = Math.max(...scoreboard.map(p => p.score));
+      container.innerHTML = scoreboard.map(p => {
+        const isLeading = p.score === maxScore && maxScore > 0;
+        const isMe = p.name === myName;
+        return `<div style="padding:6px 14px; border-radius:50px; background:${isLeading ? 'rgba(253,203,110,0.3)' : 'rgba(255,255,255,0.2)'}; color:white; font-weight:700; font-size:0.85rem; ${isLeading ? 'border:2px solid var(--gold);' : ''} ${isMe ? 'text-decoration:underline;' : ''}">${p.name}: ${p.score}</div>`;
+      }).join('');
+    }
+
+    function startTimer(seconds) {
+      let timeLeft = seconds;
+      const display = document.getElementById('qTimer');
+      display.textContent = timeLeft;
+      display.className = 'quiz-timer';
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        display.textContent = timeLeft;
+        if (timeLeft <= 5) display.className = 'quiz-timer danger';
+        else if (timeLeft <= 10) display.className = 'quiz-timer warning';
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          if (!answered) {
+            answered = true;
+            document.querySelectorAll('#qOptions .option-btn').forEach(btn => btn.classList.add('disabled'));
+          }
+        }
+      }, 1000);
+    }
+
+    // ============ RESULTS ============
+    function showResults(scoreboard, totalQuestions) {
+      showSection('resultsSection');
+      if (isHost) document.getElementById('playAgainBtn').style.display = 'inline-block';
+
+      const winner = scoreboard[0];
+      document.getElementById('winnerText').textContent = `${winner.name} wins with ${winner.score} points!`;
+
+      const rankEmojis = ['🥇', '🥈', '🥉'];
+      document.getElementById('finalScoreRows').innerHTML = scoreboard.map((p, i) => {
+        const rank = i < 3 ? rankEmojis[i] : `#${i + 1}`;
+        const pct = Math.round((p.correctAnswers / totalQuestions) * 100);
+        const isMe = p.name === myName;
+        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; background:${i === 0 ? '#fff9e6' : i === 1 ? '#f0f0f0' : i === 2 ? '#fde8d0' : 'var(--bg-light)'}; border-radius:12px; margin-bottom:8px; ${isMe ? 'border-left:5px solid var(--primary); font-weight:800;' : ''}">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:1.5rem;">${rank}</span>
+            <span style="font-size:1.1rem;">${p.name}${isMe ? ' (you)' : ''}</span>
+          </div>
+          <div style="display:flex; gap:15px; align-items:center;">
+            <span style="font-size:0.9rem;">${p.correctAnswers}/${totalQuestions} (${pct}%)</span>
+            <span style="font-weight:900; color:var(--primary); font-size:1.3rem;">${p.score}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      // Confetti for everyone
+      launchConfetti();
+    }
+
+    function playAgain() {
+      socket.emit('play-again');
+    }
+
+    // ============ HELPERS ============
+    function showSection(id) {
+      ['roleSection', 'hostSetup', 'playerSetup', 'lobbySection', 'quizSection', 'resultsSection', 'hostLeftSection', 'ghPagesNotice'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      toast.textContent = message;
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 4000);
+    }
+
+    function launchConfetti() {
+      const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43'];
+      for (let i = 0; i < 80; i++) {
+        setTimeout(() => {
+          const piece = document.createElement('div');
+          piece.className = 'confetti-piece';
+          piece.style.left = Math.random() * 100 + 'vw';
+          piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          piece.style.width = (Math.random() * 8 + 5) + 'px';
+          piece.style.height = (Math.random() * 8 + 5) + 'px';
+          piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 4000);
+        }, i * 30);
+      }
     }
   </script>
 </body>

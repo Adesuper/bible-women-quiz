@@ -397,56 +397,62 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', questions: questionsData.questions.length, students: Object.keys(tracker.students).length });
 });
 
-// ============ TEAM PLAY (Socket.io) — unchanged from before ============
+// ============ LIVE QUIZ (Socket.io) — Individual players, teacher hosts ============
 const rooms = new Map();
 
 io.on('connection', (socket) => {
-  socket.on('create-room', ({ playerName, teamName, questionCount, timePerQuestion, categories }) => {
+
+  // Teacher creates a game room
+  socket.on('host-game', ({ questionCount, timePerQuestion }) => {
     const roomCode = generateRoomCode();
     const room = {
-      code: roomCode, host: socket.id,
-      teams: [{ id: uuidv4(), name: teamName, players: [{ id: socket.id, name: playerName, isHost: true }], score: 0, answers: [] }],
-      settings: { questionCount: questionCount || 15, timePerQuestion: timePerQuestion || 20, categories: categories || 'all' },
-      state: 'waiting', currentQuestion: -1, questions: [], startTime: null, questionTimer: null, questionDeadline: null
+      code: roomCode,
+      host: socket.id,
+      players: [],  // { id, name, score, answers[] }
+      settings: { questionCount: questionCount || 10, timePerQuestion: timePerQuestion || 20 },
+      state: 'waiting',
+      currentQuestion: -1,
+      questions: [],
+      questionTimer: null,
+      questionDeadline: null
     };
     rooms.set(roomCode, room);
     socket.join(roomCode);
     socket.roomCode = roomCode;
-    socket.teamId = room.teams[0].id;
-    socket.emit('room-created', { roomCode, room: sanitizeRoom(room) });
+    socket.emit('room-created', { roomCode, players: [] });
   });
 
-  socket.on('join-room', ({ roomCode, playerName, teamName }) => {
+  // Kid joins with their name
+  socket.on('join-game', ({ roomCode, playerName }) => {
     const code = roomCode.toUpperCase();
     const room = rooms.get(code);
-    if (!room) return socket.emit('error-msg', { message: 'Room not found!' });
-    if (room.state !== 'waiting') return socket.emit('error-msg', { message: 'Game in progress!' });
-    let team = room.teams.find(t => t.name.toLowerCase() === teamName.toLowerCase());
-    if (team) {
-      if (team.players.length >= 5) return socket.emit('error-msg', { message: 'Team full!' });
-      team.players.push({ id: socket.id, name: playerName, isHost: false });
-    } else {
-      if (room.teams.length >= 10) return socket.emit('error-msg', { message: 'Max teams reached!' });
-      team = { id: uuidv4(), name: teamName, players: [{ id: socket.id, name: playerName, isHost: false }], score: 0, answers: [] };
-      room.teams.push(team);
+    if (!room) return socket.emit('error-msg', { message: 'Room not found! Check the code and try again.' });
+    if (room.state !== 'waiting') return socket.emit('error-msg', { message: 'Game already started! Wait for the next round.' });
+    if (room.players.find(p => p.name.toLowerCase() === playerName.toLowerCase())) {
+      return socket.emit('error-msg', { message: `${playerName} is already in the game!` });
     }
-    socket.join(code); socket.roomCode = code; socket.teamId = team.id;
-    socket.emit('room-joined', { roomCode: code, room: sanitizeRoom(room), teamId: team.id });
-    io.to(code).emit('room-updated', sanitizeRoom(room));
-    io.to(code).emit('player-joined', { playerName, teamName: team.name, totalPlayers: room.teams.reduce((s, t) => s + t.players.length, 0) });
+    if (room.players.length >= 10) return socket.emit('error-msg', { message: 'Game is full!' });
+
+    const player = { id: socket.id, name: playerName, score: 0, answers: [] };
+    room.players.push(player);
+    socket.join(code);
+    socket.roomCode = code;
+
+    socket.emit('joined-game', { roomCode: code, playerName, players: room.players.map(p => p.name) });
+    io.to(code).emit('players-updated', { players: room.players.map(p => ({ name: p.name, connected: true })) });
   });
 
+  // Teacher starts the game
   socket.on('start-game', () => {
     const room = rooms.get(socket.roomCode);
     if (!room || room.host !== socket.id) return;
+    if (room.players.length === 0) return socket.emit('error-msg', { message: 'No players have joined yet!' });
+
+    // Pick balanced questions
     let qs = [...questionsData.questions];
-    if (room.settings.categories !== 'all') {
-      const cats = room.settings.categories.split(',');
-      qs = qs.filter(q => cats.includes(q.category));
-    }
     const grouped = {};
     qs.forEach(q => { if (!grouped[q.category]) grouped[q.category] = []; grouped[q.category].push(q); });
-    Object.values(grouped).forEach(arr => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } });
+    Object.values(grouped).forEach(arr => shuffleArray(arr));
     const balanced = [];
     const catKeys = Object.keys(grouped);
     let ci = 0;
@@ -457,78 +463,146 @@ io.on('connection', (socket) => {
       ci++;
     }
     shuffleArray(balanced);
-    room.questions = balanced; room.state = 'playing'; room.currentQuestion = 0; room.startTime = Date.now();
-    room.teams.forEach(t => { t.score = 0; t.answers = []; });
-    io.to(room.code).emit('game-started', { totalQuestions: balanced.length, timePerQuestion: room.settings.timePerQuestion });
-    sendQuestion(room);
+
+    room.questions = balanced;
+    room.state = 'playing';
+    room.currentQuestion = 0;
+    room.players.forEach(p => { p.score = 0; p.answers = []; });
+
+    io.to(room.code).emit('game-started', {
+      totalQuestions: balanced.length,
+      timePerQuestion: room.settings.timePerQuestion,
+      players: room.players.map(p => p.name)
+    });
+
+    sendLiveQuestion(room);
   });
 
+  // Player submits answer
   socket.on('submit-answer', ({ questionId, answerIndex }) => {
     const room = rooms.get(socket.roomCode);
     if (!room || room.state !== 'playing') return;
-    const team = room.teams.find(t => t.id === socket.teamId);
-    if (!team) return;
+
+    const player = room.players.find(p => p.id === socket.id);
+    if (!player) return;
+
     const currentQ = room.questions[room.currentQuestion];
     if (!currentQ || currentQ.id !== questionId) return;
-    if (team.answers.find(a => a.questionId === questionId)) return;
+    if (player.answers.find(a => a.questionId === questionId)) return;
+
     const isCorrect = answerIndex === currentQ.correct;
     const timeBonus = Math.max(0, room.questionDeadline - Date.now());
     const diffBonus = currentQ.difficulty === 'hard' ? 50 : currentQ.difficulty === 'medium' ? 25 : 0;
     const points = isCorrect ? (100 + Math.floor(timeBonus / 100) + diffBonus) : 0;
-    team.answers.push({ questionId, answerIndex, isCorrect, points, answeredBy: socket.id });
-    if (isCorrect) team.score += points;
-    io.to(room.code).emit('answer-received', { teamId: team.id, teamName: team.name, isCorrect, points, answerIndex });
-    if (room.teams.every(t => t.answers.find(a => a.questionId === questionId))) { clearTimeout(room.questionTimer); revealAnswer(room); }
+
+    player.answers.push({ questionId, answerIndex, isCorrect, points });
+    if (isCorrect) player.score += points;
+
+    // Tell everyone this player answered (but not what they picked)
+    io.to(room.code).emit('player-answered', { playerName: player.name, answeredCount: room.players.filter(p => p.answers.find(a => a.questionId === questionId)).length, totalPlayers: room.players.length });
+
+    // Check if all players answered
+    if (room.players.every(p => p.answers.find(a => a.questionId === questionId))) {
+      clearTimeout(room.questionTimer);
+      revealLiveAnswer(room);
+    }
+  });
+
+  // Teacher requests play again
+  socket.on('play-again', () => {
+    const room = rooms.get(socket.roomCode);
+    if (!room || room.host !== socket.id) return;
+    room.state = 'waiting';
+    room.currentQuestion = -1;
+    room.questions = [];
+    room.players.forEach(p => { p.score = 0; p.answers = []; });
+    io.to(room.code).emit('back-to-lobby', { players: room.players.map(p => ({ name: p.name, connected: true })) });
   });
 
   socket.on('disconnect', () => {
-    const rc = socket.roomCode; if (!rc) return;
-    const room = rooms.get(rc); if (!room) return;
-    room.teams.forEach(t => { t.players = t.players.filter(p => p.id !== socket.id); });
-    room.teams = room.teams.filter(t => t.players.length > 0);
-    if (room.teams.length === 0) { if (room.questionTimer) clearTimeout(room.questionTimer); rooms.delete(rc); return; }
-    if (room.host === socket.id && room.teams.length > 0) {
-      room.host = room.teams[0].players[0].id; room.teams[0].players[0].isHost = true;
-      io.to(rc).emit('new-host', { hostId: room.host, hostName: room.teams[0].players[0].name });
+    const rc = socket.roomCode;
+    if (!rc) return;
+    const room = rooms.get(rc);
+    if (!room) return;
+
+    // Remove player
+    room.players = room.players.filter(p => p.id !== socket.id);
+
+    // If host left, delete room
+    if (room.host === socket.id) {
+      if (room.questionTimer) clearTimeout(room.questionTimer);
+      io.to(rc).emit('host-left', { message: 'The teacher has left. Game ended.' });
+      rooms.delete(rc);
+      return;
     }
-    io.to(rc).emit('room-updated', sanitizeRoom(room));
+
+    // Update player list
+    io.to(rc).emit('players-updated', { players: room.players.map(p => ({ name: p.name, connected: true })) });
   });
 });
 
-function sendQuestion(room) {
+function sendLiveQuestion(room) {
   const q = room.questions[room.currentQuestion];
-  if (!q) { endGame(room); return; }
+  if (!q) { endLiveGame(room); return; }
+
   const timeMs = room.settings.timePerQuestion * 1000;
   room.questionDeadline = Date.now() + timeMs;
+
   io.to(room.code).emit('new-question', {
-    questionNumber: room.currentQuestion + 1, totalQuestions: room.questions.length,
+    questionNumber: room.currentQuestion + 1,
+    totalQuestions: room.questions.length,
     question: { id: q.id, category: q.category, difficulty: q.difficulty, question: q.question, options: q.options, reference: q.reference },
     timeLimit: room.settings.timePerQuestion
   });
-  room.questionTimer = setTimeout(() => revealAnswer(room), timeMs + 1000);
+
+  room.questionTimer = setTimeout(() => revealLiveAnswer(room), timeMs + 1000);
 }
 
-function revealAnswer(room) {
-  const q = room.questions[room.currentQuestion]; if (!q) return;
-  room.teams.forEach(t => { if (!t.answers.find(a => a.questionId === q.id)) t.answers.push({ questionId: q.id, answerIndex: -1, isCorrect: false, points: 0, answeredBy: null }); });
-  const scoreboard = room.teams.map(t => ({ teamId: t.id, teamName: t.name, score: t.score, lastAnswer: t.answers.find(a => a.questionId === q.id), playerCount: t.players.length })).sort((a, b) => b.score - a.score);
-  io.to(room.code).emit('answer-revealed', { correctAnswer: q.correct, explanation: q.explanation, reference: q.reference, scoreboard });
-  setTimeout(() => { room.currentQuestion++; if (room.currentQuestion < room.questions.length) sendQuestion(room); else endGame(room); }, 6000);
-}
+function revealLiveAnswer(room) {
+  const q = room.questions[room.currentQuestion];
+  if (!q) return;
 
-function endGame(room) {
-  room.state = 'results';
-  const scoreboard = room.teams.map(t => ({
-    teamId: t.id, teamName: t.name, score: t.score, correctAnswers: t.answers.filter(a => a.isCorrect).length,
-    totalQuestions: room.questions.length, playerCount: t.players.length, players: t.players.map(p => p.name)
+  // Mark players who didn't answer
+  room.players.forEach(p => {
+    if (!p.answers.find(a => a.questionId === q.id)) {
+      p.answers.push({ questionId: q.id, answerIndex: -1, isCorrect: false, points: 0 });
+    }
+  });
+
+  // Build scoreboard sorted by score
+  const scoreboard = room.players.map(p => ({
+    name: p.name,
+    score: p.score,
+    lastAnswer: p.answers.find(a => a.questionId === q.id)
   })).sort((a, b) => b.score - a.score);
-  const tips = ['Read a chapter together daily!', 'Speed matters — faster correct answers earn more points!', 'Review explanations for extra details!'];
-  io.to(room.code).emit('game-over', { scoreboard, tips, totalQuestions: room.questions.length });
-  room.state = 'waiting'; room.currentQuestion = -1; room.questions = [];
+
+  io.to(room.code).emit('answer-revealed', {
+    correctAnswer: q.correct,
+    explanation: q.explanation,
+    reference: q.reference,
+    scoreboard
+  });
+
+  setTimeout(() => {
+    room.currentQuestion++;
+    if (room.currentQuestion < room.questions.length) sendLiveQuestion(room);
+    else endLiveGame(room);
+  }, 6000);
 }
 
-function sanitizeRoom(room) {
-  return { code: room.code, teams: room.teams.map(t => ({ id: t.id, name: t.name, players: t.players.map(p => ({ id: p.id, name: p.name, isHost: p.isHost })), score: t.score })), settings: room.settings, state: room.state, host: room.host };
+function endLiveGame(room) {
+  room.state = 'results';
+  const scoreboard = room.players.map(p => ({
+    name: p.name,
+    score: p.score,
+    correctAnswers: p.answers.filter(a => a.isCorrect).length,
+    totalQuestions: room.questions.length
+  })).sort((a, b) => b.score - a.score);
+
+  io.to(room.code).emit('game-over', {
+    scoreboard,
+    totalQuestions: room.questions.length
+  });
 }
 
 // Cleanup stale rooms
