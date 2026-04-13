@@ -141,17 +141,28 @@
           const rows = data.todayScores.map((s, i) => {
             const statusIcon = s.completed ? '&#10004;' : '&#10060;';
             const statusClass = s.completed ? 'color: var(--success)' : 'color: var(--danger)';
-            const pct = s.completed ? `${s.correct}/${s.total} (${s.percentage}%)` : 'Not done';
+
+            let attemptsHTML = '';
+            if (s.attempts && s.attempts.length > 0) {
+              attemptsHTML = s.attempts.map(a => {
+                const pct = Math.round((a.correct / a.total) * 100);
+                return `<div style="font-size: 0.85rem; color: var(--text-light); padding: 4px 0;">
+                  Attempt ${a.attempt}: <strong>${a.correct}/${a.total}</strong> (${pct}%) — <strong style="color: var(--primary);">${a.score} pts</strong>
+                </div>`;
+              }).join('');
+            }
+
             return `
-              <div class="score-row" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--bg-light); border-radius: 10px; margin-bottom: 8px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <span style="${statusClass}; font-size: 1.2rem;">${statusIcon}</span>
-                  <strong>${s.name}</strong>
+              <div class="score-row" style="padding: 12px 16px; background: var(--bg-light); border-radius: 10px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="${statusClass}; font-size: 1.2rem;">${statusIcon}</span>
+                    <strong>${s.name}</strong>
+                    <span style="font-size: 0.8rem; color: var(--text-light);">(${s.totalAttempts}/3 attempts)</span>
+                  </div>
+                  <span style="font-weight: 800; color: var(--primary);">${s.completed ? 'Best: ' + s.bestScore + ' pts' : '—'}</span>
                 </div>
-                <div style="display: flex; gap: 20px; align-items: center;">
-                  <span style="color: var(--text-light);">${pct}</span>
-                  <span style="font-weight: 800; color: var(--primary);">${s.completed ? s.score + ' pts' : '—'}</span>
-                </div>
+                ${attemptsHTML ? '<div style="margin-top: 6px; padding-left: 32px;">' + attemptsHTML + '</div>' : ''}
               </div>
             `;
           }).join('');

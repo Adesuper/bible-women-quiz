@@ -191,19 +191,28 @@ app.get('/api/teacher/scores', (req, res) => {
   const students = Object.values(tracker.students);
 
   if (date) {
-    // Scores for a specific date
+    // Scores for a specific date — show all attempts
     const dayScores = students.map(s => {
-      const dayScore = s.scores.find(sc => sc.date === date);
+      const dayAttempts = s.scores.filter(sc => sc.date === date);
+      const bestAttempt = dayAttempts.length > 0
+        ? dayAttempts.reduce((best, curr) => curr.score > best.score ? curr : best, dayAttempts[0])
+        : null;
       return {
         name: s.name,
-        completed: !!dayScore,
-        score: dayScore ? dayScore.score : 0,
-        correct: dayScore ? dayScore.correct : 0,
-        total: dayScore ? dayScore.total : 0,
-        percentage: dayScore ? Math.round((dayScore.correct / dayScore.total) * 100) : 0,
-        completedAt: dayScore ? dayScore.completedAt : null
+        completed: dayAttempts.length > 0,
+        attempts: dayAttempts.map(a => ({
+          attempt: a.attempt || 1,
+          score: a.score,
+          correct: a.correct,
+          total: a.total,
+          percentage: Math.round((a.correct / a.total) * 100),
+          completedAt: a.completedAt
+        })),
+        bestScore: bestAttempt ? bestAttempt.score : 0,
+        bestCorrect: bestAttempt ? bestAttempt.correct : 0,
+        totalAttempts: dayAttempts.length
       };
-    }).sort((a, b) => b.score - a.score);
+    }).sort((a, b) => b.bestScore - a.bestScore);
     return res.json(dayScores);
   }
 
@@ -235,8 +244,19 @@ app.get('/api/teacher/dashboard', (req, res) => {
   const todayAssignment = tracker.assignments[today];
 
   const todayScores = students.map(s => {
-    const dayScore = s.scores.find(sc => sc.date === today);
-    return { name: s.name, completed: !!dayScore, score: dayScore?.score || 0, correct: dayScore?.correct || 0, total: dayScore?.total || 0 };
+    const dayAttempts = s.scores.filter(sc => sc.date === today);
+    const bestAttempt = dayAttempts.length > 0
+      ? dayAttempts.reduce((best, curr) => curr.score > best.score ? curr : best, dayAttempts[0])
+      : null;
+    return {
+      name: s.name,
+      completed: dayAttempts.length > 0,
+      attempts: dayAttempts.map(a => ({ attempt: a.attempt || 1, score: a.score, correct: a.correct, total: a.total })),
+      bestScore: bestAttempt ? bestAttempt.score : 0,
+      bestCorrect: bestAttempt ? bestAttempt.correct : 0,
+      bestTotal: bestAttempt ? bestAttempt.total : 0,
+      totalAttempts: dayAttempts.length
+    };
   });
 
   const completedToday = todayScores.filter(s => s.completed).length;
@@ -297,11 +317,11 @@ app.post('/api/daily/submit', (req, res) => {
   const name = studentName.trim();
   const nameKey = name.toLowerCase();
 
-  // Check if already submitted today
+  // Allow up to 3 attempts per day
   if (tracker.students[nameKey]) {
-    const existing = tracker.students[nameKey].scores.find(s => s.date === targetDate);
-    if (existing) {
-      return res.status(400).json({ message: 'You already completed today\'s assignment!' });
+    const todayAttempts = tracker.students[nameKey].scores.filter(s => s.date === targetDate);
+    if (todayAttempts.length >= 3) {
+      return res.status(400).json({ message: 'You\'ve used all 3 attempts for today! Practice in Free Practice mode to keep studying.' });
     }
   }
 
@@ -333,9 +353,12 @@ app.post('/api/daily/submit', (req, res) => {
   if (!tracker.students[nameKey]) {
     tracker.students[nameKey] = { name, scores: [] };
   }
-  tracker.students[nameKey].name = name; // Update display name
+  tracker.students[nameKey].name = name;
+  const todayAttempts = tracker.students[nameKey].scores.filter(s => s.date === targetDate);
+  const attemptNum = todayAttempts.length + 1;
   tracker.students[nameKey].scores.push({
     date: targetDate,
+    attempt: attemptNum,
     score,
     correct,
     total,
