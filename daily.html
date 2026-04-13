@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Assignment — Women of the Bible Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-link">&larr; Back to Home</a>
+
+    <!-- NAME ENTRY -->
+    <div id="nameSection">
+      <div class="page-header">
+        <h1>Daily Assignment</h1>
+        <p>Answer today's 10 questions. Your score goes to the teacher!</p>
+      </div>
+      <div class="card name-input-card" style="max-width: 450px; margin: 0 auto; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">📝</div>
+        <h3 style="margin-bottom: 20px;">What is your name?</h3>
+        <div class="form-group">
+          <input type="text" id="studentName" placeholder="Enter your full name..." maxlength="30"
+            style="text-align: center; font-size: 1.2rem;">
+        </div>
+        <button class="btn btn-primary btn-block btn-lg" onclick="startDaily()">Start Assignment</button>
+        <p id="nameError" style="color: var(--danger); margin-top: 10px; display: none;"></p>
+      </div>
+
+      <!-- Public Leaderboard -->
+      <div class="card" style="margin-top: 20px;">
+        <h3 style="text-align: center; margin-bottom: 15px;">Leaderboard</h3>
+        <div id="publicLeaderboard">
+          <p style="color: var(--text-light); text-align: center;">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- NO ASSIGNMENT -->
+    <div id="noAssignment" class="hidden">
+      <div class="page-header">
+        <h1>No Assignment Today</h1>
+        <p>Your teacher hasn't created today's assignment yet.</p>
+      </div>
+      <div class="card text-center" style="padding: 40px;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">📚</div>
+        <p style="color: var(--text-light); margin-bottom: 20px;">Check back later, or practice on your own!</p>
+        <a href="practice.html" class="btn btn-primary btn-lg">Practice Mode</a>
+      </div>
+    </div>
+
+    <!-- ALREADY DONE -->
+    <div id="alreadyDone" class="hidden">
+      <div class="page-header">
+        <h1>Already Completed!</h1>
+        <p>You've finished today's assignment. Great job!</p>
+      </div>
+      <div class="card text-center" style="padding: 40px;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">&#x2705;</div>
+        <p style="color: var(--text-light); margin-bottom: 20px;">Come back tomorrow for a new challenge, or keep practicing!</p>
+        <a href="practice.html" class="btn btn-primary btn-lg">Practice More</a>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div id="quizSection" class="hidden">
+      <div class="quiz-header">
+        <div class="quiz-progress">
+          <span id="qCount">1/10</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="qProgress" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="quiz-timer" id="qTimer">20</div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-meta" id="qMeta"></div>
+        <div class="question-text" id="qText"></div>
+        <div class="options-grid" id="qOptions"></div>
+      </div>
+
+      <div class="text-center" id="qNextBtn" style="display: none;">
+        <button class="btn btn-primary btn-lg" onclick="nextQ()">Next Question &rarr;</button>
+      </div>
+    </div>
+
+    <!-- SUBMITTING -->
+    <div id="submittingSection" class="hidden">
+      <div class="card text-center" style="padding: 50px;">
+        <div style="font-size: 3rem; margin-bottom: 15px;">&#x23F3;</div>
+        <h2>Submitting your answers...</h2>
+        <p style="color: var(--text-light);">Please wait while we grade your quiz!</p>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="resultsSection" class="hidden">
+      <div class="card results-card">
+        <div class="trophy" id="rEmoji">&#x1F3C6;</div>
+        <h2 id="rTitle">Great Job!</h2>
+        <div class="score-display" id="rScore">0</div>
+        <div class="score-label">Your Score</div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="rCorrect">0</div>
+            <div class="stat-label">Correct</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="rTotal">0</div>
+            <div class="stat-label">Total</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="rPercent">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+        </div>
+
+        <p style="color: var(--text-light); margin-top: 15px;">Your score has been sent to your teacher. Keep studying!</p>
+
+        <!-- Show explanations for wrong answers -->
+        <div id="rReview" style="text-align: left; margin-top: 20px;"></div>
+
+        <div class="result-actions">
+          <a href="practice.html" class="btn btn-primary">Practice More</a>
+          <a href="index.html" class="btn btn-gold">Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let studentName = '';
+    let questions = [];
+    let currentIdx = 0;
+    let answers = [];
+    let timerInterval = null;
+    let timeLeft = 20;
+    let answered = false;
+
+    const catNames = {
+      esther: '&#x1F451; Esther', ruth: '&#x1F33E; Ruth', hannah: '&#x1F64F; Hannah',
+      abigail: '&#x1F54A;&#xFE0F; Abigail', deborah: '&#x2694;&#xFE0F; Deborah', mary_elizabeth: '&#x2B50; Mary & Elizabeth'
+    };
+
+    document.getElementById('studentName').addEventListener('keydown', e => {
+      if (e.key === 'Enter') startDaily();
+    });
+
+    // Load leaderboard on page load
+    loadLeaderboard();
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/daily/leaderboard');
+        const data = await res.json();
+        const container = document.getElementById('publicLeaderboard');
+        if (data.length === 0) {
+          container.innerHTML = '<p style="color: var(--text-light); text-align: center;">No scores yet. Be the first to complete today\'s assignment!</p>';
+          return;
+        }
+        const rankEmojis = ['&#x1F947;', '&#x1F948;', '&#x1F949;'];
+        container.innerHTML = data.slice(0, 10).map((s, i) => {
+          const rank = i < 3 ? rankEmojis[i] : `#${i + 1}`;
+          return `<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: ${i < 3 ? '#fff9e6' : 'var(--bg-light)'}; border-radius: 10px; margin-bottom: 6px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 1.1rem;">${rank}</span>
+              <strong>${s.name}</strong>
+            </div>
+            <div style="display: flex; gap: 12px; font-size: 0.85rem;">
+              <span>${s.daysCompleted} days</span>
+              <span>${s.accuracy}%</span>
+              <span style="font-weight: 800; color: var(--primary);">${s.totalScore} pts</span>
+            </div>
+          </div>`;
+        }).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    async function startDaily() {
+      const name = document.getElementById('studentName').value.trim();
+      if (!name || name.length < 2) {
+        document.getElementById('nameError').textContent = 'Please enter your full name (at least 2 characters)';
+        document.getElementById('nameError').style.display = 'block';
+        return;
+      }
+      studentName = name;
+
+      try {
+        const res = await fetch('/api/daily/today');
+        const data = await res.json();
+
+        if (!data.hasAssignment) {
+          showSection('noAssignment');
+          return;
+        }
+
+        questions = data.questions;
+        currentIdx = 0;
+        answers = [];
+        answered = false;
+
+        showSection('quizSection');
+        renderQ();
+      } catch (e) {
+        document.getElementById('nameError').textContent = 'Could not load assignment. Try again.';
+        document.getElementById('nameError').style.display = 'block';
+      }
+    }
+
+    function renderQ() {
+      const q = questions[currentIdx];
+      answered = false;
+
+      document.getElementById('qCount').textContent = `${currentIdx + 1}/${questions.length}`;
+      document.getElementById('qProgress').style.width = `${(currentIdx / questions.length) * 100}%`;
+
+      document.getElementById('qMeta').innerHTML = `
+        <span class="badge badge-category">${catNames[q.category] || q.category}</span>
+        <span class="badge badge-${q.difficulty}">${q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}</span>
+      `;
+      document.getElementById('qText').textContent = q.question;
+
+      const grid = document.getElementById('qOptions');
+      grid.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+        btn.onclick = () => selectAnswer(i);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('qNextBtn').style.display = 'none';
+      startTimer();
+    }
+
+    function selectAnswer(idx) {
+      if (answered) return;
+      answered = true;
+      clearInterval(timerInterval);
+
+      answers.push({ questionId: questions[currentIdx].id, answerIndex: idx });
+
+      // Highlight selected
+      document.querySelectorAll('#qOptions .option-btn').forEach((btn, i) => {
+        btn.classList.add('disabled');
+        if (i === idx) btn.classList.add('selected');
+      });
+
+      document.getElementById('qNextBtn').style.display = 'block';
+    }
+
+    function nextQ() {
+      currentIdx++;
+      if (currentIdx < questions.length) {
+        renderQ();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        submitAnswers();
+      }
+    }
+
+    function startTimer() {
+      timeLeft = 20;
+      const display = document.getElementById('qTimer');
+      display.textContent = timeLeft;
+      display.className = 'quiz-timer';
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        display.textContent = timeLeft;
+        if (timeLeft <= 5) display.className = 'quiz-timer danger';
+        else if (timeLeft <= 10) display.className = 'quiz-timer warning';
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          if (!answered) {
+            answered = true;
+            answers.push({ questionId: questions[currentIdx].id, answerIndex: -1 });
+            document.querySelectorAll('#qOptions .option-btn').forEach(btn => btn.classList.add('disabled'));
+            document.getElementById('qNextBtn').style.display = 'block';
+          }
+        }
+      }, 1000);
+    }
+
+    async function submitAnswers() {
+      showSection('submittingSection');
+
+      try {
+        const res = await fetch('/api/daily/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ studentName, answers })
+        });
+        const data = await res.json();
+
+        if (data.message && data.message.includes('already completed')) {
+          showSection('alreadyDone');
+          return;
+        }
+
+        showSection('resultsSection');
+        document.getElementById('rScore').textContent = data.score;
+        document.getElementById('rCorrect').textContent = data.correct;
+        document.getElementById('rTotal').textContent = data.total;
+        document.getElementById('rPercent').textContent = data.percentage + '%';
+
+        let emoji, title;
+        if (data.percentage >= 90) { emoji = '&#x1F451;'; title = 'Outstanding! You\'re ready for the conference!'; }
+        else if (data.percentage >= 70) { emoji = '&#x1F31F;'; title = 'Great job! Keep studying!'; }
+        else if (data.percentage >= 50) { emoji = '&#x1F4AA;'; title = 'Good effort! Practice makes perfect!'; }
+        else { emoji = '&#x1F4D6;'; title = 'Keep reading! You\'ll improve!'; }
+
+        document.getElementById('rEmoji').innerHTML = emoji;
+        document.getElementById('rTitle').textContent = title;
+
+        // Show review of wrong answers
+        if (data.results) {
+          const wrongOnes = data.results.filter(r => !r.isCorrect);
+          if (wrongOnes.length > 0) {
+            const reviewHTML = '<h3 style="margin-bottom: 12px;">Review Wrong Answers</h3>' +
+              wrongOnes.map(r => {
+                const q = questions.find(qu => qu.id === r.questionId);
+                if (!q) return '';
+                const letters = ['A', 'B', 'C', 'D'];
+                return `<div class="explanation-box show" style="margin-bottom: 10px;">
+                  <h4>${q.question}</h4>
+                  <p><strong>Correct answer:</strong> ${letters[r.correctAnswer]}. ${q.options[r.correctAnswer]}</p>
+                  <p>${r.explanation}</p>
+                  <div class="ref">${r.reference}</div>
+                </div>`;
+              }).join('');
+            document.getElementById('rReview').innerHTML = reviewHTML;
+          }
+        }
+
+        // Confetti for good scores
+        if (data.percentage >= 70) launchConfetti();
+
+      } catch (e) {
+        // Check if it was "already completed"
+        showSection('alreadyDone');
+      }
+    }
+
+    function showSection(id) {
+      ['nameSection', 'noAssignment', 'alreadyDone', 'quizSection', 'submittingSection', 'resultsSection'].forEach(s => {
+        document.getElementById(s).classList.add('hidden');
+      });
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function launchConfetti() {
+      const colors = ['#ff6b6b', '#feca57', '#48dbfb', '#ff9ff3', '#54a0ff', '#5f27cd', '#00d2d3', '#ff9f43'];
+      for (let i = 0; i < 60; i++) {
+        setTimeout(() => {
+          const piece = document.createElement('div');
+          piece.className = 'confetti-piece';
+          piece.style.left = Math.random() * 100 + 'vw';
+          piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+          piece.style.width = (Math.random() * 8 + 5) + 'px';
+          piece.style.height = (Math.random() * 8 + 5) + 'px';
+          piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+          document.body.appendChild(piece);
+          setTimeout(() => piece.remove(), 4000);
+        }, i * 30);
+      }
+    }
+  </script>
+</body>
+</html>
