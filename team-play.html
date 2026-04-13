@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Battle — Women of the Bible Quiz</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Back to Home</a>
+
+    <!-- TOAST CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- SETUP SCREEN -->
+    <div id="setupSection">
+      <div class="page-header">
+        <h1>Team Battle</h1>
+        <p>Create or join a game room and compete with your friends!</p>
+      </div>
+
+      <div class="card team-setup">
+        <h3 style="text-align: center; margin-bottom: 20px; color: var(--primary);">Create a New Game</h3>
+
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="createPlayerName" placeholder="Enter your name..." maxlength="20">
+        </div>
+        <div class="form-group">
+          <label>Your Team Name</label>
+          <input type="text" id="createTeamName" placeholder="e.g., Bible Stars, Faith Warriors..." maxlength="25">
+        </div>
+        <div class="form-group">
+          <label>Number of Questions</label>
+          <select id="questionCountSelect">
+            <option value="10">10 Questions (Quick)</option>
+            <option value="15" selected>15 Questions (Standard)</option>
+            <option value="20">20 Questions (Long)</option>
+            <option value="30">30 Questions (Marathon)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Time Per Question (seconds)</label>
+          <select id="timeSelect">
+            <option value="15">15 seconds (Fast!)</option>
+            <option value="20" selected>20 seconds (Standard)</option>
+            <option value="30">30 seconds (Relaxed)</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary btn-block btn-lg" onclick="createRoom()">Create Game Room</button>
+
+        <div class="or-divider"><span>OR</span></div>
+
+        <h3 style="text-align: center; margin-bottom: 20px; color: var(--secondary);">Join a Game</h3>
+
+        <div class="form-group">
+          <label>Your Name</label>
+          <input type="text" id="joinPlayerName" placeholder="Enter your name..." maxlength="20">
+        </div>
+        <div class="form-group">
+          <label>Your Team Name</label>
+          <input type="text" id="joinTeamName" placeholder="Enter or create a team name..." maxlength="25">
+        </div>
+        <div class="form-group">
+          <label>Room Code</label>
+          <input type="text" id="joinRoomCode" placeholder="Enter 5-letter code..." maxlength="5" style="text-transform: uppercase; letter-spacing: 5px; font-size: 1.3rem; text-align: center; font-weight: 700;">
+        </div>
+
+        <button class="btn btn-secondary btn-block btn-lg" onclick="joinRoom()">Join Game</button>
+      </div>
+    </div>
+
+    <!-- WAITING ROOM -->
+    <div id="waitingSection" class="hidden">
+      <div class="page-header">
+        <h1>Game Lobby</h1>
+        <p>Share the room code with your friends!</p>
+      </div>
+
+      <div class="card waiting-room">
+        <p style="font-size: 0.95rem; color: var(--text-light); margin-bottom: 10px;">Room Code:</p>
+        <div class="room-code-display" id="roomCodeDisplay">-----</div>
+        <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 8px;">Tell your friends to enter this code to join!</p>
+
+        <div style="margin: 25px 0;">
+          <h3 style="margin-bottom: 15px;">Teams & Players</h3>
+          <div class="teams-list" id="teamsList"></div>
+        </div>
+
+        <div id="hostControls" class="hidden">
+          <p style="color: var(--text-light); margin-bottom: 15px;">You are the host. Start when everyone is ready!</p>
+          <button class="btn btn-success btn-lg" onclick="startGame()">Start Game!</button>
+        </div>
+
+        <div id="guestMessage" class="hidden">
+          <p style="color: var(--text-light);">Waiting for the host to start the game...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEAM QUIZ AREA -->
+    <div id="teamQuizSection" class="hidden">
+      <!-- Live Scores -->
+      <div class="live-scores" id="liveScores"></div>
+
+      <div class="quiz-header">
+        <div class="quiz-progress">
+          <span id="tQuestionCount">1/15</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="tProgressBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="quiz-timer" id="tTimerDisplay">20</div>
+      </div>
+
+      <div class="question-card">
+        <div class="question-meta" id="tQuestionMeta"></div>
+        <div class="question-text" id="tQuestionText"></div>
+        <div class="options-grid" id="tOptionsGrid"></div>
+        <div class="explanation-box" id="tExplanationBox">
+          <h4>Did you know?</h4>
+          <p id="tExplanationText"></p>
+          <div class="ref" id="tExplanationRef"></div>
+        </div>
+      </div>
+
+      <div id="teamAnswerStatus" class="text-center" style="margin-top: 15px;">
+        <p id="answerStatusText" style="color: white; font-weight: 600;"></p>
+      </div>
+
+      <!-- Mini Scoreboard after each question -->
+      <div id="miniScoreboard" class="card hidden" style="margin-top: 15px;">
+        <h4 style="text-align: center; margin-bottom: 10px;">Scoreboard</h4>
+        <table class="scoreboard" id="miniScoreTable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team</th>
+              <th>Score</th>
+              <th>Last Answer</th>
+            </tr>
+          </thead>
+          <tbody id="miniScoreBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- FINAL RESULTS -->
+    <div id="finalResultsSection" class="hidden">
+      <div class="page-header">
+        <h1>Game Over!</h1>
+        <p>Here are the final results...</p>
+      </div>
+
+      <div class="card results-card">
+        <div class="trophy">🏆</div>
+        <h2 id="winnerAnnouncement">And the winner is...</h2>
+
+        <table class="scoreboard" id="finalScoreTable" style="margin-top: 20px;">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team</th>
+              <th>Players</th>
+              <th>Correct</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody id="finalScoreBody"></tbody>
+        </table>
+
+        <div id="finalTipsBox" class="explanation-box show" style="text-align: left; margin-top: 25px;">
+          <h4>Tips to Improve Next Time</h4>
+          <ul id="finalTipsList" style="padding-left: 18px; line-height: 1.8;"></ul>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-primary btn-lg" onclick="playAgain()">Play Again</button>
+          <a href="/" class="btn btn-gold btn-lg">Home</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/team-play.js"></script>
+</body>
+</html>

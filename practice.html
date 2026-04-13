@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Mode — Women of the Bible Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">&larr; Back to Home</a>
+
+    <!-- CATEGORY SELECTION -->
+    <div id="categorySection">
+      <div class="page-header">
+        <h1>Daily Practice</h1>
+        <p>Pick a woman of the Bible to study, or mix them all up!</p>
+      </div>
+
+      <!-- Daily Challenge Banner -->
+      <div class="card daily-challenge-card" id="dailyChallengeCard">
+        <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+          <div style="font-size: 2.5rem;">🔥</div>
+          <div style="flex: 1; min-width: 200px;">
+            <h3 style="color: var(--accent); margin-bottom: 4px;">Daily Challenge</h3>
+            <p style="font-size: 0.9rem; color: var(--text-light);" id="dailyChallengeDesc">20 random questions across all categories. New challenge every day!</p>
+            <div style="margin-top: 6px;">
+              <span class="streak-badge" id="dailyStreakBadge" style="display: none;"></span>
+            </div>
+          </div>
+          <button class="btn btn-accent" onclick="startDailyChallenge()">Start Challenge</button>
+        </div>
+      </div>
+
+      <!-- Study Progress -->
+      <div class="card" id="progressCard" style="display: none;">
+        <h3 style="text-align: center; margin-bottom: 15px; color: var(--primary);">Your Study Progress</h3>
+        <div class="stats-grid" id="progressStats"></div>
+      </div>
+
+      <div style="text-align: center; margin: 20px 0;">
+        <button class="btn btn-accent btn-lg" onclick="startMixedQuiz()">
+          Mix All Women (Random)
+        </button>
+      </div>
+
+      <h3 style="color: white; text-align: center; margin: 20px 0 15px;">Choose a Woman to Study</h3>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+
+    <!-- SETTINGS SELECTION -->
+    <div id="settingsSection" class="hidden">
+      <div class="page-header">
+        <h1 id="selectedCategoryTitle"></h1>
+        <p id="selectedCategoryRef"></p>
+      </div>
+
+      <div class="card text-center">
+        <!-- Available count -->
+        <p style="color: var(--text-light); margin-bottom: 15px;" id="availableCount"></p>
+
+        <!-- Question Count -->
+        <h3 style="margin-bottom: 12px;">How many questions?</h3>
+        <div class="difficulty-selector" id="countSelector">
+          <button class="diff-btn" data-count="10" onclick="selectCount(10, this)">10</button>
+          <button class="diff-btn active" data-count="20" onclick="selectCount(20, this)">20</button>
+          <button class="diff-btn" data-count="30" onclick="selectCount(30, this)">30</button>
+          <button class="diff-btn" data-count="50" onclick="selectCount(50, this)">50</button>
+          <button class="diff-btn" data-count="0" onclick="selectCount(0, this)">ALL</button>
+        </div>
+
+        <!-- Difficulty -->
+        <h3 style="margin-top: 20px; margin-bottom: 12px;">Difficulty Level</h3>
+        <div class="difficulty-selector">
+          <button class="diff-btn active" data-diff="all" onclick="selectDifficulty('all', this)">All Levels</button>
+          <button class="diff-btn" data-diff="easy" onclick="selectDifficulty('easy', this)">Easy</button>
+          <button class="diff-btn" data-diff="medium" onclick="selectDifficulty('medium', this)">Medium</button>
+          <button class="diff-btn" data-diff="hard" onclick="selectDifficulty('hard', this)">Hard</button>
+        </div>
+
+        <!-- Options Row -->
+        <div style="margin-top: 20px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+            <input type="checkbox" id="timerToggle" checked style="width: 18px; height: 18px;">
+            Timer (20s)
+          </label>
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: 600; cursor: pointer;">
+            <input type="checkbox" id="freshOnlyToggle" style="width: 18px; height: 18px;">
+            New questions only
+          </label>
+        </div>
+
+        <button class="btn btn-primary btn-lg mt-20" onclick="startQuiz()">Start Quiz!</button>
+        <br>
+        <button class="btn btn-sm" style="margin-top: 10px; background: #dfe6e9; color: var(--text-light);" onclick="showSection('categorySection')">Back</button>
+      </div>
+    </div>
+
+    <!-- QUIZ AREA -->
+    <div id="quizSection" class="hidden">
+      <div class="quiz-header">
+        <div class="quiz-progress">
+          <span id="questionCount">1/10</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 0%"></div>
+          </div>
+        </div>
+        <div id="streakDisplay" class="hidden">
+          <span class="streak-badge" id="streakBadge"></span>
+        </div>
+        <div class="quiz-score" id="scoreDisplay">Score: 0</div>
+        <div class="quiz-timer" id="timerDisplay">20</div>
+      </div>
+
+      <div class="question-card" id="questionCard">
+        <div class="question-meta" id="questionMeta"></div>
+        <div class="question-text" id="questionText"></div>
+        <div class="options-grid" id="optionsGrid"></div>
+        <div class="explanation-box" id="explanationBox">
+          <h4 id="explanationHeader">Did you know?</h4>
+          <p id="explanationText"></p>
+          <div class="ref" id="explanationRef"></div>
+        </div>
+      </div>
+
+      <div class="text-center" id="nextBtnContainer" style="display: none;">
+        <button class="btn btn-primary btn-lg" onclick="nextQuestion()">Next Question &rarr;</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="resultsSection" class="hidden">
+      <div class="card results-card">
+        <div class="trophy" id="resultEmoji">🏆</div>
+        <h2 id="resultTitle">Amazing Job!</h2>
+        <div class="score-display" id="finalScore">0</div>
+        <div class="score-label">Total Score</div>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value" id="correctCount">0</div>
+            <div class="stat-label">Correct</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="wrongCount">0</div>
+            <div class="stat-label">Wrong</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="accuracy">0%</div>
+            <div class="stat-label">Accuracy</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="bestStreak">0</div>
+            <div class="stat-label">Best Streak</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="newQuestions">0</div>
+            <div class="stat-label">New Questions Seen</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="totalMastered">0</div>
+            <div class="stat-label">Total Mastered</div>
+          </div>
+        </div>
+
+        <!-- Weak Areas -->
+        <div id="weakAreasBox" class="explanation-box show" style="text-align: left; margin-top: 20px; display: none;">
+          <h4>Areas to Review</h4>
+          <ul id="weakAreasList" style="padding-left: 18px; line-height: 1.8;"></ul>
+        </div>
+
+        <div id="tipBox" class="explanation-box show" style="text-align: left; margin-top: 15px;">
+          <h4>Tips to Improve</h4>
+          <ul id="tipsList" style="padding-left: 18px; line-height: 1.8;"></ul>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-primary" onclick="restartQuiz()">Play Again</button>
+          <button class="btn btn-accent" onclick="reviewMissed()">Review Missed Questions</button>
+          <button class="btn btn-secondary" onclick="changeCategoryFromResults()">Change Topic</button>
+          <a href="/" class="btn btn-gold">Home</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEW MISSED -->
+    <div id="reviewSection" class="hidden">
+      <div class="page-header">
+        <h1>Review Missed Questions</h1>
+        <p>Study the ones you got wrong!</p>
+      </div>
+      <div id="reviewCards"></div>
+      <div class="text-center mt-20">
+        <button class="btn btn-primary btn-lg" onclick="showSection('resultsSection')">Back to Results</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/practice.js"></script>
+</body>
+</html>
