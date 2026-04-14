@@ -302,12 +302,12 @@
       answers.push({ questionId: questions[currentIdx].id, answerIndex: idx });
       document.querySelectorAll('#qOptions .option-btn').forEach((btn, i) => { btn.classList.add('disabled'); if (i === idx) btn.classList.add('selected'); });
 
-      // Auto-advance after 1.5 seconds
+      // Auto-advance after 2 seconds
       setTimeout(() => {
         currentIdx++;
         if (currentIdx < questions.length) { renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
         else submitAnswers();
-      }, 1500);
+      }, 2000);
     }
 
     function startTimer() {
@@ -331,7 +331,7 @@
               currentIdx++;
               if (currentIdx < questions.length) { renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
               else submitAnswers();
-            }, 1500);
+            }, 2000);
           }
         }
       }, 1000);
