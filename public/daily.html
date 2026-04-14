@@ -143,7 +143,7 @@
     let answers = [];
     let timerInterval = null;
     let answered = false;
-    const TIMER_SECONDS = 45;
+    let TIMER_SECONDS = 45;
 
     const catNames = {
       esther: '👑 Esther', ruth: '🌾 Ruth', hannah: '🙏 Hannah',
@@ -243,6 +243,7 @@
         const res = await fetch(`/api/daily/assignment/${assignmentId}`);
         const data = await res.json();
         if (!data.found) { alert('Assignment not found.'); return; }
+        TIMER_SECONDS = data.timer || 45;
         questions = data.questions;
         currentIdx = 0;
         answers = [];

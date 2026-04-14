@@ -148,7 +148,7 @@ app.post('/api/teacher/login', (req, res) => {
 
 // Create an assignment (supports multiple per day + future dates)
 app.post('/api/teacher/assign', (req, res) => {
-  const { pin, date, label, questionCount } = req.body;
+  const { pin, date, label, questionCount, timer } = req.body;
   if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
 
   const targetDate = date || todayStr();
@@ -165,7 +165,8 @@ app.post('/api/teacher/assign', (req, res) => {
     label: assignmentLabel,
     questionIds: questions.map(q => q.id),
     createdAt: new Date().toISOString(),
-    questionCount: questions.length
+    questionCount: questions.length,
+    timer: timer || 45
   };
 
   tracker.assignments.push(assignment);
@@ -295,7 +296,7 @@ app.get('/api/daily/assignment/:id', (req, res) => {
     .filter(Boolean)
     .map(q => ({ id: q.id, category: q.category, difficulty: q.difficulty, type: q.type || 'multiple_choice', question: q.question, options: q.options, reference: q.reference }));
 
-  res.json({ found: true, id: assignment.id, date: assignment.date, label: assignment.label, questions, questionCount: questions.length });
+  res.json({ found: true, id: assignment.id, date: assignment.date, label: assignment.label, questions, questionCount: questions.length, timer: assignment.timer || 45 });
 });
 
 // Register that a student STARTED an attempt (counts even if they leave)

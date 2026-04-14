@@ -53,6 +53,15 @@
               <option value="20">20</option>
             </select>
           </div>
+          <div class="form-group" style="width:120px; margin-bottom:0;">
+            <label>Timer (sec)</label>
+            <select id="assignTimer" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px;">
+              <option value="30">30s</option>
+              <option value="45" selected>45s</option>
+              <option value="60">60s</option>
+              <option value="90">90s</option>
+            </select>
+          </div>
           <button class="btn btn-primary" onclick="createAssignment()">Create</button>
         </div>
         <p id="assignMsg" style="margin-top:10px; font-weight:600; display:none;"></p>
@@ -178,10 +187,11 @@
       const date = document.getElementById('assignDate').value;
       const label = document.getElementById('assignLabel').value.trim();
       const questionCount = parseInt(document.getElementById('assignCount').value);
+      const timer = parseInt(document.getElementById('assignTimer').value);
       try {
         const res = await fetch('/api/teacher/assign', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ pin: teacherPin, date, label, questionCount })
+          body: JSON.stringify({ pin: teacherPin, date, label, questionCount, timer })
         });
         const data = await res.json();
         const msg = document.getElementById('assignMsg');
