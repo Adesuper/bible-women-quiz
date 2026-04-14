@@ -150,6 +150,9 @@
           </div>
         </div>
         <div id="answeredCount" style="font-size:0.9rem; color:white; font-weight:600;"></div>
+        <div id="hostPauseBtn" class="hidden">
+          <button class="btn btn-sm btn-gold" onclick="pauseGame()" id="pauseResumeBtn">Pause</button>
+        </div>
         <div class="quiz-timer" id="qTimer">20</div>
       </div>
 
@@ -161,6 +164,19 @@
           <h4>Did you know?</h4>
           <p id="qExplanationText"></p>
           <div class="ref" id="qExplanationRef"></div>
+        </div>
+      </div>
+
+      <!-- Pause overlay -->
+      <div id="pauseOverlay" class="hidden" style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.7); z-index:999; display:flex; align-items:center; justify-content:center;">
+        <div class="card text-center" style="max-width:400px; padding:40px;">
+          <div style="font-size:3rem; margin-bottom:15px;">⏸️</div>
+          <h2 style="color:var(--primary);">Game Paused</h2>
+          <p style="color:var(--text-light); margin:10px 0;">The teacher has paused the game for discussion.</p>
+          <p id="pauseTimeLeft" style="font-weight:700; font-size:1.2rem;"></p>
+          <div id="resumeBtnContainer" class="hidden" style="margin-top:15px;">
+            <button class="btn btn-success btn-lg" onclick="resumeGame()">Resume Game</button>
+          </div>
         </div>
       </div>
 
@@ -257,7 +273,28 @@
 
       socket.on('game-started', ({ totalQuestions, timePerQuestion, players }) => {
         showSection('quizSection');
+        if (isHost) document.getElementById('hostPauseBtn').classList.remove('hidden');
         showToast('Game started! Good luck!', 'success');
+      });
+
+      socket.on('game-paused', ({ timeRemaining }) => {
+        clearInterval(timerInterval);
+        document.getElementById('pauseOverlay').classList.remove('hidden');
+        document.getElementById('pauseOverlay').style.display = 'flex';
+        document.getElementById('pauseTimeLeft').textContent = `Time remaining: ${timeRemaining}s`;
+        if (isHost) document.getElementById('resumeBtnContainer').classList.remove('hidden');
+        else document.getElementById('resumeBtnContainer').classList.add('hidden');
+        document.getElementById('pauseResumeBtn').textContent = 'Resume';
+        document.getElementById('pauseResumeBtn').onclick = resumeGame;
+      });
+
+      socket.on('game-resumed', ({ timeRemaining }) => {
+        document.getElementById('pauseOverlay').classList.add('hidden');
+        document.getElementById('pauseOverlay').style.display = 'none';
+        document.getElementById('pauseResumeBtn').textContent = 'Pause';
+        document.getElementById('pauseResumeBtn').onclick = pauseGame;
+        // Restart timer with remaining time
+        startTimer(timeRemaining);
       });
 
       socket.on('new-question', ({ questionNumber, totalQuestions, question, timeLimit }) => {
@@ -509,7 +546,16 @@
       launchConfetti();
     }
 
+    function pauseGame() {
+      socket.emit('pause-game');
+    }
+
+    function resumeGame() {
+      socket.emit('resume-game');
+    }
+
     function playAgain() {
+      document.getElementById('hostPauseBtn').classList.add('hidden');
       socket.emit('play-again');
     }
 
