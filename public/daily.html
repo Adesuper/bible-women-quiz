@@ -249,7 +249,10 @@
         document.getElementById('quizLabel').textContent = `${label} — ${data.date} (Attempt ${startData.attempt})`;
         showSection('quizSection');
         renderQ();
-      } catch (e) { alert('Error loading assignment.'); }
+      } catch (e) {
+        console.error('Start error:', e);
+        alert('Connection error. Please check your internet and try again.');
+      }
     }
 
     function renderQ() {

@@ -335,13 +335,23 @@ app.post('/api/daily/start', (req, res) => {
   if (!tracker.students[nameKey]) tracker.students[nameKey] = { name, scores: [] };
   tracker.students[nameKey].name = name;
 
-  const attempts = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId);
-  if (attempts.length >= 3) {
+  const allAttempts = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId);
+  const completedAttempts = allAttempts.filter(s => s.status === 'completed');
+  const pendingAttempt = allAttempts.find(s => s.status === 'started');
+
+  if (completedAttempts.length >= 3) {
     return res.status(400).json({ message: 'You\'ve used all 3 attempts for this assignment!', attemptsUsed: 3 });
   }
 
-  // Create a pending attempt
-  const attemptNum = attempts.length + 1;
+  // If there's already a pending (abandoned) attempt, reuse it instead of creating a new one
+  if (pendingAttempt) {
+    pendingAttempt.startedAt = new Date().toISOString();
+    saveTracker();
+    return res.json({ success: true, attempt: pendingAttempt.attempt, attemptsRemaining: 3 - completedAttempts.length });
+  }
+
+  // Create a new pending attempt
+  const attemptNum = completedAttempts.length + 1;
   tracker.students[nameKey].scores.push({
     assignmentId, attempt: attemptNum, score: 0, correct: 0, total: assignment.questionCount,
     completedAt: null, status: 'started', startedAt: new Date().toISOString()
@@ -416,8 +426,8 @@ app.get('/api/daily/attempts', (req, res) => {
   const nameKey = name.trim().toLowerCase();
   const student = tracker.students[nameKey];
   if (!student) return res.json({ attempts: 0 });
-  const attempts = student.scores.filter(s => s.assignmentId === assignmentId).length;
-  res.json({ attempts });
+  const completed = student.scores.filter(s => s.assignmentId === assignmentId && s.status === 'completed').length;
+  res.json({ attempts: completed });
 });
 
 app.get('/api/daily/leaderboard', (req, res) => {
