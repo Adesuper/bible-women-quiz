@@ -408,22 +408,41 @@
       document.getElementById('qCount').textContent = `${questionNumber}/${totalQuestions}`;
       document.getElementById('qProgress').style.width = `${((questionNumber - 1) / totalQuestions) * 100}%`;
 
+      const qType = question.type || 'multiple_choice';
+      const typeBadge = qType === 'true_false' ? '<span class="badge" style="background:#e8f8f5;color:#00b894;">True / False</span>'
+        : qType === 'fill_blank' ? '<span class="badge" style="background:#fef9e7;color:#d68910;">Fill in the Blank</span>' : '';
+
       document.getElementById('qMeta').innerHTML = `
         <span class="badge badge-category">${catNames[question.category] || question.category}</span>
         <span class="badge badge-${question.difficulty}">${question.difficulty.charAt(0).toUpperCase() + question.difficulty.slice(1)}</span>
+        ${typeBadge}
       `;
       document.getElementById('qText').textContent = question.question;
 
       const grid = document.getElementById('qOptions');
       grid.innerHTML = '';
-      const letters = ['A', 'B', 'C', 'D'];
-      question.options.forEach((opt, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
-        btn.onclick = () => submitAnswer(i);
-        grid.appendChild(btn);
-      });
+
+      if (qType === 'true_false') {
+        ['True', 'False'].forEach((label, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.style.justifyContent = 'center';
+          btn.style.fontSize = '1.2rem';
+          btn.style.fontWeight = '700';
+          btn.innerHTML = `<span>${label}</span>`;
+          btn.onclick = () => submitAnswer(i);
+          grid.appendChild(btn);
+        });
+      } else {
+        const letters = qType === 'fill_blank' ? ['1','2','3','4'] : ['A','B','C','D'];
+        question.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+          btn.onclick = () => submitAnswer(i);
+          grid.appendChild(btn);
+        });
+      }
 
       startTimer(timeLimit);
     }

@@ -230,6 +230,16 @@
     async function startAssignment(assignmentId, label) {
       currentAssignmentId = assignmentId;
       try {
+        // Register the attempt FIRST (counts even if they leave)
+        const startRes = await fetch('/api/daily/start', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ studentName, assignmentId })
+        });
+        const startData = await startRes.json();
+        if (startData.message && startData.message.includes('all 3 attempts')) {
+          showSection('alreadyDone'); return;
+        }
+
         const res = await fetch(`/api/daily/assignment/${assignmentId}`);
         const data = await res.json();
         if (!data.found) { alert('Assignment not found.'); return; }
@@ -237,7 +247,7 @@
         currentIdx = 0;
         answers = [];
         answered = false;
-        document.getElementById('quizLabel').textContent = `${label} — ${data.date}`;
+        document.getElementById('quizLabel').textContent = `${label} — ${data.date} (Attempt ${startData.attempt})`;
         showSection('quizSection');
         renderQ();
       } catch (e) { alert('Error loading assignment.'); }
@@ -245,21 +255,43 @@
 
     function renderQ() {
       const q = questions[currentIdx];
+      const qType = q.type || 'multiple_choice';
       answered = false;
       document.getElementById('qCount').textContent = `${currentIdx + 1}/${questions.length}`;
       document.getElementById('qProgress').style.width = `${(currentIdx / questions.length) * 100}%`;
-      document.getElementById('qMeta').innerHTML = `<span class="badge badge-category">${catNames[q.category] || q.category}</span><span class="badge badge-${q.difficulty}">${q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}</span>`;
+
+      // Type badge
+      const typeBadge = qType === 'true_false' ? '<span class="badge" style="background:#e8f8f5;color:#00b894;">True / False</span>'
+        : qType === 'fill_blank' ? '<span class="badge" style="background:#fef9e7;color:#d68910;">Fill in the Blank</span>' : '';
+
+      document.getElementById('qMeta').innerHTML = `<span class="badge badge-category">${catNames[q.category] || q.category}</span><span class="badge badge-${q.difficulty}">${q.difficulty.charAt(0).toUpperCase() + q.difficulty.slice(1)}</span>${typeBadge}`;
       document.getElementById('qText').textContent = q.question;
 
       const grid = document.getElementById('qOptions');
       grid.innerHTML = '';
-      ['A','B','C','D'].forEach((letter, i) => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.innerHTML = `<span class="option-letter">${letter}</span><span>${q.options[i]}</span>`;
-        btn.onclick = () => selectAnswer(i);
-        grid.appendChild(btn);
-      });
+
+      if (qType === 'true_false') {
+        ['True', 'False'].forEach((label, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.style.justifyContent = 'center';
+          btn.style.fontSize = '1.2rem';
+          btn.style.fontWeight = '700';
+          btn.innerHTML = `<span>${label}</span>`;
+          btn.onclick = () => selectAnswer(i);
+          grid.appendChild(btn);
+        });
+      } else {
+        const letters = qType === 'fill_blank' ? ['1','2','3','4'] : ['A','B','C','D'];
+        q.options.forEach((opt, i) => {
+          const btn = document.createElement('button');
+          btn.className = 'option-btn';
+          btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+          btn.onclick = () => selectAnswer(i);
+          grid.appendChild(btn);
+        });
+      }
+
       document.getElementById('qNextBtn').style.display = 'none';
       startTimer();
     }

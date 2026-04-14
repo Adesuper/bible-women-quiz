@@ -293,12 +293,42 @@ app.get('/api/daily/assignment/:id', (req, res) => {
   const questions = assignment.questionIds
     .map(id => questionsData.questions.find(q => q.id === id))
     .filter(Boolean)
-    .map(q => ({ id: q.id, category: q.category, difficulty: q.difficulty, question: q.question, options: q.options, reference: q.reference }));
+    .map(q => ({ id: q.id, category: q.category, difficulty: q.difficulty, type: q.type || 'multiple_choice', question: q.question, options: q.options, reference: q.reference }));
 
   res.json({ found: true, id: assignment.id, date: assignment.date, label: assignment.label, questions, questionCount: questions.length });
 });
 
-// Submit answers for an assignment
+// Register that a student STARTED an attempt (counts even if they leave)
+app.post('/api/daily/start', (req, res) => {
+  const { studentName, assignmentId } = req.body;
+  if (!studentName || !assignmentId) return res.status(400).json({ message: 'Missing fields' });
+
+  const assignment = tracker.assignments.find(a => a.id === assignmentId);
+  if (!assignment) return res.status(404).json({ message: 'Assignment not found' });
+
+  const name = studentName.trim();
+  const nameKey = name.toLowerCase();
+
+  if (!tracker.students[nameKey]) tracker.students[nameKey] = { name, scores: [] };
+  tracker.students[nameKey].name = name;
+
+  const attempts = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId);
+  if (attempts.length >= 3) {
+    return res.status(400).json({ message: 'You\'ve used all 3 attempts for this assignment!', attemptsUsed: 3 });
+  }
+
+  // Create a pending attempt
+  const attemptNum = attempts.length + 1;
+  tracker.students[nameKey].scores.push({
+    assignmentId, attempt: attemptNum, score: 0, correct: 0, total: assignment.questionCount,
+    completedAt: null, status: 'started', startedAt: new Date().toISOString()
+  });
+  saveTracker();
+
+  res.json({ success: true, attempt: attemptNum, attemptsRemaining: 3 - attemptNum });
+});
+
+// Submit answers for an assignment (completes a started attempt)
 app.post('/api/daily/submit', (req, res) => {
   const { studentName, assignmentId, answers } = req.body;
   if (!studentName || !assignmentId || !answers) return res.status(400).json({ message: 'Missing required fields' });
@@ -309,10 +339,15 @@ app.post('/api/daily/submit', (req, res) => {
   const name = studentName.trim();
   const nameKey = name.toLowerCase();
 
-  // Allow up to 3 attempts per assignment
-  if (tracker.students[nameKey]) {
-    const attempts = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId);
-    if (attempts.length >= 3) {
+  if (!tracker.students[nameKey]) tracker.students[nameKey] = { name, scores: [] };
+
+  // Find the latest started (incomplete) attempt, or check if maxed out
+  const allAttempts = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId);
+  let pendingAttempt = allAttempts.find(a => a.status === 'started');
+
+  if (!pendingAttempt) {
+    // No pending attempt — they may have refreshed. Check if they can still submit.
+    if (allAttempts.filter(a => a.status === 'completed').length >= 3) {
       return res.status(400).json({ message: 'You\'ve used all 3 attempts for this assignment!' });
     }
   }
@@ -328,14 +363,26 @@ app.post('/api/daily/submit', (req, res) => {
     results.push({ questionId, isCorrect, correctAnswer: q.correct, explanation: q.explanation, reference: q.reference });
   });
 
-  if (!tracker.students[nameKey]) tracker.students[nameKey] = { name, scores: [] };
   tracker.students[nameKey].name = name;
-  const attemptNum = tracker.students[nameKey].scores.filter(s => s.assignmentId === assignmentId).length + 1;
-  tracker.students[nameKey].scores.push({
-    assignmentId, attempt: attemptNum, score, correct, total: assignment.questionCount, completedAt: new Date().toISOString()
-  });
+
+  if (pendingAttempt) {
+    // Update the pending attempt
+    pendingAttempt.score = score;
+    pendingAttempt.correct = correct;
+    pendingAttempt.total = assignment.questionCount;
+    pendingAttempt.completedAt = new Date().toISOString();
+    pendingAttempt.status = 'completed';
+  } else {
+    // Create a completed attempt directly (edge case: started without /start call)
+    const attemptNum = allAttempts.length + 1;
+    tracker.students[nameKey].scores.push({
+      assignmentId, attempt: attemptNum, score, correct, total: assignment.questionCount,
+      completedAt: new Date().toISOString(), status: 'completed'
+    });
+  }
   saveTracker();
 
+  const attemptNum = pendingAttempt ? pendingAttempt.attempt : allAttempts.length + 1;
   res.json({ success: true, score, correct, total: assignment.questionCount, percentage: Math.round((correct / assignment.questionCount) * 100), results, attempt: attemptNum });
 });
 
