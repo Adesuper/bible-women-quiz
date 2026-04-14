@@ -97,18 +97,40 @@ function generateRoomCode() {
 
 function pickBalancedQuestions(count) {
   const pool = [...questionsData.questions];
-  const grouped = {};
-  pool.forEach(q => { if (!grouped[q.category]) grouped[q.category] = []; grouped[q.category].push(q); });
-  Object.values(grouped).forEach(arr => shuffleArray(arr));
-  const selected = [];
-  const catKeys = Object.keys(grouped);
-  let idx = 0;
-  while (selected.length < count && catKeys.length > 0) {
-    const key = catKeys[idx % catKeys.length];
-    if (grouped[key].length > 0) selected.push(grouped[key].pop());
-    else { catKeys.splice(catKeys.indexOf(key), 1); if (!catKeys.length) break; }
-    idx++;
+
+  // Separate by type
+  const mc = shuffleArray(pool.filter(q => !q.type || q.type === 'multiple_choice'));
+  const tf = shuffleArray(pool.filter(q => q.type === 'true_false'));
+  const fb = shuffleArray(pool.filter(q => q.type === 'fill_blank'));
+
+  // Aim for a mix: ~60% multiple choice, ~20% true/false, ~20% fill-blank
+  const tfCount = Math.min(Math.round(count * 0.2), tf.length);
+  const fbCount = Math.min(Math.round(count * 0.2), fb.length);
+  const mcCount = count - tfCount - fbCount;
+
+  // Pick from each type, balanced across categories
+  function pickFromPool(items, num) {
+    const grouped = {};
+    items.forEach(q => { if (!grouped[q.category]) grouped[q.category] = []; grouped[q.category].push(q); });
+    Object.values(grouped).forEach(arr => shuffleArray(arr));
+    const picked = [];
+    const catKeys = Object.keys(grouped);
+    let idx = 0;
+    while (picked.length < num && catKeys.length > 0) {
+      const key = catKeys[idx % catKeys.length];
+      if (grouped[key].length > 0) picked.push(grouped[key].pop());
+      else { catKeys.splice(catKeys.indexOf(key), 1); if (!catKeys.length) break; }
+      idx++;
+    }
+    return picked;
   }
+
+  const selected = [
+    ...pickFromPool(mc, mcCount),
+    ...pickFromPool(tf, tfCount),
+    ...pickFromPool(fb, fbCount)
+  ];
+
   return shuffleArray(selected);
 }
 

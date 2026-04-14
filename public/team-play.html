@@ -58,12 +58,18 @@
       </div>
       <div class="card" style="max-width: 450px; margin: 0 auto;">
         <div class="form-group">
+          <label>Teacher PIN</label>
+          <input type="password" id="hostPin" placeholder="Enter teacher PIN..." maxlength="10"
+            style="width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px; font-size:1rem; text-align:center; letter-spacing:5px;">
+        </div>
+        <div class="form-group">
           <label>Number of Questions</label>
           <select id="hostQuestionCount" style="width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px; font-size:1rem;">
             <option value="10" selected>10 Questions</option>
             <option value="15">15 Questions</option>
             <option value="20">20 Questions</option>
             <option value="30">30 Questions</option>
+            <option value="50">50 Questions</option>
           </select>
         </div>
         <div class="form-group">
@@ -72,9 +78,12 @@
             <option value="15">15 seconds (Fast!)</option>
             <option value="20" selected>20 seconds (Standard)</option>
             <option value="30">30 seconds (Relaxed)</option>
+            <option value="45">45 seconds</option>
+            <option value="60">60 seconds</option>
           </select>
         </div>
         <button class="btn btn-primary btn-block btn-lg" onclick="createGame()">Create Game</button>
+        <p id="hostError" style="color:var(--danger); text-align:center; margin-top:10px; display:none;"></p>
         <button class="btn btn-sm" style="margin-top:10px; background:#dfe6e9; color:var(--text-light); display:block; width:100%;" onclick="showSection('roleSection')">Back</button>
       </div>
     </div>
@@ -343,7 +352,26 @@
       document.getElementById('playerOtherName').style.display = val === 'other' ? 'block' : 'none';
     }
 
-    function createGame() {
+    async function createGame() {
+      const pin = document.getElementById('hostPin').value.trim();
+      if (!pin) { document.getElementById('hostError').textContent = 'Enter the teacher PIN'; document.getElementById('hostError').style.display = 'block'; return; }
+
+      // Verify PIN with server
+      try {
+        const res = await fetch('/api/teacher/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pin }) });
+        const data = await res.json();
+        if (!data.success) {
+          document.getElementById('hostError').textContent = 'Incorrect PIN';
+          document.getElementById('hostError').style.display = 'block';
+          return;
+        }
+      } catch (e) {
+        document.getElementById('hostError').textContent = 'Connection error. Try again.';
+        document.getElementById('hostError').style.display = 'block';
+        return;
+      }
+
+      document.getElementById('hostError').style.display = 'none';
       const questionCount = parseInt(document.getElementById('hostQuestionCount').value);
       const timePerQuestion = parseInt(document.getElementById('hostTimeLimit').value);
       socket.emit('host-game', { questionCount, timePerQuestion });

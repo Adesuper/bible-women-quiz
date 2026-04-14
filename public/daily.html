@@ -87,9 +87,7 @@
         <div class="question-text" id="qText"></div>
         <div class="options-grid" id="qOptions"></div>
       </div>
-      <div class="text-center" id="qNextBtn" style="display:none;">
-        <button class="btn btn-primary btn-lg" onclick="nextQ()">Next Question &rarr;</button>
-      </div>
+      <!-- Auto-advances after answer selection -->
     </div>
 
     <!-- SUBMITTING -->
@@ -303,13 +301,13 @@
       clearInterval(timerInterval);
       answers.push({ questionId: questions[currentIdx].id, answerIndex: idx });
       document.querySelectorAll('#qOptions .option-btn').forEach((btn, i) => { btn.classList.add('disabled'); if (i === idx) btn.classList.add('selected'); });
-      document.getElementById('qNextBtn').style.display = 'block';
-    }
 
-    function nextQ() {
-      currentIdx++;
-      if (currentIdx < questions.length) { renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-      else submitAnswers();
+      // Auto-advance after 1.5 seconds
+      setTimeout(() => {
+        currentIdx++;
+        if (currentIdx < questions.length) { renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+        else submitAnswers();
+      }, 1500);
     }
 
     function startTimer() {
@@ -325,7 +323,16 @@
         else if (timeLeft <= 10) display.className = 'quiz-timer warning';
         if (timeLeft <= 0) {
           clearInterval(timerInterval);
-          if (!answered) { answered = true; answers.push({ questionId: questions[currentIdx].id, answerIndex: -1 }); document.querySelectorAll('#qOptions .option-btn').forEach(b => b.classList.add('disabled')); document.getElementById('qNextBtn').style.display = 'block'; }
+          if (!answered) {
+            answered = true;
+            answers.push({ questionId: questions[currentIdx].id, answerIndex: -1 });
+            document.querySelectorAll('#qOptions .option-btn').forEach(b => b.classList.add('disabled'));
+            setTimeout(() => {
+              currentIdx++;
+              if (currentIdx < questions.length) { renderQ(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+              else submitAnswers();
+            }, 1500);
+          }
         }
       }, 1000);
     }
