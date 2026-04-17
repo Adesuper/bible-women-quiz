@@ -227,6 +227,8 @@
 
     async function startAssignment(assignmentId, label) {
       currentAssignmentId = assignmentId;
+      let attemptNum = 1;
+
       try {
         // Register the attempt FIRST (counts even if they leave)
         const startRes = await fetch('/api/daily/start', {
@@ -234,23 +236,39 @@
           body: JSON.stringify({ studentName, assignmentId })
         });
         const startData = await startRes.json();
-        if (startData.message && startData.message.includes('all 3 attempts')) {
-          showSection('alreadyDone'); return;
-        }
 
+        if (!startRes.ok) {
+          if (startData.message && startData.message.includes('all 3 attempts')) {
+            showSection('alreadyDone');
+          } else {
+            alert(startData.message || 'Could not start. Try again.');
+          }
+          return;
+        }
+        attemptNum = startData.attempt || 1;
+      } catch (e) {
+        // If start tracking fails, still let them take the quiz
+        console.log('Start tracking failed, continuing anyway:', e);
+      }
+
+      try {
         const res = await fetch(`/api/daily/assignment/${assignmentId}`);
         const data = await res.json();
-        if (!data.found) { alert('Assignment not found.'); return; }
+        if (!data.found) {
+          alert('Assignment not found. It may have been removed.');
+          goBackToAssignments();
+          return;
+        }
         TIMER_SECONDS = data.timer || 45;
         questions = data.questions;
         currentIdx = 0;
         answers = [];
         answered = false;
-        document.getElementById('quizLabel').textContent = `${label} — ${data.date} (Attempt ${startData.attempt})`;
+        document.getElementById('quizLabel').textContent = `${label} — ${data.date} (Attempt ${attemptNum})`;
         showSection('quizSection');
         renderQ();
       } catch (e) {
-        console.error('Start error:', e);
+        console.error('Load error:', e);
         alert('Connection error. Please check your internet and try again.');
       }
     }
