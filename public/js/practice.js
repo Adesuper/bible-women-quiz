@@ -1,4 +1,5 @@
 // ============ STATE ============
+let practiceUser = '';  // Current user name
 let currentCategory = null;
 let currentDifficulty = 'all';
 let selectedCount = 20;
@@ -18,17 +19,68 @@ let missedQuestions = [];
 let newQuestionsThisRound = 0;
 let isDailyChallenge = false;
 
-// ============ PERSISTENCE (localStorage) ============
-const STORAGE_KEY = 'bible_quiz_progress';
+// ============ LOGIN ============
+const registeredKids = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+
+function handlePracticeNameSelect() {
+  const val = document.getElementById('practiceNameSelect').value;
+  document.getElementById('practiceOtherGroup').style.display = val === 'other' ? 'block' : 'none';
+  document.getElementById('practicePinGroup').style.display = (val && val !== 'other' && registeredKids.includes(val)) ? 'block' : 'none';
+  document.getElementById('practiceLoginError').style.display = 'none';
+}
+
+async function practiceLogin() {
+  const selected = document.getElementById('practiceNameSelect').value;
+  if (!selected) { showPracticeError('Please select your name!'); return; }
+
+  let name = '';
+  if (selected === 'other') {
+    name = document.getElementById('practiceOtherInput').value.trim();
+    if (!name || name.length < 2) { showPracticeError('Please type your name'); return; }
+  } else {
+    name = selected;
+  }
+
+  // Verify PIN for registered kids
+  if (registeredKids.includes(name)) {
+    const pin = document.getElementById('practicePinInput').value.trim();
+    if (!pin) { showPracticeError('Please enter your PIN'); return; }
+    try {
+      const res = await fetch('/api/student/verify', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, pin })
+      });
+      const data = await res.json();
+      if (!data.verified) { showPracticeError('Wrong PIN. Try again!'); return; }
+    } catch (e) { /* server waking up, let them through */ }
+  }
+
+  practiceUser = name;
+  document.getElementById('practiceLoginSection').classList.add('hidden');
+  document.getElementById('categorySection').classList.remove('hidden');
+  renderProgressCard();
+  renderDailyChallenge();
+  renderCategories();
+}
+
+function showPracticeError(msg) {
+  document.getElementById('practiceLoginError').textContent = msg;
+  document.getElementById('practiceLoginError').style.display = 'block';
+}
+
+// ============ PERSISTENCE (localStorage) — per user ============
+function getStorageKey() {
+  return 'bible_quiz_' + (practiceUser || 'guest').toLowerCase().replace(/\s+/g, '_');
+}
 
 function loadProgress() {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+    return JSON.parse(localStorage.getItem(getStorageKey())) || {};
   } catch { return {}; }
 }
 
 function saveProgress(data) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  localStorage.setItem(getStorageKey(), JSON.stringify(data));
 }
 
 function markQuestionSeen(questionId, wasCorrect) {
@@ -121,21 +173,7 @@ function setDailyChallengeComplete() {
 // ============ INITIALIZATION ============
 document.addEventListener('DOMContentLoaded', () => {
   loadCategories();
-
-  const params = new URLSearchParams(window.location.search);
-  const cat = params.get('category');
-  if (cat) {
-    // Wait for categories to load then select
-    const waitForCats = setInterval(() => {
-      if (categories.length > 0) {
-        clearInterval(waitForCats);
-        selectCategory(cat);
-      }
-    }, 100);
-  }
-
-  renderProgressCard();
-  renderDailyChallenge();
+  // Login screen shows first — categories load in background
 });
 
 async function loadCategories() {
@@ -186,6 +224,9 @@ function renderProgressCard() {
 
   card.style.display = 'block';
   const stats = document.getElementById('progressStats');
+  // Update header with user name
+  const header = card.querySelector('h3');
+  if (header) header.textContent = practiceUser ? `${practiceUser}'s Study Progress` : 'Your Study Progress';
   const overallAccuracy = progress.totalAnswered > 0
     ? Math.round((progress.totalCorrect / progress.totalAnswered) * 100)
     : 0;
@@ -826,7 +867,7 @@ function hashString(str) {
 
 // ============ NAVIGATION ============
 function showSection(sectionId) {
-  ['categorySection', 'settingsSection', 'quizSection', 'resultsSection', 'reviewSection'].forEach(id => {
+  ['practiceLoginSection', 'categorySection', 'settingsSection', 'quizSection', 'resultsSection', 'reviewSection'].forEach(id => {
     document.getElementById(id).classList.add('hidden');
   });
   document.getElementById(sectionId).classList.remove('hidden');
@@ -841,6 +882,7 @@ function changeCategoryFromResults() {
   currentCategory = null;
   renderProgressCard();
   renderDailyChallenge();
+  renderCategories();
   showSection('categorySection');
   window.history.replaceState({}, '', 'practice.html');
 }
