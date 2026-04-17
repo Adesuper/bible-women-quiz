@@ -229,30 +229,42 @@
       currentAssignmentId = assignmentId;
       let attemptNum = 1;
 
+      // Helper: fetch with retry (handles Render cold start)
+      async function fetchRetry(url, options, retries = 2) {
+        for (let i = 0; i <= retries; i++) {
+          try {
+            const res = await fetch(url, options);
+            return res;
+          } catch (e) {
+            if (i === retries) throw e;
+            await new Promise(r => setTimeout(r, 1500));
+          }
+        }
+      }
+
+      // Step 1: Register attempt (silent — don't block quiz if this fails)
       try {
-        // Register the attempt FIRST (counts even if they leave)
-        const startRes = await fetch('/api/daily/start', {
+        const startRes = await fetchRetry('/api/daily/start', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ studentName, assignmentId })
         });
-        const startData = await startRes.json();
-
-        if (!startRes.ok) {
-          if (startData.message && startData.message.includes('all 3 attempts')) {
+        if (startRes.ok) {
+          const startData = await startRes.json();
+          attemptNum = startData.attempt || 1;
+        } else {
+          const errData = await startRes.json();
+          if (errData.message && errData.message.includes('all 3 attempts')) {
             showSection('alreadyDone');
-          } else {
-            alert(startData.message || 'Could not start. Try again.');
+            return;
           }
-          return;
         }
-        attemptNum = startData.attempt || 1;
       } catch (e) {
-        // If start tracking fails, still let them take the quiz
-        console.log('Start tracking failed, continuing anyway:', e);
+        console.log('Start tracking skipped:', e.message);
       }
 
+      // Step 2: Load questions (retry on failure)
       try {
-        const res = await fetch(`/api/daily/assignment/${assignmentId}`);
+        const res = await fetchRetry(`/api/daily/assignment/${assignmentId}`);
         const data = await res.json();
         if (!data.found) {
           alert('Assignment not found. It may have been removed.');
@@ -268,8 +280,7 @@
         showSection('quizSection');
         renderQ();
       } catch (e) {
-        console.error('Load error:', e);
-        alert('Connection error. Please check your internet and try again.');
+        alert('Could not load questions. The server may be starting up. Please wait 30 seconds and try again.');
       }
     }
 
