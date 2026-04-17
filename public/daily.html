@@ -33,6 +33,10 @@
         <div class="form-group" id="otherNameGroup" style="display:none;">
           <input type="text" id="otherNameInput" placeholder="Type your name..." maxlength="30" style="text-align:center; font-size:1.1rem; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
         </div>
+        <div class="form-group" id="pinGroup" style="display:none;">
+          <label style="font-weight:600; margin-bottom:8px; display:block;">Enter your PIN</label>
+          <input type="password" id="studentPin" placeholder="Enter 4-digit PIN..." maxlength="10" style="text-align:center; font-size:1.5rem; letter-spacing:8px; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
+        </div>
         <button class="btn btn-primary btn-block btn-lg" onclick="confirmName()">Next</button>
         <p id="nameError" style="color:var(--danger); margin-top:10px; display:none;"></p>
       </div>
@@ -150,9 +154,14 @@
 
     loadLeaderboard();
 
+    const registeredKids = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+
     function handleNameSelect() {
-      document.getElementById('otherNameGroup').style.display = document.getElementById('studentSelect').value === 'other' ? 'block' : 'none';
+      const val = document.getElementById('studentSelect').value;
+      document.getElementById('otherNameGroup').style.display = val === 'other' ? 'block' : 'none';
+      document.getElementById('pinGroup').style.display = (val && val !== 'other' && registeredKids.includes(val)) ? 'block' : 'none';
       document.getElementById('nameError').style.display = 'none';
+      document.getElementById('studentPin').value = '';
     }
 
     async function loadLeaderboard() {
@@ -172,16 +181,40 @@
       } catch (e) { console.error(e); }
     }
 
-    function confirmName() {
+    async function confirmName() {
       const selected = document.getElementById('studentSelect').value;
       if (!selected) { showError('Please select your name!'); return; }
+
+      let name = '';
       if (selected === 'other') {
-        const name = document.getElementById('otherNameInput').value.trim();
+        name = document.getElementById('otherNameInput').value.trim();
         if (!name || name.length < 2) { showError('Please type your name (at least 2 characters)'); return; }
-        studentName = name;
       } else {
-        studentName = selected;
+        name = selected;
       }
+
+      // Verify PIN for registered kids
+      if (registeredKids.includes(name)) {
+        const pin = document.getElementById('studentPin').value.trim();
+        if (!pin) { showError('Please enter your PIN'); return; }
+
+        try {
+          const res = await fetch('/api/student/verify', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, pin })
+          });
+          const data = await res.json();
+          if (!data.verified) {
+            showError('Wrong PIN. Try again!');
+            return;
+          }
+        } catch (e) {
+          // If server is waking up, let them through
+          console.log('PIN check skipped:', e.message);
+        }
+      }
+
+      studentName = name;
       document.getElementById('welcomeMsg').textContent = `Hi ${studentName}!`;
       loadAssignments();
     }

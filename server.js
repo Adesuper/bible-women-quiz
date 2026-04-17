@@ -42,8 +42,15 @@ const questionsData = loadAllQuestions();
 const TRACKER_FILE = path.join(__dirname, 'data', 'tracker.json');
 let tracker = {
   teachers: { pin: '2024' },
-  students: {},       // { nameKey: { name, scores: [{ assignmentId, attempt, score, correct, total, completedAt }] } }
-  assignments: []     // [{ id, date, label, questionIds, createdAt, questionCount }]
+  studentPins: {
+    'Caleb': '1111',
+    'Karson': '2222',
+    'Glenda': '3333',
+    'Erlyssa': '4444',
+    'Israel': '5555'
+  },
+  students: {},
+  assignments: []
 };
 
 function loadTracker() {
@@ -291,6 +298,22 @@ app.get('/api/teacher/dashboard', (req, res) => {
     leaderboard,
     totalAssignments: tracker.assignments.length
   });
+});
+
+// ============ API: STUDENT PIN VERIFICATION ============
+app.post('/api/student/verify', (req, res) => {
+  const { name, pin } = req.body;
+  if (!name || !pin) return res.status(400).json({ verified: false, message: 'Name and PIN required' });
+
+  const studentPin = tracker.studentPins[name];
+  if (!studentPin) {
+    // Not a registered kid — "Someone else" option, no PIN needed
+    return res.json({ verified: true });
+  }
+  if (pin === studentPin) {
+    return res.json({ verified: true });
+  }
+  return res.status(401).json({ verified: false, message: 'Incorrect PIN. Try again.' });
 });
 
 // ============ API: STUDENT DAILY ============

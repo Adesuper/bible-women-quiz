@@ -111,6 +111,11 @@
           <input type="text" id="playerOtherInput" placeholder="Type your name..." maxlength="20"
             style="text-align:center; font-size:1.1rem; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
         </div>
+        <div class="form-group" id="playerPinGroup" style="display:none;">
+          <label>Your PIN</label>
+          <input type="password" id="playerPin" placeholder="Enter 4-digit PIN..." maxlength="10"
+            style="text-align:center; font-size:1.5rem; letter-spacing:8px; width:100%; padding:14px; border:2px solid #e0e0e0; border-radius:12px;">
+        </div>
         <div class="form-group">
           <label>Room Code</label>
           <input type="text" id="roomCodeInput" placeholder="Enter code..." maxlength="5"
@@ -347,9 +352,12 @@
       showSection('playerSetup');
     }
 
+    const registeredKids = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+
     function handlePlayerNameSelect() {
       const val = document.getElementById('playerNameSelect').value;
       document.getElementById('playerOtherName').style.display = val === 'other' ? 'block' : 'none';
+      document.getElementById('playerPinGroup').style.display = (val && val !== 'other' && registeredKids.includes(val)) ? 'block' : 'none';
     }
 
     async function createGame() {
@@ -377,7 +385,7 @@
       socket.emit('host-game', { questionCount, timePerQuestion });
     }
 
-    function joinGame() {
+    async function joinGame() {
       const selected = document.getElementById('playerNameSelect').value;
       let name = '';
       if (!selected) { showToast('Please select your name!', 'error'); return; }
@@ -386,6 +394,20 @@
         if (!name) { showToast('Please type your name!', 'error'); return; }
       } else {
         name = selected;
+      }
+
+      // Verify PIN for registered kids
+      if (registeredKids.includes(name)) {
+        const pin = document.getElementById('playerPin').value.trim();
+        if (!pin) { showToast('Please enter your PIN!', 'error'); return; }
+        try {
+          const res = await fetch('/api/student/verify', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, pin })
+          });
+          const data = await res.json();
+          if (!data.verified) { showToast('Wrong PIN. Try again!', 'error'); return; }
+        } catch (e) { console.log('PIN check skipped'); }
       }
 
       const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
