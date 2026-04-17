@@ -229,48 +229,46 @@
       currentAssignmentId = assignmentId;
       let attemptNum = 1;
 
-      // Helper: fetch with retry (handles Render cold start)
-      async function fetchRetry(url, options, retries = 2) {
-        for (let i = 0; i <= retries; i++) {
+      // Helper: keep retrying until success (handles Render cold start silently)
+      async function fetchUntilOk(url, options, maxRetries = 5) {
+        for (let i = 0; i <= maxRetries; i++) {
           try {
             const res = await fetch(url, options);
-            return res;
-          } catch (e) {
-            if (i === retries) throw e;
-            await new Promise(r => setTimeout(r, 1500));
-          }
+            if (res.ok) return res;
+            // Non-OK but got a response — return it so caller can check the body
+            if (res.status < 500) return res;
+            // Server error (500+) — retry
+          } catch (e) { /* network error — retry */ }
+          if (i < maxRetries) await new Promise(r => setTimeout(r, 2000));
         }
+        return null;
       }
 
-      // Step 1: Register attempt (silent — don't block quiz if this fails)
+      // Step 1: Register attempt (completely silent)
       try {
-        const startRes = await fetchRetry('/api/daily/start', {
+        const startRes = await fetchUntilOk('/api/daily/start', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ studentName, assignmentId })
         });
-        if (startRes.ok) {
+        if (startRes && startRes.ok) {
           const startData = await startRes.json();
           attemptNum = startData.attempt || 1;
-        } else {
-          const errData = await startRes.json();
+        } else if (startRes) {
+          const errData = await startRes.json().catch(() => ({}));
           if (errData.message && errData.message.includes('all 3 attempts')) {
             showSection('alreadyDone');
             return;
           }
         }
-      } catch (e) {
-        console.log('Start tracking skipped:', e.message);
-      }
+      } catch (e) { /* silent */ }
 
-      // Step 2: Load questions (retry on failure)
+      // Step 2: Load questions (keep retrying silently)
+      const res = await fetchUntilOk(`/api/daily/assignment/${assignmentId}`);
+      if (!res) { goBackToAssignments(); return; }
+
       try {
-        const res = await fetchRetry(`/api/daily/assignment/${assignmentId}`);
         const data = await res.json();
-        if (!data.found) {
-          alert('Assignment not found. It may have been removed.');
-          goBackToAssignments();
-          return;
-        }
+        if (!data.found) { goBackToAssignments(); return; }
         TIMER_SECONDS = data.timer || 45;
         questions = data.questions;
         currentIdx = 0;
@@ -279,9 +277,7 @@
         document.getElementById('quizLabel').textContent = `${label} — ${data.date} (Attempt ${attemptNum})`;
         showSection('quizSection');
         renderQ();
-      } catch (e) {
-        alert('Could not load questions. The server may be starting up. Please wait 30 seconds and try again.');
-      }
+      } catch (e) { goBackToAssignments(); }
     }
 
     function renderQ() {
