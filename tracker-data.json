@@ -1,0 +1,14 @@
+{
+  "teachers": {
+    "pin": "2024"
+  },
+  "studentPins": {
+    "Caleb": "1111",
+    "Karson": "2222",
+    "Glenda": "3333",
+    "Erlyssa": "4444",
+    "Israel": "5555"
+  },
+  "students": {},
+  "assignments": []
+}
