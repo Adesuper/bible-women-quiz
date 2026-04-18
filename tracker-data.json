@@ -24,6 +24,21 @@
           "startedAt": "2026-04-18T03:05:55.975Z"
         }
       ]
+    },
+    "israel": {
+      "name": "Israel",
+      "scores": [
+        {
+          "assignmentId": "0ea84c37-9df9-46d4-a600-ac210bfbabdf",
+          "attempt": 1,
+          "score": 600,
+          "correct": 6,
+          "total": 10,
+          "completedAt": "2026-04-18T03:05:57.277Z",
+          "status": "completed",
+          "startedAt": "2026-04-18T03:05:56.816Z"
+        }
+      ]
     }
   },
   "assignments": [
