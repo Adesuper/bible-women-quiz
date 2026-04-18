@@ -42,10 +42,10 @@
             <input type="date" id="assignDate" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px;">
           </div>
           <div class="form-group" style="flex:1; min-width:120px; margin-bottom:0;">
-            <label>Label (optional)</label>
+            <label>Label</label>
             <input type="text" id="assignLabel" placeholder="e.g. Morning Set" maxlength="30" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px;">
           </div>
-          <div class="form-group" style="width:100px; margin-bottom:0;">
+          <div class="form-group" style="width:80px; margin-bottom:0;">
             <label>Questions</label>
             <select id="assignCount" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px;">
               <option value="10" selected>10</option>
@@ -53,8 +53,8 @@
               <option value="20">20</option>
             </select>
           </div>
-          <div class="form-group" style="width:120px; margin-bottom:0;">
-            <label>Timer (sec)</label>
+          <div class="form-group" style="width:90px; margin-bottom:0;">
+            <label>Timer</label>
             <select id="assignTimer" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:10px;">
               <option value="30">30s</option>
               <option value="45" selected>45s</option>
@@ -67,37 +67,41 @@
         <p id="assignMsg" style="margin-top:10px; font-weight:600; display:none;"></p>
       </div>
 
-      <!-- Today's Summary -->
-      <div class="card" style="margin-bottom:20px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-          <h3>Today's Assignments</h3>
-          <button class="btn btn-sm btn-secondary" onclick="refreshDashboard()">Refresh</button>
-        </div>
-        <div id="todayAssignments"><p style="color:var(--text-light);">No assignments for today.</p></div>
+      <!-- Tab Navigation -->
+      <div style="display:flex; gap:8px; margin-bottom:15px; flex-wrap:wrap;">
+        <button class="diff-btn active" id="tabToday" onclick="switchTab('today')">Today</button>
+        <button class="diff-btn" id="tabAll" onclick="switchTab('all')">All Assignments</button>
+        <button class="diff-btn" id="tabStudents" onclick="switchTab('students')">Students</button>
+        <button class="diff-btn" id="tabBackup" onclick="switchTab('backup')">Backup</button>
       </div>
 
-      <!-- Overall Leaderboard -->
-      <div class="card" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:15px;">Overall Leaderboard</h3>
-        <div id="leaderboardContainer"><p style="color:var(--text-light);">No data yet.</p></div>
+      <!-- TODAY TAB -->
+      <div id="todayTab">
+        <div id="todayAssignments"><p style="color:var(--text-light);">Loading...</p></div>
       </div>
 
-      <!-- All Assignments -->
-      <div class="card" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:15px;">All Assignments</h3>
-        <div id="allAssignments"><p style="color:var(--text-light);">No assignments created yet.</p></div>
+      <!-- ALL ASSIGNMENTS TAB -->
+      <div id="allTab" class="hidden">
+        <div id="allAssignments"><p style="color:var(--text-light);">Loading...</p></div>
       </div>
 
-      <!-- Data Backup -->
-      <div class="card" style="margin-bottom:20px;">
-        <h3 style="margin-bottom:10px;">Data Backup</h3>
-        <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:10px;">Download your data to keep a backup. You can restore it if data is ever lost.</p>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button class="btn btn-sm btn-secondary" onclick="exportData()">Download Backup</button>
-          <label class="btn btn-sm btn-gold" style="cursor:pointer;">
-            Restore Backup
-            <input type="file" accept=".json" style="display:none;" onchange="importData(event)">
-          </label>
+      <!-- STUDENTS TAB -->
+      <div id="studentsTab" class="hidden">
+        <div id="studentsList"><p style="color:var(--text-light);">Loading...</p></div>
+      </div>
+
+      <!-- BACKUP TAB -->
+      <div id="backupTab" class="hidden">
+        <div class="card">
+          <h3 style="margin-bottom:10px;">Data Backup & Restore</h3>
+          <p style="color:var(--text-light); font-size:0.85rem; margin-bottom:15px;">Download your data regularly to keep a backup. Restore if data is ever lost after a server update.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" onclick="exportData()">Download Backup</button>
+            <label class="btn btn-gold" style="cursor:pointer;">
+              Restore Backup
+              <input type="file" accept=".json" style="display:none;" onchange="importData(event)">
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -105,9 +109,19 @@
 
   <script>
     let teacherPin = '';
+    let dashboardData = null;
 
     document.getElementById('pinInput').addEventListener('keydown', e => { if (e.key === 'Enter') teacherLogin(); });
     document.getElementById('assignDate').value = new Date().toISOString().slice(0, 10);
+
+    function switchTab(tab) {
+      ['today','all','students','backup'].forEach(t => {
+        document.getElementById(t + 'Tab').classList.add('hidden');
+        document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).classList.remove('active');
+      });
+      document.getElementById(tab + 'Tab').classList.remove('hidden');
+      document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+    }
 
     async function teacherLogin() {
       const pin = document.getElementById('pinInput').value.trim();
@@ -124,63 +138,140 @@
       document.getElementById('dashboardDate').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
       try {
         const res = await fetch(`/api/teacher/dashboard?pin=${teacherPin}`);
-        const data = await res.json();
+        dashboardData = await res.json();
+        renderTodayTab();
+        renderAllTab();
+        renderStudentsTab();
+      } catch (e) { console.error('Dashboard error:', e); }
+    }
 
-        // Today's assignments with scores
-        if (data.todayAssignments.length > 0) {
-          document.getElementById('todayAssignments').innerHTML = data.todayAssignments.map(a => {
-            let scoresHTML = '';
-            if (a.completedBy.length > 0) {
-              scoresHTML = a.completedBy.map(s =>
-                `<div style="display:flex; justify-content:space-between; padding:8px 12px; background:var(--bg-light); border-radius:8px; margin-bottom:4px;">
-                  <span><strong>${s.name}</strong> <span style="font-size:0.8rem; color:var(--text-light);">(${s.attempts}/3 attempts)</span></span>
-                  <span style="font-weight:800; color:var(--primary);">Best: ${s.bestCorrect}/${s.total} — ${s.bestScore} pts</span>
-                </div>`
-              ).join('');
-            } else {
-              scoresHTML = '<p style="color:var(--text-light); font-size:0.9rem;">No one has completed this yet.</p>';
-            }
-            return `<div class="assignment-card" style="padding:15px; background:var(--bg-light); border-radius:12px; margin-bottom:12px; border-left:4px solid var(--primary);">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <div><strong style="color:var(--primary);">${a.label}</strong> <span style="color:var(--text-light); font-size:0.85rem;">(${a.questionCount} questions)</span></div>
-                <span style="font-size:0.85rem; color:var(--text-light);">${a.totalCompletions} completed</span>
+    function renderTodayTab() {
+      const d = dashboardData;
+      if (!d.todayAssignments || d.todayAssignments.length === 0) {
+        document.getElementById('todayAssignments').innerHTML = '<div class="card"><p style="color:var(--text-light); text-align:center;">No assignments for today. Create one above!</p></div>';
+        return;
+      }
+      document.getElementById('todayAssignments').innerHTML = d.todayAssignments.map(a => {
+        let scoresHTML = '';
+        if (a.completedBy.length > 0) {
+          scoresHTML = a.completedBy.map(s => {
+            // Show each attempt separately
+            const attemptsDetail = s.attempts ? s.attempts.map(att =>
+              `<div style="padding:4px 0 4px 20px; font-size:0.85rem; color:var(--text-light);">Attempt ${att.attempt}: <strong>${att.correct}/${att.total}</strong> (${Math.round(att.correct/att.total*100)}%) — <strong style="color:var(--primary);">${att.score} pts</strong> <span style="font-size:0.75rem;">${att.completedAt ? new Date(att.completedAt).toLocaleTimeString() : ''}</span></div>`
+            ).join('') : '';
+            return `<div style="background:var(--bg-light); border-radius:10px; padding:12px; margin-bottom:8px; border-left:3px solid var(--primary);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>${s.name}</strong>
+                <span style="font-size:0.85rem; color:var(--text-light);">${s.totalAttempts}/3 attempts</span>
               </div>
-              ${scoresHTML}
+              ${attemptsDetail}
             </div>`;
           }).join('');
         } else {
-          document.getElementById('todayAssignments').innerHTML = '<p style="color:var(--text-light);">No assignments for today. Create one above!</p>';
+          scoresHTML = '<p style="color:var(--text-light); font-size:0.9rem; padding:8px;">No one has completed this yet.</p>';
         }
 
-        // Leaderboard
-        if (data.leaderboard.length > 0) {
-          const rankEmojis = ['🥇', '🥈', '🥉'];
-          document.getElementById('leaderboardContainer').innerHTML = data.leaderboard.map((s, i) => {
-            const rank = i < 3 ? rankEmojis[i] : `#${i + 1}`;
-            return `<div style="display:flex; justify-content:space-between; padding:10px 14px; background:${i < 3 ? '#fff9e6' : 'var(--bg-light)'}; border-radius:10px; margin-bottom:6px;">
-              <div style="display:flex; gap:8px; align-items:center;"><span style="font-size:1.2rem;">${rank}</span><strong>${s.name}</strong></div>
-              <div style="display:flex; gap:12px; font-size:0.85rem; align-items:center;">
-                <span>${s.assignmentsCompleted} sets</span>
-                <span>${s.accuracy}%</span>
-                <span style="font-weight:800; color:var(--primary); font-size:1.1rem;">${s.totalScore} pts</span>
-              </div>
-            </div>`;
-          }).join('');
-        }
+        // Show who hasn't attempted
+        const kidNames = ['Caleb','Karson','Glenda','Erlyssa','Israel'];
+        const completedNames = a.completedBy.map(s => s.name.toLowerCase());
+        const missing = kidNames.filter(n => !completedNames.includes(n.toLowerCase()));
+        const missingHTML = missing.length > 0
+          ? `<div style="margin-top:8px; padding:8px; background:#fff3cd; border-radius:8px; font-size:0.85rem;"><strong>Not attempted:</strong> ${missing.join(', ')}</div>`
+          : '<div style="margin-top:8px; padding:8px; background:#d4edda; border-radius:8px; font-size:0.85rem;">All kids completed!</div>';
 
-        // All assignments
-        if (data.allAssignments.length > 0) {
-          document.getElementById('allAssignments').innerHTML = data.allAssignments.map(a =>
-            `<div style="display:flex; justify-content:space-between; padding:10px 14px; background:var(--bg-light); border-radius:10px; margin-bottom:6px;">
-              <div><strong>${a.label}</strong> <span style="color:var(--text-light); font-size:0.85rem;">— ${a.date}</span></div>
-              <div style="display:flex; gap:10px; align-items:center;">
-                <span style="font-size:0.85rem;">${a.questionCount} Q</span>
-                <button onclick="deleteAssignment('${a.id}')" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:0.85rem;">Delete</button>
-              </div>
+        return `<div class="card" style="margin-bottom:15px; border-left:4px solid var(--primary);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div><h3 style="color:var(--primary); margin:0;">${a.label}</h3><span style="font-size:0.85rem; color:var(--text-light);">${a.questionCount} questions | ${a.date}</span></div>
+            <span style="font-weight:700; color:var(--success);">${a.totalCompletions} completed</span>
+          </div>
+          ${scoresHTML}
+          ${missingHTML}
+        </div>`;
+      }).join('');
+    }
+
+    function renderAllTab() {
+      const assignments = dashboardData.allAssignments;
+      if (!assignments || assignments.length === 0) {
+        document.getElementById('allAssignments').innerHTML = '<div class="card"><p style="color:var(--text-light); text-align:center;">No assignments yet.</p></div>';
+        return;
+      }
+
+      // Group by date
+      const byDate = {};
+      assignments.forEach(a => { if (!byDate[a.date]) byDate[a.date] = []; byDate[a.date].push(a); });
+
+      document.getElementById('allAssignments').innerHTML = Object.entries(byDate)
+        .sort((a, b) => b[0].localeCompare(a[0]))
+        .map(([date, assigns]) => {
+          const assignHTML = assigns.map(a =>
+            `<div style="display:flex; justify-content:space-between; padding:10px; background:var(--bg-light); border-radius:8px; margin-bottom:6px;">
+              <div><strong>${a.label}</strong> <span style="font-size:0.85rem; color:var(--text-light);">(${a.questionCount} Q, ${a.timer || 45}s timer)</span></div>
+              <button onclick="viewAssignment('${a.id}')" style="background:var(--primary); color:white; border:none; padding:6px 14px; border-radius:8px; cursor:pointer; font-size:0.85rem;">View Scores</button>
             </div>`
           ).join('');
+          return `<div class="card" style="margin-bottom:12px;">
+            <h3 style="margin-bottom:10px;">${date}</h3>
+            ${assignHTML}
+          </div>`;
+        }).join('');
+    }
+
+    function renderStudentsTab() {
+      const students = dashboardData.leaderboard;
+      if (!students || students.length === 0) {
+        document.getElementById('studentsList').innerHTML = '<div class="card"><p style="color:var(--text-light); text-align:center;">No student data yet.</p></div>';
+        return;
+      }
+
+      document.getElementById('studentsList').innerHTML = students.map(s => {
+        return `<div class="card" style="margin-bottom:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <h3 style="margin:0; color:var(--primary);">${s.name}</h3>
+            <div style="text-align:right; font-size:0.9rem;">
+              <div><strong>${s.assignmentsCompleted}</strong> assignments</div>
+              <div><strong>${s.accuracy}%</strong> accuracy</div>
+            </div>
+          </div>
+        </div>`;
+      }).join('');
+    }
+
+    async function viewAssignment(assignmentId) {
+      try {
+        const res = await fetch(`/api/teacher/scores/${assignmentId}?pin=${teacherPin}`);
+        const scores = await res.json();
+        const assignment = dashboardData.allAssignments.find(a => a.id === assignmentId);
+        const label = assignment ? `${assignment.label} (${assignment.date})` : 'Assignment';
+
+        let html = `<div class="card" style="margin-bottom:15px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 style="margin:0;">${label}</h3>
+            <button onclick="refreshDashboard(); switchTab('all');" class="btn btn-sm" style="background:#dfe6e9; color:var(--text-light);">Back</button>
+          </div>`;
+
+        if (scores.length === 0) {
+          html += '<p style="color:var(--text-light);">No one has completed this assignment yet.</p>';
+        } else {
+          scores.forEach(s => {
+            html += `<div style="background:var(--bg-light); border-radius:10px; padding:12px; margin-bottom:8px; border-left:3px solid var(--primary);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <strong>${s.name}</strong>
+                <span style="font-weight:700; color:var(--primary);">Best: ${s.bestScore} pts</span>
+              </div>`;
+            s.attempts.forEach(att => {
+              html += `<div style="padding:4px 0 4px 20px; font-size:0.85rem; color:var(--text-light);">
+                Attempt ${att.attempt}: <strong>${att.correct}/${att.total}</strong> (${Math.round(att.correct/att.total*100)}%) — <strong style="color:var(--primary);">${att.score} pts</strong>
+                <span style="font-size:0.75rem;">${att.completedAt ? new Date(att.completedAt).toLocaleTimeString() : ''}</span>
+              </div>`;
+            });
+            html += '</div>';
+          });
         }
-      } catch (e) { console.error('Dashboard error:', e); }
+
+        html += '</div>';
+        document.getElementById('allAssignments').innerHTML = html;
+      } catch (e) { console.error(e); }
     }
 
     async function createAssignment() {
@@ -196,17 +287,11 @@
         const data = await res.json();
         const msg = document.getElementById('assignMsg');
         msg.style.display = 'block';
-        msg.textContent = data.message || 'Assignment created!';
+        msg.textContent = data.message || 'Created!';
         msg.style.color = data.success ? 'var(--success)' : 'var(--danger)';
         document.getElementById('assignLabel').value = '';
         refreshDashboard();
       } catch (e) { alert('Error creating assignment.'); }
-    }
-
-    async function deleteAssignment(id) {
-      if (!confirm('Delete this assignment?')) return;
-      await fetch(`/api/teacher/assignment/${id}?pin=${teacherPin}`, { method: 'DELETE' });
-      refreshDashboard();
     }
 
     async function exportData() {
@@ -235,6 +320,7 @@
       } catch (e) { alert('Invalid backup file.'); }
     }
 
+    // Auto-refresh every 30 seconds
     setInterval(() => { if (!document.getElementById('dashboardSection').classList.contains('hidden')) refreshDashboard(); }, 30000);
   </script>
 </body>

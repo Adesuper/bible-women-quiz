@@ -252,12 +252,18 @@
       abigail: '🕊️ Abigail', deborah: '⚔️ Deborah', mary_elizabeth: '⭐ Mary & Elizabeth'
     };
 
+    let socketReady = false;
+
     function connectSocket() {
       if (socket) return;
       const script = document.createElement('script');
       script.src = '/socket.io/socket.io.js';
       script.onload = () => {
-        socket = io();
+        // Use polling first (more reliable on Render), then upgrade to websocket
+        socket = io({ transports: ['polling', 'websocket'], reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 2000, timeout: 30000 });
+        socket.on('connect', () => { socketReady = true; console.log('Connected to server'); });
+        socket.on('disconnect', () => { socketReady = false; showToast('Disconnected from server. Reconnecting...', 'error'); });
+        socket.on('reconnect', () => { socketReady = true; showToast('Reconnected!', 'success'); });
         setupSocketEvents();
       };
       document.head.appendChild(script);
@@ -345,11 +351,14 @@
     function showHostSetup() {
       connectSocket();
       showSection('hostSetup');
+      // Wake up the server with a quick health check
+      fetch('/api/health').catch(() => {});
     }
 
     function showPlayerSetup() {
       connectSocket();
       showSection('playerSetup');
+      fetch('/api/health').catch(() => {});
     }
 
     const registeredKids = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
@@ -380,6 +389,11 @@
       }
 
       document.getElementById('hostError').style.display = 'none';
+      if (!socket || !socketReady) {
+        document.getElementById('hostError').textContent = 'Connecting to server... Please wait a moment and try again.';
+        document.getElementById('hostError').style.display = 'block';
+        return;
+      }
       const questionCount = parseInt(document.getElementById('hostQuestionCount').value);
       const timePerQuestion = parseInt(document.getElementById('hostTimeLimit').value);
       socket.emit('host-game', { questionCount, timePerQuestion });
@@ -412,6 +426,11 @@
 
       const code = document.getElementById('roomCodeInput').value.trim().toUpperCase();
       if (!code || code.length < 4) { showToast('Enter the room code from your teacher!', 'error'); return; }
+
+      if (!socket || !socketReady) {
+        showToast('Connecting to server... Wait a moment and try again.', 'error');
+        return;
+      }
 
       myName = name;
       socket.emit('join-game', { roomCode: code, playerName: name });

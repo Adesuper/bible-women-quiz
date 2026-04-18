@@ -188,13 +188,20 @@ app.post('/api/teacher/assign', (req, res) => {
   const existingForDate = tracker.assignments.filter(a => a.date === targetDate);
   const assignmentLabel = label || `Set ${existingForDate.length + 1}`;
 
+  // Ensure no repeat questions from recent assignments (last 5)
+  const recentAssignments = tracker.assignments.slice(-5);
+  const recentIds = new Set(recentAssignments.flatMap(a => a.questionIds));
+  let freshQuestions = questions.filter(q => !recentIds.has(q.id));
+  // If not enough fresh questions, use all
+  if (freshQuestions.length < count) freshQuestions = questions;
+
   const assignment = {
     id: uuidv4(),
     date: targetDate,
     label: assignmentLabel,
-    questionIds: questions.map(q => q.id),
+    questionIds: freshQuestions.slice(0, count).map(q => q.id),
     createdAt: new Date().toISOString(),
-    questionCount: questions.length,
+    questionCount: Math.min(count, freshQuestions.length),
     timer: timer || 45
   };
 
@@ -263,32 +270,40 @@ app.get('/api/teacher/dashboard', (req, res) => {
 
   // For each today assignment, get completion stats
   const todayDetails = todayAssignments.map(a => {
-    const completions = students.filter(s => s.scores.some(sc => sc.assignmentId === a.id));
+    const completions = students.filter(s => s.scores.some(sc => sc.assignmentId === a.id && sc.status === 'completed'));
     return {
       id: a.id,
       label: a.label,
       date: a.date,
       questionCount: a.questionCount,
       completedBy: completions.map(s => {
-        const attempts = s.scores.filter(sc => sc.assignmentId === a.id);
-        const best = attempts.reduce((b, c) => c.score > b.score ? c : b, attempts[0]);
-        return { name: s.name, bestScore: best.score, bestCorrect: best.correct, total: best.total, attempts: attempts.length };
+        const attempts = s.scores.filter(sc => sc.assignmentId === a.id && sc.status === 'completed');
+        const best = attempts.length > 0 ? attempts.reduce((b, c) => c.score > b.score ? c : b, attempts[0]) : null;
+        return {
+          name: s.name,
+          bestScore: best ? best.score : 0,
+          bestCorrect: best ? best.correct : 0,
+          total: best ? best.total : a.questionCount,
+          totalAttempts: attempts.length,
+          attempts: attempts.map(att => ({ attempt: att.attempt, score: att.score, correct: att.correct, total: att.total, completedAt: att.completedAt }))
+        };
       }).sort((a, b) => b.bestScore - a.bestScore),
       totalCompletions: completions.length
     };
   });
 
-  // Overall leaderboard
+  // Overall leaderboard — only count completed attempts
   const leaderboard = students.map(s => {
-    const totalScore = s.scores.reduce((sum, sc) => sum + sc.score, 0);
-    const totalCorrect = s.scores.reduce((sum, sc) => sum + sc.correct, 0);
-    const totalAnswered = s.scores.reduce((sum, sc) => sum + sc.total, 0);
-    const uniqueAssignments = new Set(s.scores.map(sc => sc.assignmentId)).size;
+    const completed = s.scores.filter(sc => sc.status === 'completed');
+    const totalCorrect = completed.reduce((sum, sc) => sum + sc.correct, 0);
+    const totalAnswered = completed.reduce((sum, sc) => sum + sc.total, 0);
+    const uniqueAssignments = new Set(completed.map(sc => sc.assignmentId)).size;
     return {
-      name: s.name, totalScore, accuracy: totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0,
-      assignmentsCompleted: uniqueAssignments
+      name: s.name,
+      assignmentsCompleted: uniqueAssignments,
+      accuracy: totalAnswered > 0 ? Math.round((totalCorrect / totalAnswered) * 100) : 0
     };
-  }).sort((a, b) => b.totalScore - a.totalScore);
+  }).sort((a, b) => b.assignmentsCompleted - a.assignmentsCompleted || b.accuracy - a.accuracy);
 
   res.json({
     today,
