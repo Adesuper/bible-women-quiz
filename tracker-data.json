@@ -9,7 +9,23 @@
     "Erlyssa": "4444",
     "Israel": "5555"
   },
-  "students": {},
+  "students": {
+    "caleb": {
+      "name": "Caleb",
+      "scores": [
+        {
+          "assignmentId": "0ea84c37-9df9-46d4-a600-ac210bfbabdf",
+          "attempt": 1,
+          "score": 0,
+          "correct": 0,
+          "total": 10,
+          "completedAt": null,
+          "status": "started",
+          "startedAt": "2026-04-18T03:05:55.975Z"
+        }
+      ]
+    }
+  },
   "assignments": [
     {
       "id": "0ea84c37-9df9-46d4-a600-ac210bfbabdf",
@@ -30,6 +46,26 @@
       "createdAt": "2026-04-18T03:05:53.757Z",
       "questionCount": 10,
       "timer": 45
+    },
+    {
+      "id": "e86d487b-6b2e-401e-90bf-1a3cde684609",
+      "date": "2026-04-18",
+      "label": "Evening Set",
+      "questionIds": [
+        43,
+        606,
+        412,
+        426,
+        250,
+        106,
+        277,
+        125,
+        54,
+        427
+      ],
+      "createdAt": "2026-04-18T03:05:54.094Z",
+      "questionCount": 10,
+      "timer": 60
     }
   ]
 }
