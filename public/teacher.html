@@ -152,40 +152,36 @@
         return;
       }
       document.getElementById('todayAssignments').innerHTML = d.todayAssignments.map(a => {
-        let scoresHTML = '';
-        if (a.completedBy.length > 0) {
-          scoresHTML = a.completedBy.map(s => {
-            // Show each attempt separately
-            const attemptsDetail = s.attempts ? s.attempts.map(att =>
-              `<div style="padding:4px 0 4px 20px; font-size:0.85rem; color:var(--text-light);">Attempt ${att.attempt}: <strong>${att.correct}/${att.total}</strong> (${Math.round(att.correct/att.total*100)}%) — <strong style="color:var(--primary);">${att.score} pts</strong> <span style="font-size:0.75rem;">${att.completedAt ? new Date(att.completedAt).toLocaleTimeString() : ''}</span></div>`
-            ).join('') : '';
-            return `<div style="background:var(--bg-light); border-radius:10px; padding:12px; margin-bottom:8px; border-left:3px solid var(--primary);">
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <strong>${s.name}</strong>
-                <span style="font-size:0.85rem; color:var(--text-light);">${s.totalAttempts}/3 attempts</span>
-              </div>
-              ${attemptsDetail}
-            </div>`;
-          }).join('');
-        } else {
-          scoresHTML = '<p style="color:var(--text-light); font-size:0.9rem; padding:8px;">No one has completed this yet.</p>';
-        }
+        const studentsHTML = a.students.map(s => {
+          const statusColors = { completed: 'var(--success)', started: 'var(--warning)', not_attempted: 'var(--danger)' };
+          const statusIcons = { completed: '&#10004;', started: '&#9202;', not_attempted: '&#10060;' };
+          const statusLabels = { completed: `${s.totalAttempts}/3 completed`, started: 'Started but not finished', not_attempted: 'Not attempted' };
 
-        // Show who hasn't attempted
-        const kidNames = ['Caleb','Karson','Glenda','Erlyssa','Israel'];
-        const completedNames = a.completedBy.map(s => s.name.toLowerCase());
-        const missing = kidNames.filter(n => !completedNames.includes(n.toLowerCase()));
-        const missingHTML = missing.length > 0
-          ? `<div style="margin-top:8px; padding:8px; background:#fff3cd; border-radius:8px; font-size:0.85rem;"><strong>Not attempted:</strong> ${missing.join(', ')}</div>`
-          : '<div style="margin-top:8px; padding:8px; background:#d4edda; border-radius:8px; font-size:0.85rem;">All kids completed!</div>';
+          const attemptsDetail = s.attempts && s.attempts.length > 0 ? s.attempts.map(att =>
+            `<div style="padding:4px 0 4px 20px; font-size:0.85rem; color:var(--text-light);">Attempt ${att.attempt}: <strong>${att.correct}/${att.total}</strong> (${Math.round(att.correct/att.total*100)}%) — <strong style="color:var(--primary);">${att.score} pts</strong> <span style="font-size:0.75rem;">${att.completedAt ? new Date(att.completedAt).toLocaleTimeString() : ''}</span></div>`
+          ).join('') : '';
+
+          return `<div style="background:var(--bg-light); border-radius:10px; padding:12px; margin-bottom:8px; border-left:3px solid ${statusColors[s.status]};">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="color:${statusColors[s.status]}; font-size:1.1rem;">${statusIcons[s.status]}</span>
+                <strong>${s.name}</strong>
+              </div>
+              <span style="font-size:0.8rem; color:${statusColors[s.status]};">${statusLabels[s.status]}</span>
+            </div>
+            ${attemptsDetail}
+          </div>`;
+        }).join('');
+
+        const completedCount = a.students.filter(s => s.status === 'completed').length;
+        const totalKids = a.students.length;
 
         return `<div class="card" style="margin-bottom:15px; border-left:4px solid var(--primary);">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
             <div><h3 style="color:var(--primary); margin:0;">${a.label}</h3><span style="font-size:0.85rem; color:var(--text-light);">${a.questionCount} questions | ${a.date}</span></div>
-            <span style="font-weight:700; color:var(--success);">${a.totalCompletions} completed</span>
+            <span style="font-weight:700; color:${completedCount === totalKids ? 'var(--success)' : 'var(--warning)'};">${completedCount}/${totalKids} completed</span>
           </div>
-          ${scoresHTML}
-          ${missingHTML}
+          ${studentsHTML}
         </div>`;
       }).join('');
     }

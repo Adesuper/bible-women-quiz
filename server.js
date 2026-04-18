@@ -38,8 +38,14 @@ function loadAllQuestions() {
 }
 const questionsData = loadAllQuestions();
 
-// ============ PERSISTENT DATA STORE ============
+// ============ PERSISTENT DATA STORE (GitHub-backed) ============
 const TRACKER_FILE = path.join(__dirname, 'data', 'tracker.json');
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
+const GITHUB_REPO = 'Adesuper/bible-women-quiz';
+const GITHUB_FILE = 'tracker-data.json';  // Stored in repo root
+let githubFileSha = null;  // Needed for GitHub API updates
+const REGISTERED_KIDS = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+
 let tracker = {
   teachers: { pin: '2024' },
   studentPins: {
@@ -53,34 +59,96 @@ let tracker = {
   assignments: []
 };
 
-function loadTracker() {
+// Load from GitHub first, then fall back to local file
+async function loadTracker() {
+  // Try GitHub first (permanent storage)
+  if (GITHUB_TOKEN) {
+    try {
+      const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+        headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        githubFileSha = data.sha;
+        const content = Buffer.from(data.content, 'base64').toString('utf8');
+        const saved = JSON.parse(content);
+        if (saved.assignments && !Array.isArray(saved.assignments)) {
+          const arr = [];
+          Object.entries(saved.assignments).forEach(([date, d]) => {
+            arr.push({ id: uuidv4(), date, label: 'Assignment', questionIds: d.questionIds, createdAt: d.createdAt, questionCount: d.questionCount });
+          });
+          saved.assignments = arr;
+        }
+        tracker = { ...tracker, ...saved };
+        console.log(`Tracker loaded from GitHub: ${Object.keys(tracker.students).length} students, ${tracker.assignments.length} assignments`);
+        return;
+      }
+    } catch (e) { console.log('GitHub load failed:', e.message); }
+  }
+
+  // Fall back to local file
   try {
     if (fs.existsSync(TRACKER_FILE)) {
       const saved = JSON.parse(fs.readFileSync(TRACKER_FILE, 'utf8'));
-      // Migrate old format if needed
       if (saved.assignments && !Array.isArray(saved.assignments)) {
         const arr = [];
-        Object.entries(saved.assignments).forEach(([date, data]) => {
-          arr.push({ id: uuidv4(), date, label: 'Assignment', questionIds: data.questionIds, createdAt: data.createdAt, questionCount: data.questionCount });
+        Object.entries(saved.assignments).forEach(([date, d]) => {
+          arr.push({ id: uuidv4(), date, label: 'Assignment', questionIds: d.questionIds, createdAt: d.createdAt, questionCount: d.questionCount });
         });
         saved.assignments = arr;
       }
       tracker = { ...tracker, ...saved };
-      console.log(`Tracker loaded: ${Object.keys(tracker.students).length} students, ${tracker.assignments.length} assignments`);
+      console.log(`Tracker loaded from local file: ${Object.keys(tracker.students).length} students, ${tracker.assignments.length} assignments`);
     }
   } catch (e) { console.log('No existing tracker, starting fresh'); }
 }
 
 function saveTracker() {
+  // Save locally
   try {
     fs.writeFileSync(TRACKER_FILE, JSON.stringify(tracker, null, 2));
-  } catch (e) { console.log('Save tracker error:', e.message); }
+  } catch (e) { console.log('Local save error:', e.message); }
 }
 
-loadTracker();
+// Save to GitHub (permanent, survives deploys)
+async function saveToGitHub() {
+  if (!GITHUB_TOKEN) return;
+  try {
+    const content = Buffer.from(JSON.stringify(tracker, null, 2)).toString('base64');
+    const body = {
+      message: 'Auto-save tracker data',
+      content,
+      committer: { name: 'Bible Quiz Bot', email: 'bot@quiz.app' }
+    };
+    if (githubFileSha) body.sha = githubFileSha;
 
-// Auto-save every 2 minutes as backup
-setInterval(() => saveTracker(), 120000);
+    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
+      body: JSON.stringify(body)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      githubFileSha = data.content.sha;
+      console.log('Tracker saved to GitHub');
+    } else {
+      console.log('GitHub save failed:', res.status);
+    }
+  } catch (e) { console.log('GitHub save error:', e.message); }
+}
+
+// Initialize
+(async () => {
+  await loadTracker();
+
+  // Auto-save locally every 1 minute, to GitHub every 5 minutes
+  setInterval(() => saveTracker(), 60000);
+  if (GITHUB_TOKEN) {
+    setInterval(() => saveToGitHub(), 300000);
+    // Also save to GitHub on first data change
+    setTimeout(() => saveToGitHub(), 10000);
+  }
+})();
 
 // ============ HELPERS ============
 function shuffleArray(arr) {
@@ -206,7 +274,7 @@ app.post('/api/teacher/assign', (req, res) => {
   };
 
   tracker.assignments.push(assignment);
-  saveTracker();
+  saveTracker(); saveToGitHub();
 
   res.json({
     success: true,
@@ -223,7 +291,7 @@ app.delete('/api/teacher/assignment/:id', (req, res) => {
   const { pin } = req.query;
   if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
   tracker.assignments = tracker.assignments.filter(a => a.id !== req.params.id);
-  saveTracker();
+  saveTracker(); saveToGitHub();
   res.json({ success: true });
 });
 
@@ -270,25 +338,48 @@ app.get('/api/teacher/dashboard', (req, res) => {
 
   // For each today assignment, get completion stats
   const todayDetails = todayAssignments.map(a => {
-    const completions = students.filter(s => s.scores.some(sc => sc.assignmentId === a.id && sc.status === 'completed'));
+    // Show ALL registered kids + any others who attempted
+    const allKidNames = [...REGISTERED_KIDS];
+    // Add any non-registered students who attempted this assignment
+    students.forEach(s => {
+      if (!allKidNames.find(k => k.toLowerCase() === s.name.toLowerCase())) {
+        const hasAttempt = s.scores.some(sc => sc.assignmentId === a.id);
+        if (hasAttempt) allKidNames.push(s.name);
+      }
+    });
+
+    const allStudentResults = allKidNames.map(kidName => {
+      const student = students.find(s => s.name.toLowerCase() === kidName.toLowerCase());
+      const attempts = student ? student.scores.filter(sc => sc.assignmentId === a.id && sc.status === 'completed') : [];
+      const started = student ? student.scores.filter(sc => sc.assignmentId === a.id && sc.status === 'started') : [];
+      const best = attempts.length > 0 ? attempts.reduce((b, c) => c.score > b.score ? c : b, attempts[0]) : null;
+
+      let status = 'not_attempted';
+      if (attempts.length > 0) status = 'completed';
+      else if (started.length > 0) status = 'started';
+
+      return {
+        name: kidName,
+        status,
+        bestScore: best ? best.score : 0,
+        bestCorrect: best ? best.correct : 0,
+        total: a.questionCount,
+        totalAttempts: attempts.length,
+        attempts: attempts.map(att => ({ attempt: att.attempt, score: att.score, correct: att.correct, total: att.total, completedAt: att.completedAt }))
+      };
+    });
+
+    // Sort: completed first (by best score), then started, then not attempted
+    allStudentResults.sort((a, b) => {
+      const order = { completed: 0, started: 1, not_attempted: 2 };
+      if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
+      return b.bestScore - a.bestScore;
+    });
+
     return {
-      id: a.id,
-      label: a.label,
-      date: a.date,
-      questionCount: a.questionCount,
-      completedBy: completions.map(s => {
-        const attempts = s.scores.filter(sc => sc.assignmentId === a.id && sc.status === 'completed');
-        const best = attempts.length > 0 ? attempts.reduce((b, c) => c.score > b.score ? c : b, attempts[0]) : null;
-        return {
-          name: s.name,
-          bestScore: best ? best.score : 0,
-          bestCorrect: best ? best.correct : 0,
-          total: best ? best.total : a.questionCount,
-          totalAttempts: attempts.length,
-          attempts: attempts.map(att => ({ attempt: att.attempt, score: att.score, correct: att.correct, total: att.total, completedAt: att.completedAt }))
-        };
-      }).sort((a, b) => b.bestScore - a.bestScore),
-      totalCompletions: completions.length
+      id: a.id, label: a.label, date: a.date, questionCount: a.questionCount,
+      students: allStudentResults,
+      totalCompletions: allStudentResults.filter(s => s.status === 'completed').length
     };
   });
 
@@ -384,7 +475,7 @@ app.post('/api/daily/start', (req, res) => {
   // If there's already a pending (abandoned) attempt, reuse it instead of creating a new one
   if (pendingAttempt) {
     pendingAttempt.startedAt = new Date().toISOString();
-    saveTracker();
+    saveTracker(); saveToGitHub();
     return res.json({ success: true, attempt: pendingAttempt.attempt, attemptsRemaining: 3 - completedAttempts.length });
   }
 
@@ -394,7 +485,7 @@ app.post('/api/daily/start', (req, res) => {
     assignmentId, attempt: attemptNum, score: 0, correct: 0, total: assignment.questionCount,
     completedAt: null, status: 'started', startedAt: new Date().toISOString()
   });
-  saveTracker();
+  saveTracker(); saveToGitHub();
 
   res.json({ success: true, attempt: attemptNum, attemptsRemaining: 3 - attemptNum });
 });
@@ -451,7 +542,7 @@ app.post('/api/daily/submit', (req, res) => {
       completedAt: new Date().toISOString(), status: 'completed'
     });
   }
-  saveTracker();
+  saveTracker(); saveToGitHub();
 
   const attemptNum = pendingAttempt ? pendingAttempt.attempt : allAttempts.length + 1;
   res.json({ success: true, score, correct, total: assignment.questionCount, percentage: Math.round((correct / assignment.questionCount) * 100), results, attempt: attemptNum });
@@ -494,7 +585,7 @@ app.post('/api/teacher/import', (req, res) => {
   if (pin !== tracker.teachers.pin) return res.status(401).json({ message: 'Unauthorized' });
   if (data && data.students && data.assignments) {
     tracker = { ...tracker, ...data };
-    saveTracker();
+    saveTracker(); saveToGitHub();
     res.json({ success: true, message: 'Data imported successfully' });
   } else {
     res.status(400).json({ message: 'Invalid data format' });
