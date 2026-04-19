@@ -263,7 +263,18 @@
         socket = io({ transports: ['polling', 'websocket'], reconnection: true, reconnectionAttempts: 10, reconnectionDelay: 2000, timeout: 30000 });
         socket.on('connect', () => { socketReady = true; console.log('Connected to server'); });
         socket.on('disconnect', () => { socketReady = false; showToast('Disconnected from server. Reconnecting...', 'error'); });
-        socket.on('reconnect', () => { socketReady = true; showToast('Reconnected!', 'success'); });
+        socket.on('reconnect', () => {
+          socketReady = true;
+          showToast('Reconnected!', 'success');
+          // Re-join room if we were in one
+          if (roomCode) {
+            if (isHost) {
+              socket.emit('rejoin-room', { roomCode, playerName: 'teacher' });
+            } else if (myName) {
+              socket.emit('rejoin-room', { roomCode, playerName: myName });
+            }
+          }
+        });
         setupSocketEvents();
       };
       document.head.appendChild(script);
@@ -342,8 +353,17 @@
         showToast('Ready for another round!', 'info');
       });
 
+      socket.on('host-disconnected', ({ message }) => {
+        showToast('Teacher connection lost — waiting for reconnection...', 'error');
+      });
+
       socket.on('host-left', ({ message }) => {
         showSection('hostLeftSection');
+      });
+
+      socket.on('rejoined', ({ roomCode: code, players }) => {
+        roomCode = code;
+        showToast('Reconnected to room!', 'success');
       });
     }
 

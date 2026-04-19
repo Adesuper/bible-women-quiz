@@ -586,10 +586,10 @@ io.on('connection', (socket) => {
   socket.on('host-game', ({ questionCount, timePerQuestion }) => {
     const roomCode = generateRoomCode();
     const room = {
-      code: roomCode, host: socket.id, players: [],
+      code: roomCode, host: socket.id, hostName: 'teacher', players: [],
       settings: { questionCount: questionCount || 10, timePerQuestion: timePerQuestion || 20 },
       state: 'waiting', currentQuestion: -1, questions: [], questionTimer: null, questionDeadline: null,
-      paused: false, pausedTimeRemaining: 0, usedQuestionIds: []
+      paused: false, pausedTimeRemaining: 0, usedQuestionIds: [], hostDisconnectTimer: null
     };
     rooms.set(roomCode, room);
     socket.join(roomCode);
@@ -718,19 +718,52 @@ io.on('connection', (socket) => {
     io.to(room.code).emit('back-to-lobby', { players: room.players.map(p => ({ name: p.name, connected: true })) });
   });
 
+  // Reconnect to existing room
+  socket.on('rejoin-room', ({ roomCode, playerName }) => {
+    const code = roomCode.toUpperCase();
+    const room = rooms.get(code);
+    if (!room) return socket.emit('error-msg', { message: 'Room no longer exists.' });
+
+    // Check if this player was in the room
+    const existing = room.players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+    if (existing) {
+      existing.id = socket.id;
+      existing.connected = true;
+    }
+    if (room.host === socket.id || (room.hostName && room.hostName.toLowerCase() === 'teacher')) {
+      room.host = socket.id;
+    }
+    socket.join(code);
+    socket.roomCode = code;
+    socket.emit('rejoined', { roomCode: code, players: room.players.map(p => ({ name: p.name, connected: p.connected !== false })) });
+    io.to(code).emit('players-updated', { players: room.players.map(p => ({ name: p.name, connected: p.connected !== false })) });
+  });
+
   socket.on('disconnect', () => {
     const rc = socket.roomCode;
     if (!rc) return;
     const room = rooms.get(rc);
     if (!room) return;
-    room.players = room.players.filter(p => p.id !== socket.id);
+
     if (room.host === socket.id) {
-      if (room.questionTimer) clearTimeout(room.questionTimer);
-      io.to(rc).emit('host-left', { message: 'The teacher has left.' });
-      rooms.delete(rc);
+      // Teacher disconnected — DON'T delete room immediately
+      // Give 60 seconds for reconnection
+      room.hostDisconnectTimer = setTimeout(() => {
+        // If still no host after 60 seconds, delete room
+        if (room.host === socket.id) {
+          if (room.questionTimer) clearTimeout(room.questionTimer);
+          io.to(rc).emit('host-left', { message: 'The teacher has disconnected.' });
+          rooms.delete(rc);
+        }
+      }, 60000);
+      io.to(rc).emit('host-disconnected', { message: 'Teacher connection lost. Waiting for reconnection...' });
       return;
     }
-    io.to(rc).emit('players-updated', { players: room.players.map(p => ({ name: p.name, connected: true })) });
+
+    // Player disconnected — mark as disconnected but keep in room
+    const player = room.players.find(p => p.id === socket.id);
+    if (player) player.connected = false;
+    io.to(rc).emit('players-updated', { players: room.players.map(p => ({ name: p.name, connected: p.connected !== false })) });
   });
 });
 
