@@ -5,6 +5,9 @@ const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 const fs = require('fs');
 
+// Ensure fetch is available (Node < 18 doesn't have native fetch)
+if (!globalThis.fetch) { globalThis.fetch = require('node-fetch'); }
+
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
