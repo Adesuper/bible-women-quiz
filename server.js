@@ -559,7 +559,16 @@ app.get('/api/daily/leaderboard', (req, res) => {
 });
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', questions: questionsData.questions.length, students: Object.keys(tracker.students).length, assignments: tracker.assignments.length });
+  res.json({ status: 'ok', questions: questionsData.questions.length, students: Object.keys(tracker.students).length, assignments: tracker.assignments.length, gistEnabled: !!GITHUB_TOKEN, gistId: GIST_ID });
+});
+
+// Manual trigger for Gist save (for testing)
+app.get('/api/save-now', async (req, res) => {
+  if (!GITHUB_TOKEN) return res.json({ saved: false, reason: 'No GITHUB_TOKEN' });
+  try {
+    await saveToGitHub();
+    res.json({ saved: true });
+  } catch (e) { res.json({ saved: false, error: e.message }); }
 });
 
 // ============ API: DATA EXPORT (backup) ============
