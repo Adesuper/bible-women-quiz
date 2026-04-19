@@ -148,6 +148,26 @@
   },
   "assignments": [
     {
+      "id": "4090f538-1471-41b0-b260-71bdec52ac48",
+      "date": "2026-04-19",
+      "label": "Gist Final Test",
+      "questionIds": [
+        420,
+        419,
+        11,
+        151,
+        103,
+        624,
+        170,
+        272,
+        264,
+        400
+      ],
+      "createdAt": "2026-04-19T14:08:24.403Z",
+      "questionCount": 10,
+      "timer": 45
+    },
+    {
       "id": "bb788dbb-abf4-4a8c-87f7-e6b28cde307b",
       "date": "2026-04-19",
       "label": "Gist Verify",
@@ -334,26 +354,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "4090f538-1471-41b0-b260-71bdec52ac48",
-      "date": "2026-04-19",
-      "label": "Gist Final Test",
-      "questionIds": [
-        420,
-        419,
-        11,
-        151,
-        103,
-        624,
-        170,
-        272,
-        264,
-        400
-      ],
-      "createdAt": "2026-04-19T14:08:24.403Z",
       "questionCount": 10,
       "timer": 45
     }
