@@ -148,6 +148,26 @@
   },
   "assignments": [
     {
+      "id": "0ef56c86-da6d-44b4-bd9b-bec681cc930f",
+      "date": "2026-04-19",
+      "label": "Final Deploy Test",
+      "questionIds": [
+        22,
+        144,
+        413,
+        420,
+        113,
+        65,
+        415,
+        103,
+        528,
+        623
+      ],
+      "createdAt": "2026-04-19T14:02:13.059Z",
+      "questionCount": 10,
+      "timer": 45
+    },
+    {
       "id": "6273771f-5350-4940-b1fb-6c9f56f1b976",
       "date": "2026-04-19",
       "label": "Persistence Test",
@@ -294,26 +314,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "0ef56c86-da6d-44b4-bd9b-bec681cc930f",
-      "date": "2026-04-19",
-      "label": "Final Deploy Test",
-      "questionIds": [
-        22,
-        144,
-        413,
-        420,
-        113,
-        65,
-        415,
-        103,
-        528,
-        623
-      ],
-      "createdAt": "2026-04-19T14:02:13.059Z",
       "questionCount": 10,
       "timer": 45
     }
