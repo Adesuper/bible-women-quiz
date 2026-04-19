@@ -148,6 +148,26 @@
   },
   "assignments": [
     {
+      "id": "b0402aae-0f07-49fc-af47-9297dfcf029c",
+      "date": "2026-04-19",
+      "label": "Deploy Test",
+      "questionIds": [
+        121,
+        412,
+        628,
+        35,
+        163,
+        63,
+        86,
+        538,
+        613,
+        428
+      ],
+      "createdAt": "2026-04-19T13:36:56.986Z",
+      "questionCount": 10,
+      "timer": 45
+    },
+    {
       "id": "e78e97a4-422c-484a-b0fe-88618a4768aa",
       "date": "2026-04-19",
       "label": "Gist Test",
@@ -254,26 +274,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "b0402aae-0f07-49fc-af47-9297dfcf029c",
-      "date": "2026-04-19",
-      "label": "Deploy Test",
-      "questionIds": [
-        121,
-        412,
-        628,
-        35,
-        163,
-        63,
-        86,
-        538,
-        613,
-        428
-      ],
-      "createdAt": "2026-04-19T13:36:56.986Z",
       "questionCount": 10,
       "timer": 45
     }
