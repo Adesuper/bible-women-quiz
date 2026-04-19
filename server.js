@@ -41,9 +41,7 @@ const questionsData = loadAllQuestions();
 // ============ PERSISTENT DATA STORE (GitHub-backed) ============
 const TRACKER_FILE = path.join(__dirname, 'data', 'tracker.json');
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
-const GITHUB_REPO = 'Adesuper/bible-women-quiz';
-const GITHUB_FILE = 'tracker-data.json';  // Stored in repo root
-let githubFileSha = null;  // Needed for GitHub API updates
+const GIST_ID = '6cb4e2721d0e8bb0e3281e46a14a759e';  // Permanent gist for data storage
 const REGISTERED_KIDS = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
 
 let tracker = {
@@ -59,31 +57,32 @@ let tracker = {
   assignments: []
 };
 
-// Load from GitHub first, then fall back to local file
+// Load from GitHub Gist first, then fall back to local file
 async function loadTracker() {
-  // Try GitHub first (permanent storage)
+  // Try Gist first (permanent storage — does NOT trigger Render deploys)
   if (GITHUB_TOKEN) {
     try {
-      const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
+      const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
         headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Accept': 'application/vnd.github.v3+json' }
       });
       if (res.ok) {
-        const data = await res.json();
-        githubFileSha = data.sha;
-        const content = Buffer.from(data.content, 'base64').toString('utf8');
-        const saved = JSON.parse(content);
-        if (saved.assignments && !Array.isArray(saved.assignments)) {
-          const arr = [];
-          Object.entries(saved.assignments).forEach(([date, d]) => {
-            arr.push({ id: uuidv4(), date, label: 'Assignment', questionIds: d.questionIds, createdAt: d.createdAt, questionCount: d.questionCount });
-          });
-          saved.assignments = arr;
+        const gist = await res.json();
+        const content = gist.files['tracker-data.json']?.content;
+        if (content && content.length > 5) {
+          const saved = JSON.parse(content);
+          if (saved.assignments && !Array.isArray(saved.assignments)) {
+            const arr = [];
+            Object.entries(saved.assignments).forEach(([date, d]) => {
+              arr.push({ id: uuidv4(), date, label: 'Assignment', questionIds: d.questionIds, createdAt: d.createdAt, questionCount: d.questionCount });
+            });
+            saved.assignments = arr;
+          }
+          tracker = { ...tracker, ...saved };
+          console.log(`Tracker loaded from Gist: ${Object.keys(tracker.students).length} students, ${tracker.assignments.length} assignments`);
+          return;
         }
-        tracker = { ...tracker, ...saved };
-        console.log(`Tracker loaded from GitHub: ${Object.keys(tracker.students).length} students, ${tracker.assignments.length} assignments`);
-        return;
       }
-    } catch (e) { console.log('GitHub load failed:', e.message); }
+    } catch (e) { console.log('Gist load failed:', e.message); }
   }
 
   // Fall back to local file
@@ -110,31 +109,18 @@ function saveTracker() {
   } catch (e) { console.log('Local save error:', e.message); }
 }
 
-// Save to GitHub (permanent, survives deploys)
+// Save to GitHub Gist (permanent, survives deploys, does NOT trigger Render redeploy)
 async function saveToGitHub() {
   if (!GITHUB_TOKEN) return;
   try {
-    const content = Buffer.from(JSON.stringify(tracker, null, 2)).toString('base64');
-    const body = {
-      message: 'Auto-save tracker data',
-      content,
-      committer: { name: 'Bible Quiz Bot', email: 'bot@quiz.app' }
-    };
-    if (githubFileSha) body.sha = githubFileSha;
-
-    const res = await fetch(`https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
-      method: 'PUT',
+    const res = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+      method: 'PATCH',
       headers: { 'Authorization': `token ${GITHUB_TOKEN}`, 'Content-Type': 'application/json', 'Accept': 'application/vnd.github.v3+json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify({ files: { 'tracker-data.json': { content: JSON.stringify(tracker, null, 2) } } })
     });
-    if (res.ok) {
-      const data = await res.json();
-      githubFileSha = data.content.sha;
-      console.log('Tracker saved to GitHub');
-    } else {
-      console.log('GitHub save failed:', res.status);
-    }
-  } catch (e) { console.log('GitHub save error:', e.message); }
+    if (res.ok) { console.log('Tracker saved to Gist'); }
+    else { console.log('Gist save failed:', res.status); }
+  } catch (e) { console.log('Gist save error:', e.message); }
 }
 
 // Initialize
