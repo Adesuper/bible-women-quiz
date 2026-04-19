@@ -56,11 +56,11 @@
         {
           "assignmentId": "768a8cf2-a92b-4e9c-ab88-c31ebea15d17",
           "attempt": 1,
-          "score": 0,
-          "correct": 0,
+          "score": 400,
+          "correct": 4,
           "total": 10,
-          "completedAt": null,
-          "status": "started",
+          "completedAt": "2026-04-19T14:13:58.859Z",
+          "status": "completed",
           "startedAt": "2026-04-19T14:13:58.320Z"
         }
       ]
@@ -157,6 +157,26 @@
     }
   },
   "assignments": [
+    {
+      "id": "768a8cf2-a92b-4e9c-ab88-c31ebea15d17",
+      "date": "2026-04-19",
+      "label": "Verification Set",
+      "questionIds": [
+        141,
+        625,
+        534,
+        278,
+        622,
+        414,
+        611,
+        139,
+        61,
+        54
+      ],
+      "createdAt": "2026-04-19T14:13:56.091Z",
+      "questionCount": 10,
+      "timer": 45
+    },
     {
       "id": "4090f538-1471-41b0-b260-71bdec52ac48",
       "date": "2026-04-19",
@@ -364,26 +384,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "768a8cf2-a92b-4e9c-ab88-c31ebea15d17",
-      "date": "2026-04-19",
-      "label": "Verification Set",
-      "questionIds": [
-        141,
-        625,
-        534,
-        278,
-        622,
-        414,
-        611,
-        139,
-        61,
-        54
-      ],
-      "createdAt": "2026-04-19T14:13:56.091Z",
       "questionCount": 10,
       "timer": 45
     }
