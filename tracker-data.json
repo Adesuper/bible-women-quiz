@@ -148,6 +148,26 @@
   },
   "assignments": [
     {
+      "id": "6273771f-5350-4940-b1fb-6c9f56f1b976",
+      "date": "2026-04-19",
+      "label": "Persistence Test",
+      "questionIds": [
+        81,
+        252,
+        8,
+        286,
+        405,
+        616,
+        39,
+        625,
+        51,
+        400
+      ],
+      "createdAt": "2026-04-19T13:40:03.618Z",
+      "questionCount": 10,
+      "timer": 45
+    },
+    {
       "id": "b0402aae-0f07-49fc-af47-9297dfcf029c",
       "date": "2026-04-19",
       "label": "Deploy Test",
@@ -274,26 +294,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "6273771f-5350-4940-b1fb-6c9f56f1b976",
-      "date": "2026-04-19",
-      "label": "Persistence Test",
-      "questionIds": [
-        81,
-        252,
-        8,
-        286,
-        405,
-        616,
-        39,
-        625,
-        51,
-        400
-      ],
-      "createdAt": "2026-04-19T13:40:03.618Z",
       "questionCount": 10,
       "timer": 45
     }
