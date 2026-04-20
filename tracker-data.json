@@ -256,11 +256,11 @@
         {
           "assignmentId": "bb788dbb-abf4-4a8c-87f7-e6b28cde307b",
           "attempt": 1,
-          "score": 0,
-          "correct": 0,
+          "score": 900,
+          "correct": 9,
           "total": 10,
-          "completedAt": null,
-          "status": "started",
+          "completedAt": "2026-04-20T11:27:38.299Z",
+          "status": "completed",
           "startedAt": "2026-04-20T11:26:22.780Z"
         }
       ]
