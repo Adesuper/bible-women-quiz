@@ -106,11 +106,11 @@
         {
           "assignmentId": "fd66f877-63c4-4ae4-be52-91a38dacba08",
           "attempt": 1,
-          "score": 0,
-          "correct": 0,
+          "score": 500,
+          "correct": 5,
           "total": 10,
-          "completedAt": null,
-          "status": "started",
+          "completedAt": "2026-04-20T10:56:46.337Z",
+          "status": "completed",
           "startedAt": "2026-04-20T10:54:09.768Z"
         }
       ]
