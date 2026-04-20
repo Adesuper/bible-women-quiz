@@ -236,11 +236,11 @@
         {
           "assignmentId": "6273771f-5350-4940-b1fb-6c9f56f1b976",
           "attempt": 1,
-          "score": 0,
-          "correct": 0,
+          "score": 900,
+          "correct": 9,
           "total": 10,
-          "completedAt": null,
-          "status": "started",
+          "completedAt": "2026-04-20T11:23:58.081Z",
+          "status": "completed",
           "startedAt": "2026-04-20T11:22:52.123Z"
         }
       ]
