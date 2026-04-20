@@ -20,7 +20,7 @@ let newQuestionsThisRound = 0;
 let isDailyChallenge = false;
 
 // ============ LOGIN ============
-const registeredKids = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+const registeredKids = ['Caleb', 'Karson', 'Samuel', 'Erlyssa', 'Israel'];
 
 function handlePracticeNameSelect() {
   const val = document.getElementById('practiceNameSelect').value;
