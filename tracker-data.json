@@ -81,7 +81,7 @@
       ]
     },
     "dahlia": {
-      "name": "dahlia",
+      "name": "Dahlia",
       "scores": [
         {
           "assignmentId": "efb0b9dd-b604-4e35-a221-46e23c80af94",
@@ -102,6 +102,16 @@
           "completedAt": "2026-04-17T23:19:36.188Z",
           "status": "completed",
           "startedAt": "2026-04-17T23:17:38.333Z"
+        },
+        {
+          "assignmentId": "fd66f877-63c4-4ae4-be52-91a38dacba08",
+          "attempt": 1,
+          "score": 0,
+          "correct": 0,
+          "total": 10,
+          "completedAt": null,
+          "status": "started",
+          "startedAt": "2026-04-20T10:54:09.768Z"
         }
       ]
     },
