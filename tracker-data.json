@@ -226,11 +226,11 @@
         {
           "assignmentId": "e78e97a4-422c-484a-b0fe-88618a4768aa",
           "attempt": 2,
-          "score": 0,
-          "correct": 0,
+          "score": 900,
+          "correct": 9,
           "total": 10,
-          "completedAt": null,
-          "status": "started",
+          "completedAt": "2026-04-20T11:22:14.494Z",
+          "status": "completed",
           "startedAt": "2026-04-20T11:21:11.158Z"
         }
       ]
