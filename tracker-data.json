@@ -184,9 +184,44 @@
           "startedAt": "2026-04-20T01:42:48.827Z"
         }
       ]
+    },
+    "me": {
+      "name": "Me",
+      "scores": [
+        {
+          "assignmentId": "fd66f877-63c4-4ae4-be52-91a38dacba08",
+          "attempt": 1,
+          "score": 0,
+          "correct": 0,
+          "total": 10,
+          "completedAt": null,
+          "status": "started",
+          "startedAt": "2026-04-20T10:45:54.630Z"
+        }
+      ]
     }
   },
   "assignments": [
+    {
+      "id": "fd66f877-63c4-4ae4-be52-91a38dacba08",
+      "date": "2026-04-20",
+      "label": "Set 1",
+      "questionIds": [
+        13,
+        430,
+        415,
+        81,
+        156,
+        602,
+        297,
+        172,
+        623,
+        522
+      ],
+      "createdAt": "2026-04-20T10:45:08.205Z",
+      "questionCount": 10,
+      "timer": 45
+    },
     {
       "id": "768a8cf2-a92b-4e9c-ab88-c31ebea15d17",
       "date": "2026-04-19",
@@ -414,26 +449,6 @@
         149
       ],
       "createdAt": "2026-04-17T23:17:06.105Z",
-      "questionCount": 10,
-      "timer": 45
-    },
-    {
-      "id": "fd66f877-63c4-4ae4-be52-91a38dacba08",
-      "date": "2026-04-20",
-      "label": "Set 1",
-      "questionIds": [
-        13,
-        430,
-        415,
-        81,
-        156,
-        602,
-        297,
-        172,
-        623,
-        522
-      ],
-      "createdAt": "2026-04-20T10:45:08.205Z",
       "questionCount": 10,
       "timer": 45
     }
