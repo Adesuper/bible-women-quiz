@@ -137,6 +137,16 @@
           "completedAt": "2026-04-17T23:21:15.846Z",
           "status": "completed",
           "startedAt": "2026-04-17T23:18:15.591Z"
+        },
+        {
+          "assignmentId": "fd66f877-63c4-4ae4-be52-91a38dacba08",
+          "attempt": 1,
+          "score": 0,
+          "correct": 0,
+          "total": 10,
+          "completedAt": null,
+          "status": "started",
+          "startedAt": "2026-04-20T11:33:23.049Z"
         }
       ]
     },
