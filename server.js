@@ -45,14 +45,14 @@ const questionsData = loadAllQuestions();
 const TRACKER_FILE = path.join(__dirname, 'data', 'tracker.json');
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN || '';
 const GIST_ID = '6cb4e2721d0e8bb0e3281e46a14a759e';  // Permanent gist for data storage
-const REGISTERED_KIDS = ['Caleb', 'Karson', 'Glenda', 'Erlyssa', 'Israel'];
+const REGISTERED_KIDS = ['Caleb', 'Karson', 'Samuel', 'Erlyssa', 'Israel'];
 
 let tracker = {
   teachers: { pin: '2024' },
   studentPins: {
     'Caleb': '1111',
     'Karson': '2222',
-    'Glenda': '3333',
+    'Samuel': '3333',
     'Erlyssa': '4444',
     'Israel': '5555'
   },
